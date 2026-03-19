@@ -6,6 +6,7 @@ from collections import OrderedDict
 from typing import (
     TYPE_CHECKING,
     Dict,
+    Protocol,
 )
 
 from qgis.core import (
@@ -31,18 +32,17 @@ if TYPE_CHECKING:
 from .. import logger
 
 
-class LwcVersionManager:
-    def __init__(
-        self,
-        dlg: "LizmapDialog",
-        lwc_version: LwcVersions,
-    ):
-        self.dlg = dlg
-        self._version = lwc_version
-        self.lwc_versions = configure_lwc_versions(dlg)
+class LizmapProtocol(Protocol):
+    dlg: "LizmapDialog"
+    layers_table: Dict
 
-    @property
-    def lwc_version(self) -> LwcVersions:
+
+class LwcVersionManager(LizmapProtocol):
+    def initialize_lwc_versions(self, lwc_version: LwcVersions):
+        self._version = lwc_version
+        self._lwc_versions = configure_lwc_versions(self.dlg)
+
+    def current_lwc_version(self) -> LwcVersions:
         """ Return the current selected LWC version from the server. """
         if self._version:
             # For tests, return the version given in the constructor
@@ -52,12 +52,13 @@ class LwcVersionManager:
         if version is None:
             # Fallback to latest version if no server is configured
             return LwcVersions.latest()
+
         return version
 
-    def lwc_version_changed(self, layers_table: Dict):
+    def lwc_version_changed(self):
         """ When the version has changed in the selector, we update features with the blue background. """
         # self.check_webdav()
-        current_version = self.lwc_version
+        current_version = self.current_lwc_version()
         if not current_version:
             logger.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
             self.dlg.refresh_helper_target_version(None)
@@ -78,7 +79,7 @@ class LwcVersionManager:
         self.dlg.cbActivateZoomHistory.setEnabled(current_version <= LwcVersions.Lizmap_3_7)
 
         found = False
-        for lwc_version, items in self.lwc_versions.items():
+        for lwc_version, items in self._lwc_versions.items():
             if found:
                 # Set some blue
                 for item in items:
@@ -104,8 +105,8 @@ class LwcVersionManager:
                 found = True
 
         # Change in all table manager too
-        for key in layers_table:
-            manager = layers_table[key].get('manager')
+        for key in self.layers_table:
+            manager = self.layers_table[key].get('manager')
             if manager:
                 manager.set_lwc_version(current_version)
 

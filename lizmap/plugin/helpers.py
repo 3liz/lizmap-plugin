@@ -1,11 +1,17 @@
+import os
 
 from typing import TYPE_CHECKING
 
-from qgis.PyQt.QtWidgets import QMessageBox, QPushButton
 from qgis.PyQt.QtGui import QDesktopServices
+from qgis.PyQt.QtWidgets import QMessageBox, QPushButton
 
+from ..definitions.definitions import ServerComboData
+from ..definitions.online_help import (
+    MAPPING_INDEX_DOC,
+    online_cloud_help,
+    online_lwc_help,
+)
 from ..saas import is_lizmap_cloud
-from ..definitions.online_help import MAPPING_INDEX_DOC
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import window_icon
 
@@ -25,6 +31,14 @@ def string_to_list(text):
     """ Format a string to a list. """
     data = text.split(',') if len(text) > 0 else []
     return [item.strip() for item in data]
+
+
+def current_login() -> str:
+    """ Current login on the OS. """
+    try:
+        return os.getlogin()
+    except OSError:
+        return 'repository'
 
 
 def show_help_question(dlg: "LizmapDialog"):
@@ -80,5 +94,3 @@ def show_help(page=None):
 def show_help_cloud():
     """ Opens the HTML online cloud help with default browser and language. """
     QDesktopServices.openUrl(online_cloud_help())
-
-

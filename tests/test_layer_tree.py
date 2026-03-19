@@ -71,12 +71,12 @@ class TestLayerTree(TestCase):
         lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
 
         # New project so Lizmap is empty
-        config = lizmap.layer_tree_mngr.layers_config_file()
+        config = lizmap.layers_config_file()
         self.assertDictEqual(config, {})
 
         # No link for now, config = {}
         myDic = {}  # Must be called before process_node
-        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, config)
+        lizmap.process_node(myDic, project.layerTreeRoot(), None, config)
         self.assertEqual(myDic[layer.id()]["link"], "")
 
         # Set the link from QGIS properties, we should have it in the Lizmap config now
@@ -85,7 +85,7 @@ class TestLayerTree(TestCase):
         else:
             layer.serverProperties().setDataUrl(qgis_config_url)
         myDic = {}  # Must be called before process_node
-        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, config)
+        lizmap.process_node(myDic, project.layerTreeRoot(), None, config)
         self.assertEqual(myDic[layer.id()]["link"], qgis_config_url)
 
         # Hard code a URL in the Lizmap config, not from layer properties
@@ -125,7 +125,7 @@ class TestLayerTree(TestCase):
         else:
             layer.serverProperties().setDataUrl(qgis_config_url)
         myDic = {}  # Must be called before process_node
-        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
+        lizmap.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
         self.assertEqual(lizmap_config_url, myDic[layer.id()]["link"])
 
         # Remove the link from Lizmap config, it should be the QGIS one now
@@ -135,7 +135,7 @@ class TestLayerTree(TestCase):
             layer.serverProperties().setDataUrl(qgis_config_url)
         myDic = {}  # Must be called before process_node
         hard_coded_config[layer_name]["link"] = ""
-        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
+        lizmap.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
         self.assertEqual(qgis_config_url, myDic[layer.id()]["link"])
 
         # Remove the link from Lizmap config and from QGIS
@@ -145,5 +145,5 @@ class TestLayerTree(TestCase):
             layer.serverProperties().setDataUrl("")
         myDic = {}  # Must be called before process_node
         hard_coded_config[layer_name]["link"] = ""
-        lizmap.layer_tree_mngr.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
+        lizmap.process_node(myDic, project.layerTreeRoot(), None, hard_coded_config)
         self.assertEqual("", myDic[layer.id()]["link"])

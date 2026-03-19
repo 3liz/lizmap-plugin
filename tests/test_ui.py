@@ -27,7 +27,7 @@ def teardown(data: Path) -> None:
 
 
 class TestUiLizmapDialog(TestCase):
-    def test_ui(self, data: Path):
+    def test_ui_base(self, data: Path):
         """Test opening the Lizmap dialog with some basic checks."""
         project = QgsProject.instance()
         project.clear()
@@ -65,7 +65,7 @@ class TestUiLizmapDialog(TestCase):
         config = lizmap.read_cfg_file(skip_tables=True)
         print("\n::test_legend_options::config", config)
 
-        lizmap.layer_tree_mngr.process_node(lizmap.layerList, project.layerTreeRoot(), None, config)
+        lizmap.process_node(lizmap.layerList, project.layerTreeRoot(), None, config)
 
         self.assertEqual("5000", lizmap.dlg.minimum_scale.text())
         self.assertEqual("500000", lizmap.dlg.maximum_scale.text())
@@ -120,11 +120,11 @@ class TestUiLizmapDialog(TestCase):
         project.setFileName(temporary_file_path())
 
         lizmap = Lizmap(get_iface(), lwc_version=lwc_version)
-        baselayers = lizmap.layer_tree_mngr._add_group_legend("baselayers", exclusive=True, parent=None, project=project)
-        lizmap.layer_tree_mngr._add_group_legend(
+        baselayers = lizmap._add_group_legend("baselayers", exclusive=True, parent=None, project=project)
+        lizmap._add_group_legend(
             "project-background-color", exclusive=False, parent=baselayers, project=project
         )
-        hidden = lizmap.layer_tree_mngr._add_group_legend("hidden", project=project)
+        hidden = lizmap._add_group_legend("hidden", project=project)
 
         # For testing, we add OSM as hidden layer
         hidden_raster = QgsRasterLayer(
@@ -143,7 +143,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertDictEqual({}, config)
 
         # Some process
-        lizmap.layer_tree_mngr.process_node(lizmap.layerList, project.layerTreeRoot(), None, {})
+        lizmap.process_node(lizmap.layerList, project.layerTreeRoot(), None, {})
 
         return lizmap
 

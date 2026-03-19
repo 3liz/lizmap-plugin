@@ -3,6 +3,7 @@ from typing import (
     TYPE_CHECKING,
     Dict,
     Optional,
+    Protocol,
 )
 
 from qgis.core import QgsApplication
@@ -20,25 +21,21 @@ from ..drag_drop_dataviz_manager import DragDropDatavizManager
 from ..forms.dataviz_edition import DatavizEditionDialog
 from ..table_manager.dataviz import TableManagerDataviz
 from ..toolbelt.i18n import tr
-from .lwc_versions import LwcVersionManager
 
 
-class DatavizManager:
-    def __init__(
-        self,
-        *,
-        dlg: "LizmapDialog",
-        is_dev_version: bool,
-        lwc_version_mngr: LwcVersionManager,
-    ):
-        self.dlg = dlg
-        self.is_dev_version = is_dev_version
-        self.lwc_version_mngr = lwc_version_mngr
-        self.drag_drop_dataviz: Optional[DragDropDatavizManager] = None
+class LizmapProtocol(Protocol):
+    dlg: "LizmapDialog"
+    is_dev_version: bool
 
     @property
-    def lwc_version(self) -> LwcVersions:
-        return self.lwc_version_mngr.lwc_version
+    def lwc_version(self) -> LwcVersions: ...
+
+
+class DatavizManager(LizmapProtocol):
+    drag_drop_dataviz: Optional[DragDropDatavizManager]
+
+    def initialize_dataviz(self):
+        self.drag_drop_dataviz = None
 
     def set_options(self, global_options: GlobalOptionsDefinitions):
         for item in Theme:
@@ -46,8 +43,8 @@ class DatavizManager:
         index = global_options['theme']['widget'].findData(Theme.Light.value["data"])
         global_options['theme']['widget'].setCurrentIndex(index)
 
-    # initGui
-    def init_gui(self, item: Dict):
+    # Called in `initGui`
+    def dataviz_init_gui(self, item: Dict):
 
         definition = DatavizDefinitions()
         dialog = DatavizEditionDialog

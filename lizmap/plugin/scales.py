@@ -8,53 +8,41 @@ import contextlib
 from typing import (
     TYPE_CHECKING,
     Optional,
+    Protocol,
 )
 
 from qgis.core import QgsCoordinateReferenceSystem
-from qgis.PyQt.QtGui import (
-    QPixmap,
-)
-from qgis.PyQt.QtWidgets import (
-    QMessageBox,
-)
+from qgis.PyQt.QtGui import QPixmap
+from qgis.PyQt.QtWidgets import QMessageBox
 
 from ..definitions.definitions import LwcVersions
 from ..toolbelt.i18n import tr
+from ..toolbelt.resources import window_icon
 
 if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
-
 from .. import logger
-from .lwc_versions import LwcVersionManager
+from ..config import GlobalOptionsDefinitions
 
 
-class ScalesManager:
+class LizmapProtocol(Protocol):
+    dlg: "LizmapDialog"
+    is_dev_version: bool
+    global_options: GlobalOptionsDefinitions
+
+    @property
+    def lwc_version(self) -> LwcVersions: ...
+
+
+class ScalesManager(LizmapProtocol):
     """Manager for map scale operations in the Lizmap plugin.
 
     This class handles all map scale related functionality using the delegate
     pattern, providing a cleaner separation of concerns.
     """
-    def __init__(
-        self,
-        *,
-        dlg: "LizmapDialog",
-        global_options: dict,
-        is_dev_version: bool,
-        lwc_version_mngr: LwcVersionManager,
-    ):
-        """Initialize the ScalesManager."""
-        self.dlg = dlg
-        self.global_options = global_options
-        self.is_dev_version = is_dev_version
-        self.lwc_version_mngr = lwc_version_mngr
-
-    @property
-    def lwc_version(self) -> LwcVersions:
-        return self.lwc_version_mngr.lwc_version
-
-    # Init gui
-    def initialize(self):
+    # Called in __init__
+    def initialize_scales(self):
         self.dlg.scales_warning.set_text(tr(
             "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
         ))
@@ -225,3 +213,24 @@ class ScalesManager:
         self.dlg.list_map_scales.setText(cleaned)
         self.dlg.minimum_scale.setValue(min_scale)
         self.dlg.maximum_scale.setValue(max_scale)
+
+    def reset_scales(self):
+        """ Reset scales in the line edit. """
+        scales = ', '.join([str(i) for i in self.global_options['mapScales']['default']])
+        if self.dlg.list_map_scales.text() != '':
+            box = QMessageBox(self.dlg)
+            box.setIcon(QMessageBox.Icon.Question)
+            box.setWindowIcon(window_icon() )
+            box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            box.setDefaultButton(QMessageBox.StandardButton.No)
+            box.setWindowTitle(tr('Reset the scales'))
+            box.setText(tr(
+                'You have some scales predefined. Are you sure you want to reset with "{}" ?'
+            ).format(scales))
+
+            result = box.exec()
+            if result == QMessageBox.StandardButton.No:
+                return
+
+        self.dlg.list_map_scales.setText(scales)
+        self.get_min_max_scales()

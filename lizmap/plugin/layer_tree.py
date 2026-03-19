@@ -10,6 +10,7 @@ from typing import (
     Dict,
     List,
     Optional,
+    Protocol,
     Union,
 )
 
@@ -61,33 +62,27 @@ if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
 from .. import logger
-from ..config import layerOptionDefinitions
+from ..config import GlobalOptionsDefinitions, LayerOptionDefinitions
 from .helpers import display_error, string_to_list
-from .lwc_versions import LwcVersionManager
 
 
-class LayerTreeManager:
+class LizmapProtocol(Protocol):
+    dlg: "LizmapDialog"
+    iface: "QgisInterface"
+    project: QgsProject
+    layers_table: Dict
+    is_dev_version: bool
 
-    def __init__(
-        self,
-        *,
-        dlg: "LizmapDialog",
-        project: QgsProject,
-        is_dev_version: bool,
-        lwc_version_mngr: LwcVersionManager,
-        iface: "QgisInterface",
-    ):
-        self.dlg = dlg
-        self.project = project
-        self.is_dev_version = is_dev_version
-        self.lwc_version_mngr = lwc_version_mngr
-        self.layerList = {}
-        self.layer_options_list = layerOptionDefinitions
-        self.iface = iface
+    global_options: GlobalOptionsDefinitions
+    layer_options_list: LayerOptionDefinitions
 
     @property
-    def lwc_version(self) -> LwcVersions:
-        return self.lwc_version_mngr.lwc_version
+    def lwc_version(self) -> LwcVersions: ...
+
+
+class LayerTreeManager(LizmapProtocol):
+
+    _layerList: Dict
 
     def layers_config_file(self) -> Dict:
         """ Read the CFG file and returns the JSON content about 'layers'. """
@@ -112,7 +107,10 @@ class LayerTreeManager:
             return {}
 
     # Called by LizmapDialog.__init__
-    def initialize(self):
+    def initialize_layer_tree(self):
+
+        self._layerList = {}
+
         # Disable checkboxes on the layer tab
         self.enable_check_box_in_layer_tab(False)
 
@@ -146,7 +144,7 @@ class LayerTreeManager:
         self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
 
     # Called by LizmapDialog.initGui()
-    def init_gui(self):
+    def layer_tree_init_gui(self):
         self.project.layersAdded.connect(self.new_added_layers)
         self.project.layerTreeRoot().nameChanged.connect(self.layer_renamed)
 
@@ -206,7 +204,7 @@ class LayerTreeManager:
         Needs to be refactored.
         """
         self.dlg.layer_tree.clear()
-        self.layerList = {}
+        self._layerList = {}
         myDic = {}
 
         json_layers = self.layers_config_file()
@@ -222,7 +220,7 @@ class LayerTreeManager:
             self.dlg._ignore_layer_tree_state = False
 
         # Add the myDic to the global layerList dictionary
-        self.layerList = myDic
+        self._layerList = myDic
 
         self.enable_check_box_in_layer_tab(False)
 
@@ -463,7 +461,7 @@ class LayerTreeManager:
         # i_key can be either a layer name or a group name
         if i_key:
             # get information about the layer or the group from the layerList dictionary
-            selected_item = self.layerList[i_key]
+            selected_item = self._layerList[i_key]
 
             # set options
             for key, val in self.layer_options_list.items():
@@ -671,7 +669,7 @@ class LayerTreeManager:
             return None
 
         text = item.text(1)
-        if text not in self.layerList:
+        if text not in self._layerList:
             return None
 
         return item.data(0, Qt.ItemDataRole.UserRole + 1)
@@ -683,7 +681,7 @@ class LayerTreeManager:
             return None
 
         text = item.text(1)
-        if text not in self.layerList:
+        if text not in self._layerList:
             return None
 
         return text
@@ -769,7 +767,7 @@ class LayerTreeManager:
         return self.project.mapLayers().get(my_id, None)
 
     def save_value_layer_group_data(self, key: str):
-        """ Save the new value from the UI in the global layer property self.layerList.
+        """ Save the new value from the UI in the global layer property self._layerList.
 
         Function called the corresponding UI widget has sent changed signal.
         """
@@ -785,16 +783,16 @@ class LayerTreeManager:
             text = layer_option['widget'].text()
             if layer_option['type'] == 'list':
                 text = string_to_list(text)
-            self.layerList[layer_or_group_text][key] = text
+            self._layerList[layer_or_group_text][key] = text
             self.set_layer_metadata(layer_or_group_text, key)
         elif layer_option['wType'] == 'textarea':
-            self.layerList[layer_or_group_text][key] = layer_option['widget'].toPlainText()
+            self._layerList[layer_or_group_text][key] = layer_option['widget'].toPlainText()
             self.set_layer_metadata(layer_or_group_text, key)
         elif layer_option['wType'] == 'spinbox':
-            self.layerList[layer_or_group_text][key] = layer_option['widget'].value()
+            self._layerList[layer_or_group_text][key] = layer_option['widget'].value()
         elif layer_option['wType'] in ('checkbox', 'radio'):
             checked = layer_option['widget'].isChecked()
-            self.layerList[layer_or_group_text][key] = checked
+            self._layerList[layer_or_group_text][key] = checked
             children = layer_option.get('children')
             if children:
                 exclusive = layer_option.get('exclusive', False)
@@ -809,7 +807,7 @@ class LayerTreeManager:
         elif layer_option['wType'] == 'list':
             # New way with data, label, tooltip and icon
             datas = [j[0] for j in layer_option['list']]
-            self.layerList[layer_or_group_text][key] = datas[layer_option['widget'].currentIndex()]
+            self._layerList[layer_or_group_text][key] = datas[layer_option['widget'].currentIndex()]
 
         # Deactivate the "exclude" widget if necessary
         if 'exclude' in layer_option \
@@ -817,7 +815,7 @@ class LayerTreeManager:
                 and layer_option['widget'].isChecked() \
                 and layer_option['exclude']['widget'].isChecked():
             layer_option['exclude']['widget'].setChecked(False)
-            self.layerList[layer_or_group_text][layer_option['exclude']['key']] = False
+            self._layerList[layer_or_group_text][layer_option['exclude']['key']] = False
 
     def set_layer_metadata(self, layer_or_group: str, key: str):
         """Set the title/abstract/link QGIS metadata when the corresponding item is changed
@@ -826,7 +824,7 @@ class LayerTreeManager:
             return
 
         # modify the layer.title|abstract|link() if possible
-        if self.layerList[layer_or_group]['type'] != 'layer':
+        if self._layerList[layer_or_group]['type'] != 'layer':
             return
 
         layer = self.get_qgis_layer_by_id(layer_or_group)
@@ -834,10 +832,10 @@ class LayerTreeManager:
             return
 
         if key == 'title':
-            set_layer_property(layer, LayerProperties.Title, self.layerList[layer_or_group][key])
+            set_layer_property(layer, LayerProperties.Title, self._layerList[layer_or_group][key])
 
         if key == 'abstract':
-            set_layer_property(layer, LayerProperties.Abstract, self.layerList[layer_or_group][key])
+            set_layer_property(layer, LayerProperties.Abstract, self._layerList[layer_or_group][key])
 
     def disable_legacy_empty_base_layer(self):
         """ Legacy checkbox until it's removed. """

@@ -8,7 +8,11 @@ import zipfile
 
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Protocol,
+)
 
 from qgis.core import (
     Qgis,
@@ -51,27 +55,22 @@ if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
 from .. import logger
+from .helpers import current_login
 
 
-class TrainingManager:
+class LizmapProtocol(Protocol):
+    dlg: "LizmapDialog"
+    project: QgsProject
+
+
+class TrainingManager(LizmapProtocol):
     """Manager for training operations in the Lizmap plugin.
 
     This class handles all training related functionality using the delegate
     pattern, providing a cleaner separation of concerns.
     """
-
-    def __init__(
-        self,
-        *,
-        dlg: "LizmapDialog",
-        project: QgsProject,
-    ):
-        """Initialize the TrainingManager."""
-        self.dlg = dlg
-        self.project = project
-
-    def initialize(self, current_login: str) -> None:
-        self.dlg.name_training_folder.setPlaceholderText(current_login)
+    def initialize_training_dialog(self) -> None:
+        self.dlg.name_training_folder.setPlaceholderText(current_login())
 
         # When a ZIP is provided for the training
         self.dlg.path_training_folder_zip.setStorageMode(QgsFileWidget.StorageMode.GetDirectory)
@@ -229,7 +228,7 @@ class TrainingManager:
             user_project = self.login_from_auth_id(auth_id)
             project_path = str(file_path.joinpath(f"{user_project}.qgs"))
         else:
-            user_project = self.current_login()
+            user_project = current_login()
             project_path = str(file_path.joinpath(TRAINING_PROJECT))
 
         if not file_path:

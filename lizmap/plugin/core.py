@@ -5,16 +5,14 @@ import os
 import re
 import tempfile
 
-from functools import cached_property, partial
+from functools import partial
 from os.path import relpath
 from pathlib import Path
 from shutil import copyfile
 from typing import (
-    TYPE_CHECKING,
     Dict,
     Optional,
     Tuple,
-    cast,
 )
 
 from pyplugin_installer.version_compare import compareVersions
@@ -87,10 +85,8 @@ from lizmap.definitions.lizmap_cloud import (
 )
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.definitions.online_help import (
-    MAPPING_INDEX_DOC,
     Panels,
     online_cloud_help,
-    online_lwc_help,
 )
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.definitions.time_manager import TimeManagerDefinitions
@@ -155,7 +151,6 @@ except ModuleNotFoundError:
 from qgis.core import QgsProjectServerValidator
 
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
-from lizmap.server_dav import WebDav
 from lizmap.server_lwc import MAX_DAYS, ServerManager
 from lizmap.toolbelt.convert import ambiguous_to_bool, as_boolean
 from lizmap.toolbelt.custom_logging import (
@@ -186,8 +181,9 @@ from lizmap.toolbelt.version import (
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
-from . import baselayers
 from . import helpers
+from .baselayers import BaseLayersManager
+from .config import ConfigFileManager
 from .dataviz import DatavizManager
 from .layer_tree import LayerTreeManager
 from .lwc_versions import LwcVersionManager
@@ -197,66 +193,32 @@ from .settings import configure_qgis_settings
 from .training import TrainingManager
 from .webdav import WebDavManager
 
-if TYPE_CHECKING:
-    from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
-
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
 # To try a local file
 # VERSION_URL = 'file:///home/etienne/.local/share/QGIS/QGIS3/profiles/default/Lizmap/released_versions.json'
 
 
-class Lizmap:
-
-    @cached_property
-    def scale_mngr(self) -> ScalesManager:
-        return ScalesManager(
-            dlg=self.dlg,
-            global_options=self.global_options,
-            is_dev_version=self.is_dev_version,
-            lwc_version_mngr=self.version_mngr,
-        )
-
-    @cached_property
-    def training_mngr(self) -> TrainingManager:
-        return TrainingManager(
-            dlg=self.dlg,
-            project=self.project,
-        )
-
-    @cached_property
-    def layer_tree_mngr(self) -> LayerTreeManager:
-        return LayerTreeManager(
-            dlg=self.dlg,
-            project=self.project,
-            is_dev_version=self.is_dev_version,
-            lwc_version_mngr=self.version_mngr,
-            iface=self.iface,
-        )
-
-    @property
-    def layerList(self) -> Dict:
-        return self.layer_tree_mngr.layerList
-
-    @cached_property
-    def dataviz_mngr(self) -> DatavizManager:
-        return DatavizManager(
-            dlg=self.dlg,
-            is_dev_version=self.is_dev_version,
-            lwc_version_mngr=self.version_mngr,
-        )
-
-    @property
-    def drag_drop_dataviz(self) -> "DragDropDatavizManager":
-        return cast("DragDropDatavizManager", self.dataviz_mngr.drag_drop_dataviz)
+class Lizmap(
+    BaseLayersManager,
+    ConfigFileManager,
+    LayerTreeManager,
+    ScalesManager,
+    TrainingManager,
+    DatavizManager,
+    LwcVersionManager,
+    WebDavManager,
+):
 
     @property
     def lwc_version(self) -> LwcVersions:
-        return self.version_mngr.lwc_version
+        # From LwcVersionManager
+        return self.current_lwc_version()
 
     @property
-    def webdav(self) -> WebDav:
-        return self.webdav_mngr.webdav
+    def layerList(self) -> Dict:
+        # From LayerTreeManager
+        return self._layerList
 
     def __init__(self, iface: QgisInterface, lwc_version: LwcVersions = None):
         """Constructor of the Lizmap plugin."""
@@ -295,8 +257,9 @@ class Lizmap:
         # Must only be used in tests
         # In production, version is coming from the UI, according to the current server selected
         # In production, this variable must be None
-        self.version_mngr = LwcVersionManager(self.dlg, lwc_version)
-        self.webdav_mngr = WebDavManager(self.dlg, self.project)
+        self.initialize_lwc_versions(lwc_version)
+
+        self.initialize_webdav()
 
         self.dock_html_preview = None
         self.version_checker = None
@@ -335,10 +298,13 @@ class Lizmap:
         self.on_single_wms_toggled(self.dlg.checkbox_wms_single_request_all_layers.isChecked())
 
         # Initialize layer tree
-        self.layer_tree_mngr.initialize()
+        self.initialize_layer_tree()
 
         # Initialize scales UI
-        self.scale_mngr.initialize()
+        self.initialize_scales()
+
+        # Initialize dataviz
+        self.initialize_dataviz()
 
         remove_buttons = (
             self.dlg.button_remove_qgs,
@@ -389,7 +355,7 @@ class Lizmap:
         self.dlg.button_create_media_local.clicked.connect(self.create_media_dir_local)
 
         # Base layers
-        baselayers.configure_base_layers(self.dlg, self.layer_tree_mngr)
+        self.configure_base_layers()
 
         self.dlg.button_run_checks.clicked.connect(self.check_project_clicked)
         self.dlg.button_copy.clicked.connect(self.copy_versions_clicked)
@@ -431,12 +397,9 @@ class Lizmap:
                 elif item['wType'] == 'fields':
                     control.fieldChanged.connect(slot)
 
-        self.baselayers_mngr = baselayers.BaseLayersManager(
-            self.dlg,
-            self.version_mngr,
-        )
+        self.initialize_base_layers()
 
-        for item in self.baselayers_mngr.base_layer_widget_list.values():
+        for item in self.base_layer_widget_list.values():
             slot = self.on_baselayer_checkbox_change
             item.stateChanged.connect(slot)
 
@@ -616,7 +579,7 @@ class Lizmap:
         self.dlg.tab_dataviz.setCurrentIndex(0)
 
         # Initialize training
-        self.training_mngr.initialize(self.current_login())
+        self.initialize_training_dialog()
 
         self.dlg.button_quick_start.clicked.connect(self.dlg.open_lizmap_how_to)
         self.dlg.workshop_edition.clicked.connect(self.dlg.open_workshop_edition)
@@ -736,14 +699,6 @@ class Lizmap:
 
         self.current_path = new_path
 
-    @staticmethod
-    def current_login() -> str:
-        """ Current login on the OS. """
-        try:
-            return os.getlogin()
-        except OSError:
-            return 'repository'
-
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
         current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
@@ -794,7 +749,7 @@ class Lizmap:
             self.dlg.label_helper_list_group.setToolTip(tooltip)
 
         # For deprecated features in LWC 3.7 about base layers
-        self.baselayers_mngr.check_visibility_crs_3857()
+        self.check_visibility_crs_3857()
 
         if not current_metadata:
             # In CI, to make tests happy
@@ -816,14 +771,6 @@ class Lizmap:
         # Otherwise, it will make a mess with the signals about the last repository used and the server refreshed list
         if self.dlg.page_dataviz.isVisible():
             self.layers_table['datavizLayers'].get('manager').preview_dataviz_dialog()
-
-    def lwc_version_changed(self):
-        self.version_mngr.lwc_version_changed(self.layers_table)
-
-    def check_webdav(self):
-        # I hope temporary, to force the version displayed
-        self.dlg.refresh_helper_target_version(self.lwc_version)
-        self.webdav_mngr.check_webdav()
 
     def initGui(self):
         """Create action that will start plugin configuration"""
@@ -982,7 +929,7 @@ class Lizmap:
                 item['tableWidget'].horizontalHeader().setStretchLastSection(True)
 
                 if key == 'datavizLayers':
-                    self.dataviz_mngr.init_gui(item)
+                    self.dataviz_init_gui(item)
                 if key == 'layouts':
                     definition = LayoutsDefinitions()
                     dialog = LayoutEditionDialog
@@ -1059,7 +1006,7 @@ class Lizmap:
         # noinspection PyUnresolvedReferences
         self.project.layersRemoved.connect(self.remove_layer_from_table_by_layer_ids)
 
-        self.layer_tree_mngr.init_gui()
+        self.layer_tree_init_gui()
 
         # Layouts
         # Not connecting the "layoutAdded" signal, it's done when opening the Lizmap plugin
@@ -1184,9 +1131,6 @@ class Lizmap:
             self.iface.pluginHelpMenu().removeAction(self.help_action_cloud)
             del self.help_action_cloud
 
-    def enable_popup_source_button(self):
-        self.layer_tree_mngr.enable_popup_source_button()
-
     def open_wizard_group_layer(self):
         """ Open the group wizard for the group/layer visibility. """
         current_item = self._current_selected_item_in_config()
@@ -1240,265 +1184,6 @@ class Lizmap:
 
     def show_help_question(self):
         helpers.show_help_question(self.dlg)
-
-    def enable_check_box_in_layer_tab(self, value: bool):
-        self.layer_tree_mngr.enable_check_box_in_layer_tab(value)
-
-    def reset_scales(self):
-        """ Reset scales in the line edit. """
-        scales = ', '.join([str(i) for i in self.global_options['mapScales']['default']])
-        if self.dlg.list_map_scales.text() != '':
-            box = QMessageBox(self.dlg)
-            box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(window_icon() )
-            box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-            box.setDefaultButton(QMessageBox.StandardButton.No)
-            box.setWindowTitle(tr('Reset the scales'))
-            box.setText(tr(
-                'You have some scales predefined. Are you sure you want to reset with "{}" ?'
-            ).format(scales))
-
-            result = box.exec()
-            if result == QMessageBox.StandardButton.No:
-                return
-
-        self.dlg.list_map_scales.setText(scales)
-        self.get_min_max_scales()
-
-    def get_min_max_scales(self):
-        self.scale_mngr.get_min_max_scales()
-
-    def read_cfg_file(self, skip_tables: bool = False) -> dict:
-        """Get the saved configuration from the project.qgs.cfg config file.
-
-        Populate the gui fields accordingly
-
-        skip_tables is only used in tests, as we don't have "table managers". It's only for testing the "layer" panel.
-        """
-        json_options = {}
-        json_file = self.dlg.cfg_file()
-        if json_file.exists():
-            with open(json_file, encoding='utf-8') as f:
-                json_file_reader = f.read()
-
-            try:
-                sjson = json.loads(json_file_reader)
-                json_options = sjson['options']
-                for key in self.layers_table:
-                    if key in sjson:
-                        self.layers_table[key]['jsonConfig'] = sjson[key]
-                    else:
-                        self.layers_table[key]['jsonConfig'] = {}
-
-                    manager = self.layers_table[key].get('manager')
-                    if manager:
-
-                        manager.truncate()
-
-                        if key == 'layouts':
-                            manager.load_qgis_layouts(sjson.get(key, {}))
-                            continue
-
-                        if key == 'dxfExport':
-                            # Pass full sjson so manager can read from layers section
-                            manager.load_wfs_layers(sjson)
-                            continue
-
-                        if key in sjson:
-                            manager.from_json(sjson[key])
-                        else:
-                            # get a subset of the data to give to the table form
-                            data = {k: json_options[k] for k in json_options if k.startswith(manager.definitions.key())}
-                            if data:
-                                manager.from_json(data)
-
-                        if key == 'datavizLayers':
-                            self.dataviz_mngr.read_cfg(sjson)
-
-            except Exception as e:
-                if self.is_dev_version:
-                    raise
-                LOGGER.critical(e)
-                copyfile(json_file, '{}.back'.format(json_file))
-                message = tr(
-                    'Errors encountered while reading the last layer tree state. '
-                    'Please re-configure the options in the Layers tab completely. '
-                    'The previous .cfg has been saved as .cfg.back')
-                QMessageBox.critical(
-                    self.dlg, tr('Lizmap Error'), message, QMessageBox.StandardButton.Ok)
-                self.dlg.log_panel.append(message, abort=True, style=Html.P)
-                LOGGER.critical('Error while reading the Lizmap configuration file')
-
-        else:
-            LOGGER.info('Lizmap CFG does not exist for this project.')
-            for key in self.layers_table:
-                manager = self.layers_table[key].get('manager')
-                if manager:
-                    manager.truncate()
-
-        # Set the global options (map, tools, etc.)
-        for key, item in self.global_options.items():
-            if item.get('widget'):
-                if item.get('tooltip'):
-                    item['widget'].setToolTip(item.get('tooltip'))
-
-                if item['wType'] in ('checkbox', 'radio'):
-                    # Block signals while setting values to avoid triggering actions during config load
-                    item['widget'].blockSignals(True)
-                    item['widget'].setChecked(item['default'])
-                    if key in json_options:
-                        item['widget'].setChecked(ambiguous_to_bool(json_options[key]))
-                    item['widget'].blockSignals(False)
-
-                if item['wType'] == 'scale':
-                    item['widget'].setShowCurrentScaleButton(True)
-                    item['widget'].setMapCanvas(self.iface.mapCanvas())
-                    item['widget'].setAllowNull(False)
-                    value = json_options.get(key)
-                    if value:
-                        item['widget'].setScale(value)
-                    else:
-                        item['widget'].setScale(item['default'])
-
-                if item['wType'] in ('text', 'textarea'):
-                    if isinstance(item['default'], (list, tuple)):
-                        item['widget'].setText(", ".join(map(str, item['default'])))
-                    else:
-                        item['widget'].setText(str(item['default']))
-                    if key in json_options:
-                        if isinstance(json_options[key], (list, tuple)):
-                            item['widget'].setText(", ".join(map(str, json_options[key])))
-                        else:
-                            item['widget'].setText(str(json_options[key]))
-
-                if item['wType'] == 'extent':
-                    if key in json_options:
-                        extent = QgsRectangle(
-                            json_options[key][0],
-                            json_options[key][1],
-                            json_options[key][2],
-                            json_options[key][3]
-                        )
-                        item['widget'].setOriginalExtent(extent, self.project.crs())
-                        item['widget'].setOutputExtentFromOriginal()
-
-                if item['wType'] == 'wysiwyg':
-                    item['widget'].set_html_content(str(item['default']))
-                    if key in json_options:
-                        item['widget'].set_html_content(json_options[key])
-
-                if item['wType'] == 'spinbox':
-                    item['widget'].setValue(int(item['default']))
-                    if key in json_options:
-                        item['widget'].setValue(int(json_options[key]))
-
-                if item['wType'] == 'list':
-                    if isinstance(item['list'][0], (list, tuple)):
-                        # New way with icon, tooltip, translated label
-                        pass
-                    else:
-                        # Legacy way
-                        for i, item_config in enumerate(item['list']):
-                            item['widget'].setItemData(i, item_config)
-
-                        if item['default'] in item['list']:
-                            index = item['widget'].findData(item['default'])
-                            item['widget'].setCurrentIndex(index)
-
-                    if key in json_options:
-                        index = item['widget'].findData(json_options[key])
-                        if index:
-                            item['widget'].setCurrentIndex(index)
-
-            map_scales = json_options.get('mapScales', self.global_options['mapScales']['default'])
-            min_scale = json_options.get('minScale', self.global_options['minScale']['default'])
-            max_scale = json_options.get('maxScale', self.global_options['maxScale']['default'])
-            use_native = json_options.get('use_native_zoom_levels')
-            project_crs = json_options.get('projection')
-            if project_crs:
-                project_crs = project_crs.get('ref')
-
-            self.set_map_scales_in_ui(
-                map_scales=map_scales,
-                min_scale=min_scale,
-                max_scale=max_scale,
-                use_native=use_native,
-                project_crs=project_crs,
-            )
-
-        # Set layer combobox
-        for key, item in self.global_options.items():
-            if item.get('widget'):
-                if item['wType'] == 'layers':
-                    if key in json_options:
-                        for lyr in self.project.mapLayers().values():
-                            if lyr.id() == json_options[key]:
-                                item['widget'].setLayer(lyr)
-                                break
-
-        # Then set field combobox
-        for key, item in self.global_options.items():
-            if item.get('widget'):
-                if item['wType'] == 'fields':
-                    if key in json_options:
-                        item['widget'].setField(str(json_options[key]))
-
-        self.dlg.check_ign_french_free_key()
-        self.dlg.follow_map_theme_toggled()
-
-        # Set DXF export table enabled state based on global checkbox
-        dxf_manager = self.layers_table.get('dxfExport', {}).get('manager')
-        if dxf_manager:
-            dxf_enabled = self.dlg.checkbox_dxf_export_enabled.isChecked()
-            dxf_manager.table.setEnabled(dxf_enabled)
-
-        out = '' if json_file.exists() else 'out'
-        LOGGER.info(f'Dialog has been loaded successful, with{out} Lizmap configuration file')
-
-        if self.project.fileName().lower().endswith('qgs'):
-            # Manage lizmap_user project variable
-            variables = self.project.customVariables()
-            if 'lizmap_user' in variables and not self.dlg.check_cfg_file_exists() and not skip_tables:
-                # The variable 'lizmap_user' exists in the project as a variable
-                # But no CFG was found, maybe the project has been renamed.
-                message = tr(
-                    'We have detected that this QGIS project has been used before with the Lizmap plugin (due to the '
-                    'variable "lizmap_user" in your project properties dialog).'
-                )
-                message += '\n\n'
-                message += tr(
-                    "However, we couldn't detect the Lizmap configuration file '{}' anymore. A new "
-                    "configuration from scratch is used."
-                ).format(self.dlg.cfg_file())
-                message += '\n\n'
-                message += tr(
-                    'Did you rename this QGIS project file ? If you want to keep your previous configuration, you '
-                    'should find your previous Lizmap configuration file and use the path above. Lizmap will load it.'
-                )
-                QMessageBox.warning(
-                    self.dlg, tr('New Lizmap configuration'), message, QMessageBox.StandardButton.Ok)
-
-            # Add default variables in the project
-            if not variables.get('lizmap_user'):
-                variables['lizmap_user'] = ''
-            if not variables.get('lizmap_user_groups'):
-                variables['lizmap_user_groups'] = list()
-            self.project.setCustomVariables(variables)
-
-        # Fill the layer tree
-        data = self.populate_layer_tree()
-
-        # Fill base-layer startup
-        self.on_baselayer_checkbox_change()
-        self.baselayers_mngr.set_startup_baselayer_from_config()
-        self.dlg.default_lizmap_folder()
-
-        # The return is used in tests
-        return data
-
-    def get_qgis_layer_by_id(self, my_id: str) -> Optional[QgsMapLayer]:
-        """ Get a QgsMapLayer by its ID. """
-        return self.layer_tree_mngr.get_qgis_layer_by_id(my_id)
 
     def set_initial_extent_from_project(self):
         """ Set extent from QGIS server properties with the WMS advertised extent. """
@@ -1583,29 +1268,6 @@ class Lizmap:
 
     def display_error(self, message: str):
         helpers.display_error(self.dlg, message)
-
-    def populate_layer_tree(self) -> Dict:
-        return self.layer_tree_mngr.populate_layer_tree()
-
-    def disable_legacy_empty_base_layer(self):
-        self.layer_tree_mngr.disable_legacy_empty_base_layer()
-
-    def _add_base_layer(
-        self,
-        source: str,
-        name: str,
-        attribution_url: Optional[str] = None,
-        attribution_name: Optional[str] = None,
-    ):
-        self.layer_tree_mngr._add_base_layer(
-            source,
-            name,
-            attribution_url,
-            attribution_name,
-        )
-
-    def save_value_layer_group_data(self, key: str):
-        self.layer_tree_mngr.save_value_layer_group_data(key)
 
     def convert_html_maptip(self):
         """ Trying to convert a Lizmap popup to HTML popup. """
@@ -1701,12 +1363,6 @@ class Lizmap:
                 return
 
             self._set_maptip(layer, html_editor.editor.html_content(), False)
-
-    def _current_selected_item_in_config(self) -> Optional[str]:
-        return self.layer_tree_mngr._current_selected_item_in_config()
-
-    def _current_selected_layer(self) -> Optional[QgsMapLayer]:
-        return self.layer_tree_mngr._current_selected_layer()
 
     def link_from_properties(self):
         """ Button set link from layer in the Lizmap configuration. """
@@ -2920,32 +2576,6 @@ class Lizmap:
 
         return liz2json
 
-    def map_scales(self) -> list:
-        return self.scale_mngr.map_scales()
-
-    def minimum_scale_value(self) -> int:
-        return self.scale_mngr.minimum_scale_value()
-
-    def maximum_scale_value(self) -> int:
-        return self.scale_mngr.maximum_scale_value()
-
-    def set_map_scales_in_ui(
-        self,
-        *,
-        map_scales: list,
-        min_scale: int,
-        max_scale: int,
-        use_native: bool,
-        project_crs: str,
-    ):
-        self.scale_mngr.set_map_scales_in_ui(
-            map_scales=map_scales,
-            min_scale=min_scale,
-            max_scale=max_scale,
-            use_native=use_native,
-            project_crs=project_crs,
-        )
-
     def clean_project(self):
         """Clean a little the QGIS project.
 
@@ -3705,11 +3335,6 @@ class Lizmap:
         """
         self.dlg.checkbox_exclude_basemaps_from_single_wms.setEnabled(checked)
 
-    def on_baselayer_checkbox_change(self):
-        blist = self.baselayers_mngr.on_baselayer_checkbox_change(self.layerList)
-        # Fill self.globalOptions
-        self.global_options['startupBaselayer']['list'] = blist
-
     def reinit_default_properties(self):
         for key in self.layers_table:
             self.layers_table[key]['jsonConfig'] = dict()
@@ -3727,9 +3352,6 @@ class Lizmap:
 
         self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.dock_html_preview)
         self.dock_html_preview.setVisible(True)
-
-    def check_training_panel(self):
-        self.training_mngr.check_training_panel()
 
     def run(self) -> bool:
         """Plugin run method : launch the GUI."""

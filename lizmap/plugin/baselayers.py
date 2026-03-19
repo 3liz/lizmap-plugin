@@ -6,6 +6,8 @@ from typing import (
     TYPE_CHECKING,
     Dict,
     List,
+    Optional,
+    Protocol,
 )
 
 from lizmap.definitions.definitions import (
@@ -20,17 +22,35 @@ if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
 from .. import logger
+from ..config import GlobalOptionsDefinitions
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import load_icon
-from .layer_tree import LayerTreeManager
-from .lwc_versions import LwcVersionManager
 
 
-class BaseLayersManager:
+class LizmapProtocol(Protocol):
 
-    def __init__(self, dlg: "LizmapDialog", version_mngr: LwcVersionManager):
-        self.dlg = dlg
-        self.version_mngr = version_mngr
+    dlg: "LizmapDialog"
+    global_options: GlobalOptionsDefinitions
+
+    @property
+    def lwc_version(self) -> LwcVersions: ...
+
+    @property
+    def layerList(self) -> Dict: ...
+
+    def _add_base_layer(
+        self,
+        source: str,
+        name: str,
+        attribution_url: Optional[str] = None,
+        attribution_name: Optional[str] = None,
+    ):
+        ...
+
+
+class BaseLayersManager(LizmapProtocol):
+
+    def initialize_base_layers(self):
         self.crs_3857_base_layers_list = {
             'osm-mapnik': self.dlg.cbOsmMapnik,
             'opentopomap': self.dlg.cb_open_topo_map,
@@ -61,58 +81,57 @@ class BaseLayersManager:
         self.base_layer_widget_list.update(self.crs_3857_base_layers_list)
 
     def check_visibility_crs_3857(self):
+        version = self.current_lwc_version()
+        assert version is not None
         check_visibility_crs_3857(
             self.dlg,
             self.crs_3857_base_layers_list,
-            self.version_mngr.lwc_version,
+            self.lwc_version,
         )
 
-    def on_baselayer_checkbox_change(self, layerList: Dict) -> List:
-        return on_baselayer_checkbox_change(self.dlg, layerList, self.base_layer_widget_list)
-     
+    def on_baselayer_checkbox_change(self):
+        blist = on_baselayer_checkbox_change(self.dlg, self.layerList, self.base_layer_widget_list)
+        # Fill self.globalOptions
+        self.global_options['startupBaselayer']['list'] = blist
+
     def set_startup_baselayer_from_config(self):
         set_startup_baselayer_from_config(self.dlg)
 
-
-#
-# Base layers
-#
-
-def configure_base_layers(dlg: "LizmapDialog", layer_mngr: LayerTreeManager):
-    osm_icon = load_icon('osm-32-32.png')
-    dlg.button_osm_mapnik.clicked.connect(partial(add_osm_mapnik, layer_mngr))
-    dlg.button_osm_mapnik.setIcon(osm_icon)
-    dlg.button_osm_opentopomap.clicked.connect(partial(add_osm_opentopomap, layer_mngr))
-    dlg.button_osm_opentopomap.setIcon(osm_icon)
-    dlg.button_ign_orthophoto.clicked.connect(
-        partial(add_french_ign_layer, IgnLayers.IgnOrthophoto, layer_mngr))
-    dlg.button_ign_plan.clicked.connect(
-        partial(add_french_ign_layer, IgnLayers.IgnPlan, layer_mngr))
-    dlg.button_ign_cadastre.clicked.connect(
-        partial(add_french_ign_layer, IgnLayers.IgnCadastre, layer_mngr))
+    def configure_base_layers(self):
+        osm_icon = load_icon('osm-32-32.png')
+        self.dlg.button_osm_mapnik.clicked.connect(partial(add_osm_mapnik, self))
+        self.dlg.button_osm_mapnik.setIcon(osm_icon)
+        self.dlg.button_osm_opentopomap.clicked.connect(partial(add_osm_opentopomap, self))
+        self.dlg.button_osm_opentopomap.setIcon(osm_icon)
+        self.dlg.button_ign_orthophoto.clicked.connect(
+            partial(add_french_ign_layer, IgnLayers.IgnOrthophoto, self))
+        self.dlg.button_ign_plan.clicked.connect(
+            partial(add_french_ign_layer, IgnLayers.IgnPlan, self))
+        self.dlg.button_ign_cadastre.clicked.connect(
+            partial(add_french_ign_layer, IgnLayers.IgnCadastre, self))
 
 
-def add_osm_mapnik(layer_mngr: LayerTreeManager):
+def add_osm_mapnik(proto: LizmapProtocol):
     """ Add the OSM mapnik base layer. """
     source = 'type=xyz&url=https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-    layer_mngr._add_base_layer(
+    proto._add_base_layer(
         source,
         'OpenStreetMap',
         'https://openstreetmap.org',
         '© ' + tr('OpenStreetMap contributors'))
 
 
-def add_osm_opentopomap(layer_mngr: LayerTreeManager):
+def add_osm_opentopomap(proto: LizmapProtocol):
     """ Add the OSM OpenTopoMap base layer. """
     source = 'type=xyz&url=https://tile.opentopomap.org/{z}/{x}/{y}.png'
-    layer_mngr._add_base_layer(
+    proto._add_base_layer(
         source,
         'OpenTopoMap',
         'https://openstreetmap.org',
         '© ' + tr('OpenStreetMap contributors') + ', SRTM, © OpenTopoMap (CC-BY-SA)')
 
 
-def add_french_ign_layer(layer: IgnLayer, layer_mngr: LayerTreeManager):
+def add_french_ign_layer(layer: IgnLayer, proto: LizmapProtocol):
     """ Add some French IGN layers. """
     params = {
         'crs': 'EPSG:3857',
@@ -125,7 +144,7 @@ def add_french_ign_layer(layer: IgnLayer, layer_mngr: LayerTreeManager):
     }
     # Do not use urlencode
     source = '&'.join(['{}={}'.format(k, v) for k, v in params.items()])
-    layer_mngr._add_base_layer(source, layer.title, 'https://www.ign.fr/', 'IGN France')
+    proto._add_base_layer(source, layer.title, 'https://www.ign.fr/', 'IGN France')
 
 
 #

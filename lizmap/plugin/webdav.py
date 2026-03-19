@@ -1,31 +1,40 @@
 
 from typing import (
     TYPE_CHECKING,
+    Protocol,
 )
 
 from qgis.core import QgsProject
 
-from lizmap.definitions.online_help import Panels
-from lizmap.server_dav import WebDav
+from ..definitions.definitions import LwcVersions
+from ..definitions.online_help import Panels
+from ..server_dav import WebDav
 
 if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
 
-class WebDavManager:
+class LizmapProtocol(Protocol):
+    dlg: "LizmapDialog"
+    project: QgsProject
 
-    def __init__(
-        self,
-        dlg: "LizmapDialog",
-        project: QgsProject,
-    ):
-        self.dlg = dlg
-        self.project = project
+    @property
+    def lwc_version(self) -> LwcVersions: ...
+
+
+class WebDavManager(LizmapProtocol):
+
+    webdav: WebDav
+
+    def initialize_webdav(self):
         self.webdav = WebDav()
-        self.webdav.setup_webdav_dialog(dlg)
+        self.webdav.setup_webdav_dialog(self.dlg)
 
     def check_webdav(self):
         """ Check if we can enable or the webdav, according to the current selected server. """
+
+        # I hope temporary, to force the version displayed
+        self.dlg.refresh_helper_target_version(self.lwc_version)
 
         def disable_upload_panel():
             self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(True)
