@@ -1,12 +1,136 @@
 """ Configure dialog depending on the LWC version
 """
+import json
+
 from collections import OrderedDict
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+)
+
+from qgis.core import (
+    Qgis,
+    QgsSettings,
+)
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QColor,
+    QStandardItem,
+)
+from qgis.PyQt.QtWidgets import QWidget
 
 from ..definitions.definitions import LwcVersions
+from ..dialogs.main import LizmapDialog
+from ..qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
+from ..toolbelt.plugin import lizmap_user_folder
 
 if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
+
+from .. import logger
+
+
+class LwcVersionManager:
+    def __init__(
+        self,
+        dlg: "LizmapDialog",
+        lwc_version: LwcVersions,
+    ):
+        self.dlg = dlg
+        self._version = lwc_version
+        self.lwc_versions = configure_lwc_versions(dlg)
+
+    @property
+    def lwc_version(self) -> LwcVersions:
+        """ Return the current selected LWC version from the server. """
+        if self._version:
+            # For tests, return the version given in the constructor
+            return self._version
+
+        version = self.dlg.current_lwc_version()
+        if version is None:
+            # Fallback to latest version if no server is configured
+            return LwcVersions.latest()
+        return version
+
+    def lwc_version_changed(self, layers_table: Dict):
+        """ When the version has changed in the selector, we update features with the blue background. """
+        # self.check_webdav()
+        current_version = self.lwc_version
+        if not current_version:
+            logger.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
+            self.dlg.refresh_helper_target_version(None)
+            return
+
+        logger.debug("Saving new value about the LWC target version : {}".format(current_version.value))
+        QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
+
+        self.dlg.refresh_helper_target_version(current_version)
+
+        # New print panel
+        # The checkbox is removed since LWC 3.7.0
+        self.dlg.cbActivatePrint.setVisible(current_version <= LwcVersions.Lizmap_3_6)
+        self.dlg.cbActivatePrint.setEnabled(current_version <= LwcVersions.Lizmap_3_6)
+
+        # The checkbox is removed since LWC 3.8.0
+        self.dlg.cbActivateZoomHistory.setVisible(current_version <= LwcVersions.Lizmap_3_7)
+        self.dlg.cbActivateZoomHistory.setEnabled(current_version <= LwcVersions.Lizmap_3_7)
+
+        found = False
+        for lwc_version, items in self.lwc_versions.items():
+            if found:
+                # Set some blue
+                for item in items:
+                    if isinstance(item, QWidget):
+                        item.setStyleSheet(NEW_FEATURE_CSS)
+                    elif isinstance(item, QStandardItem):
+                        # QComboBox
+                        brush = QBrush()
+                        # noinspection PyUnresolvedReferences
+                        brush.setStyle(Qt.BrushStyle.SolidPattern)
+                        brush.setColor(QColor(NEW_FEATURE_COLOR))
+                        item.setBackground(brush)
+            else:
+                # Remove some blue
+                for item in items:
+                    if isinstance(item, QWidget):
+                        item.setStyleSheet('')
+                    elif isinstance(item, QStandardItem):
+                        # QComboBox
+                        item.setBackground(QBrush())
+
+            if lwc_version == current_version:
+                found = True
+
+        # Change in all table manager too
+        for key in layers_table:
+            manager = layers_table[key].get('manager')
+            if manager:
+                manager.set_lwc_version(current_version)
+
+        # Compare the LWC version with the current QGIS Desktop version and the release JSON file
+        version_file = lizmap_user_folder().joinpath('released_versions.json')
+        if not version_file.exists():
+            return
+
+        with open(version_file, encoding='utf8') as json_file:
+            json_content = json.loads(json_file.read())
+
+        for lzm_version in json_content:
+            if lzm_version['branch'] != current_version.value:
+                continue
+
+            # TODO: check type of returned value (int)
+            qgis_min = lzm_version.get('qgis_min_version_recommended')
+            qgis_max = lzm_version.get('qgis_max_version_recommended')
+            if not (qgis_min or qgis_max):
+                break
+
+            if qgis_min <= Qgis.versionInt() < qgis_max:
+                self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
+            else:
+                self.dlg.qgis_and_lwc_versions_issue.setVisible(True)
 
 
 def configure_lwc_versions(dlg: "LizmapDialog") -> OrderedDict:

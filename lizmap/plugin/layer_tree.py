@@ -34,7 +34,7 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
 )
 
-from lizmap.definitions.definitions import (
+from ..definitions.definitions import (
     DURATION_WARNING_BAR,
     GroupNames,
     Html,
@@ -42,8 +42,7 @@ from lizmap.definitions.definitions import (
     LwcVersions,
     PredefinedGroup,
 )
-from lizmap.definitions.online_help import Panels
-
+from ..definitions.online_help import Panels
 from ..dialogs.main import LizmapDialog
 from ..toolbelt.convert import ambiguous_to_bool, as_boolean, cast_to_group, cast_to_layer
 from ..toolbelt.i18n import tr
@@ -64,6 +63,7 @@ if TYPE_CHECKING:
 from .. import logger
 from ..config import layerOptionDefinitions
 from .helpers import display_error, string_to_list
+from .lwc_versions import LwcVersionManager
 
 
 class LayerTreeManager:
@@ -74,16 +74,20 @@ class LayerTreeManager:
         dlg: "LizmapDialog",
         project: QgsProject,
         is_dev_version: bool,
-        lwc_version: LwcVersions,
+        lwc_version_mngr: LwcVersionManager,
         iface: "QgisInterface",
     ):
         self.dlg = dlg
         self.project = project
         self.is_dev_version = is_dev_version
-        self.lwc_version = lwc_version
+        self.lwc_version_mngr = lwc_version_mngr
         self.layerList = {}
         self.layer_options_list = layerOptionDefinitions
         self.iface = iface
+
+    @property
+    def lwc_version(self) -> LwcVersions:
+        return self.lwc_version_mngr.lwc_version
 
     def layers_config_file(self) -> Dict:
         """ Read the CFG file and returns the JSON content about 'layers'. """

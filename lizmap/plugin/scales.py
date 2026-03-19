@@ -11,6 +11,9 @@ from typing import (
 )
 
 from qgis.core import QgsCoordinateReferenceSystem
+from qgis.PyQt.QtGui import (
+    QPixmap,
+)
 from qgis.PyQt.QtWidgets import (
     QMessageBox,
 )
@@ -23,6 +26,7 @@ if TYPE_CHECKING:
 
 
 from .. import logger
+from .lwc_versions import LwcVersionManager
 
 
 class ScalesManager:
@@ -37,13 +41,37 @@ class ScalesManager:
         dlg: "LizmapDialog",
         global_options: dict,
         is_dev_version: bool,
-        lwc_version: LwcVersions,
+        lwc_version_mngr: LwcVersionManager,
     ):
         """Initialize the ScalesManager."""
         self.dlg = dlg
         self.global_options = global_options
         self.is_dev_version = is_dev_version
-        self.lwc_version = lwc_version
+        self.lwc_version_mngr = lwc_version_mngr
+
+    @property
+    def lwc_version(self) -> LwcVersions:
+        return self.lwc_version_mngr.lwc_version
+
+    # Init gui
+    def initialize(self):
+        self.dlg.scales_warning.set_text(tr(
+            "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
+        ))
+        self.dlg.scales_warning.setVisible(False)
+
+        # Scales
+        self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
+        self.dlg.min_scale_pic.setText('')
+        self.dlg.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
+        self.dlg.max_scale_pic.setText('')
+        ui_items = (
+            self.dlg.label_min_scale, self.dlg.label_max_scale,
+            self.dlg.min_scale_pic, self.dlg.max_scale_pic,
+            self.dlg.minimum_scale, self.dlg.maximum_scale,
+        )
+        for item in ui_items:
+            item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
 
     def map_scales(self) -> list:
         """ Whe writing CFG file, return the list of map scales. """

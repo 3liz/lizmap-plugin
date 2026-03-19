@@ -10,7 +10,14 @@ from functools import cached_property, partial
 from os.path import relpath
 from pathlib import Path
 from shutil import copyfile
-from typing import Dict, List, Optional, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    cast,
+)
 
 from pyplugin_installer.version_compare import compareVersions
 from qgis.core import (
@@ -37,13 +44,9 @@ from qgis.PyQt.QtCore import (
     QUrl,
 )
 from qgis.PyQt.QtGui import (
-    QBrush,
-    QColor,
     QDesktopServices,
     QGuiApplication,
     QIcon,
-    QPixmap,
-    QStandardItem,
     QTextCursor,
 )
 from qgis.PyQt.QtWidgets import (
@@ -54,7 +57,6 @@ from qgis.PyQt.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
-    QWidget,
 )
 from qgis.utils import OverrideCursor
 from qgis.utils import plugins as all_plugins
@@ -62,7 +64,6 @@ from qgis.utils import plugins as all_plugins
 from lizmap.config import LizmapConfig, MappingQgisGeometryType
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
-from lizmap.definitions.dataviz import DatavizDefinitions, Theme
 from lizmap.definitions.definitions import (
     DEV_VERSION_PREFIX,
     DURATION_MESSAGE_BAR,
@@ -111,10 +112,8 @@ from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.news import NewConfigDialog
 from lizmap.dialogs.server_wizard import CreateFolderWizard
 from lizmap.dialogs.wizard_group import WizardGroupDialog
-from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.forms.attribute_table_edition import AttributeTableEditionDialog
-from lizmap.forms.dataviz_edition import DatavizEditionDialog
 from lizmap.forms.edition_edition import EditionLayerDialog
 from lizmap.forms.filter_by_form_edition import FilterByFormEditionDialog
 from lizmap.forms.filter_by_login import FilterByLoginEditionDialog
@@ -146,7 +145,6 @@ from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legen
 )
 from lizmap.saas import check_project_ssl_postgis, is_lizmap_cloud
 from lizmap.table_manager.base import TableManager
-from lizmap.table_manager.dataviz import TableManagerDataviz
 from lizmap.table_manager.dxf_export import TableManagerDxfExport
 from lizmap.table_manager.layouts import TableManagerLayouts
 from lizmap.widgets.check_project import Check, SourceField
@@ -164,7 +162,7 @@ except ModuleNotFoundError:
 
 from qgis.core import QgsProjectServerValidator
 
-from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
+from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.server_dav import WebDav
 from lizmap.server_lwc import MAX_DAYS, ServerManager
 from lizmap.toolbelt.convert import ambiguous_to_bool, as_boolean
@@ -181,7 +179,6 @@ from lizmap.toolbelt.layer import (
     remove_all_ghost_layers,
 )
 from lizmap.toolbelt.lizmap import convert_lizmap_popup
-from lizmap.toolbelt.plugin import lizmap_user_folder
 from lizmap.toolbelt.resources import (
     load_icon,
     plugin_name,
@@ -197,13 +194,17 @@ from lizmap.toolbelt.version import (
 from lizmap.tooltip import Tooltip
 from lizmap.version_checker import VersionChecker
 
+from .dataviz import DatavizManager
 from .helpers import display_error
 from .layer_tree import LayerTreeManager
-from .lwc_versions import configure_lwc_versions
+from .lwc_versions import LwcVersionManager
 from .options import global_options, layer_options
 from .scales import ScalesManager
 from .settings import configure_qgis_settings
 from .training import TrainingManager
+
+if TYPE_CHECKING:
+    from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = 'https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json'
@@ -219,7 +220,7 @@ class Lizmap:
             dlg=self.dlg,
             global_options=self.global_options,
             is_dev_version=self.is_dev_version,
-            lwc_version=self.current_lwc_version(),
+            lwc_version_mngr=self.version_mngr,
         )
 
     @cached_property
@@ -236,13 +237,29 @@ class Lizmap:
             dlg=self.dlg,
             project=self.project,
             is_dev_version=self.is_dev_version,
-            lwc_version=self.current_lwc_version(),
+            lwc_version_mngr=self.version_mngr,
             iface=self.iface,
         )
 
     @property
     def layerList(self) -> Dict:
         return self.layer_tree_mngr.layerList
+
+    @cached_property
+    def dataviz_mngr(self) -> DatavizManager:
+        return DatavizManager(
+            dlg=self.dlg,
+            is_dev_version=self.is_dev_version,
+            lwc_version_mngr=self.version_mngr,
+        )
+
+    @property
+    def drag_drop_dataviz(self) -> "DragDropDatavizManager":
+        return cast("DragDropDatavizManager", self.dataviz_mngr.drag_drop_dataviz)
+
+    @property
+    def lwc_version(self) -> LwcVersions:
+        return self.version_mngr.lwc_version
 
     def __init__(self, iface: QgisInterface, lwc_version: LwcVersions = None):
         """Constructor of the Lizmap plugin."""
@@ -251,16 +268,11 @@ class Lizmap:
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
 
-        # Must only be used in tests
-        # In production, version is coming from the UI, according to the current server selected
-        # In production, this variable must be None
-        self._version = lwc_version
-
         # Configure QGIS settings
         configure_qgis_settings()
         # Connect the current project filepath
         self.current_path = None
-        # noinspection PyUnresolvedReferences
+
         self.project.fileNameChanged.connect(self.filename_changed)
         self.project.projectSaved.connect(self.project_saved)
         self.filename_changed()
@@ -281,7 +293,12 @@ class Lizmap:
         self.lizmap_config = lizmap_config
         self.version = version()
         self.is_dev_version = any(item in self.version for item in UNSTABLE_VERSION_PREFIX)
-        self.dlg = LizmapDialog(is_dev_version=self.is_dev_version, lwc_version=self._version)
+        self.dlg = LizmapDialog(is_dev_version=self.is_dev_version, lwc_version=lwc_version)
+
+        # Must only be used in tests
+        # In production, version is coming from the UI, according to the current server selected
+        # In production, this variable must be None
+        self.version_mngr = LwcVersionManager(self.dlg, lwc_version)
 
         self.webdav = WebDav()
         # Give the dialog only the first time
@@ -291,32 +308,7 @@ class Lizmap:
         self.dock_html_preview = None
         self.version_checker = None
         if self.is_dev_version:
-
-            # File handler for logging
-            temp_dir = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
-            if not temp_dir.exists():
-                temp_dir.mkdir()
-
-            if not as_boolean(os.getenv("CI")):
-                file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
-                file_handler.setLevel(logging.DEBUG)
-                formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-                file_handler.setFormatter(formatter)
-                add_logging_handler_once(LOGGER, file_handler)
-                LOGGER.debug(
-                    "The directory <a href='file://{0}'>{0}</a> is currently used for file logging.".format(temp_dir))
-
-            # All logs
-            def write_log_message(message, tag, level):
-                """ Write all tabs from QGIS to files. """
-                temp_dir_log = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
-                with open(temp_dir_log.joinpath("all.log"), 'a') as log_file:
-                    log_file.write('{tag}({level}): {message}'.format(tag=tag, level=level, message=message))
-
-            QgsApplication.messageLog().messageReceived.connect(write_log_message)
-
-            self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
-                self.version, current_git_hash(), next_git_tag()))
+            self.configure_dev_version()
 
         # Make the IGN french orthophoto visible only for dev or for French language user
         # locale can be "fr" or "fr_FR"
@@ -333,7 +325,6 @@ class Lizmap:
 
         # Manage LWC versions combo
         self.dlg.label_lwc_version.setStyleSheet(NEW_FEATURE_CSS)
-        self.lwc_versions = configure_lwc_versions(self.dlg)
 
         self.lizmap_cloud = [
             self.dlg.label_lizmap_search_grant,
@@ -353,23 +344,8 @@ class Lizmap:
         # Initialize layer tree
         self.layer_tree_mngr.initialize()
 
-        self.dlg.scales_warning.set_text(tr(
-            "The map is in EPSG:3857 (Google Mercator), only the minimum and maximum scales will be used for the map."
-        ))
-        self.dlg.scales_warning.setVisible(False)
-
-        # Scales
-        self.dlg.min_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomOut.svg"))
-        self.dlg.min_scale_pic.setText('')
-        self.dlg.max_scale_pic.setPixmap(QPixmap(":images/themes/default/mActionZoomIn.svg"))
-        self.dlg.max_scale_pic.setText('')
-        ui_items = (
-            self.dlg.label_min_scale, self.dlg.label_max_scale,
-            self.dlg.min_scale_pic, self.dlg.max_scale_pic,
-            self.dlg.minimum_scale, self.dlg.maximum_scale,
-        )
-        for item in ui_items:
-            item.setToolTip(tr("The minimum and maximum scales are defined by your minimum and maximum values above."))
+        # Initialize scales UI
+        self.scale_mngr.initialize()
 
         remove_buttons = (
             self.dlg.button_remove_qgs,
@@ -683,10 +659,40 @@ class Lizmap:
         self.dlg.button_quick_start.clicked.connect(self.dlg.open_lizmap_how_to)
         self.dlg.workshop_edition.clicked.connect(self.dlg.open_workshop_edition)
 
-        self.drag_drop_dataviz = None
         self.action = None
         self.help_action = None
         self.help_action_cloud = None
+
+    def configure_dev_version(self):
+        # File handler for logging
+        temp_dir = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
+        if not temp_dir.exists():
+            temp_dir.mkdir()
+
+        if not as_boolean(os.getenv("CI")):
+            file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
+            file_handler.setLevel(logging.DEBUG)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            file_handler.setFormatter(formatter)
+            add_logging_handler_once(LOGGER, file_handler)
+            LOGGER.debug(
+                f"The directory <a href='file://{temp_dir}'>{temp_dir}</a> "
+                "is currently used for file logging."
+            )
+
+        # All logs
+        def write_log_message(message, tag, level):
+            """ Write all tabs from QGIS to files. """
+            temp_dir_log = Path(tempfile.gettempdir()).joinpath('QGIS_Lizmap')
+            with open(temp_dir_log.joinpath("all.log"), 'a') as log_file:
+                log_file.write(
+                    '{tag}({level}): {message}'.format(tag=tag, level=level, message=message)
+                )
+
+        QgsApplication.messageLog().messageReceived.connect(write_log_message)
+
+        self.dlg.setWindowTitle('Lizmap branch {}, commit {}, next {}'.format(
+            self.version, current_git_hash(), next_git_tag()))
 
     def project_saved(self):
         """ When the project is saved. """
@@ -776,18 +782,6 @@ class Lizmap:
         except OSError:
             return 'repository'
 
-    def current_lwc_version(self) -> LwcVersions:
-        """ Return the current selected LWC version from the server. """
-        if self._version:
-            # For tests, return the version given in the constructor
-            return self._version
-
-        version = self.dlg.current_lwc_version()
-        if version is None:
-            # Fallback to latest version if no server is configured
-            return LwcVersions.latest()
-        return version
-
     def target_server_changed(self):
         """ When the server destination has changed in the selector. """
         current_authid = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
@@ -806,7 +800,7 @@ class Lizmap:
             # FIXME: handle 'None' value
             self.dlg.refresh_helper_target_version(current_version)
 
-        current_version = self.current_lwc_version()
+        current_version = self.lwc_version
         old_version = QgsSettings().value('lizmap/lizmap_web_client_version', type=str)
         if current_version != old_version:
             self.lwc_version_changed()
@@ -864,87 +858,12 @@ class Lizmap:
             self.layers_table['datavizLayers'].get('manager').preview_dataviz_dialog()
 
     def lwc_version_changed(self):
-        """ When the version has changed in the selector, we update features with the blue background. """
-        # self.check_webdav()
-        current_version = self.current_lwc_version()
-        if not current_version:
-            LOGGER.info("No LWC version currently defined in the combobox, skipping LWC target version changed.")
-            self.dlg.refresh_helper_target_version(None)
-            return
-
-        LOGGER.debug("Saving new value about the LWC target version : {}".format(current_version.value))
-        QgsSettings().setValue('lizmap/lizmap_web_client_version', str(current_version.value))
-
-        self.dlg.refresh_helper_target_version(current_version)
-
-        # New print panel
-        # The checkbox is removed since LWC 3.7.0
-        self.dlg.cbActivatePrint.setVisible(current_version <= LwcVersions.Lizmap_3_6)
-        self.dlg.cbActivatePrint.setEnabled(current_version <= LwcVersions.Lizmap_3_6)
-
-        # The checkbox is removed since LWC 3.8.0
-        self.dlg.cbActivateZoomHistory.setVisible(current_version <= LwcVersions.Lizmap_3_7)
-        self.dlg.cbActivateZoomHistory.setEnabled(current_version <= LwcVersions.Lizmap_3_7)
-
-        found = False
-        for lwc_version, items in self.lwc_versions.items():
-            if found:
-                # Set some blue
-                for item in items:
-                    if isinstance(item, QWidget):
-                        item.setStyleSheet(NEW_FEATURE_CSS)
-                    elif isinstance(item, QStandardItem):
-                        # QComboBox
-                        brush = QBrush()
-                        # noinspection PyUnresolvedReferences
-                        brush.setStyle(Qt.BrushStyle.SolidPattern)
-                        brush.setColor(QColor(NEW_FEATURE_COLOR))
-                        item.setBackground(brush)
-            else:
-                # Remove some blue
-                for item in items:
-                    if isinstance(item, QWidget):
-                        item.setStyleSheet('')
-                    elif isinstance(item, QStandardItem):
-                        # QComboBox
-                        item.setBackground(QBrush())
-
-            if lwc_version == current_version:
-                found = True
-
-        # Change in all table manager too
-        for key in self.layers_table:
-            manager = self.layers_table[key].get('manager')
-            if manager:
-                manager.set_lwc_version(current_version)
-
-        # Compare the LWC version with the current QGIS Desktop version and the release JSON file
-        version_file = lizmap_user_folder().joinpath('released_versions.json')
-        if not version_file.exists():
-            return
-
-        with open(version_file, encoding='utf8') as json_file:
-            json_content = json.loads(json_file.read())
-
-        for lzm_version in json_content:
-            if lzm_version['branch'] != current_version.value:
-                continue
-
-            # TODO: check type of returned value (int)
-            qgis_min = lzm_version.get('qgis_min_version_recommended')
-            qgis_max = lzm_version.get('qgis_max_version_recommended')
-            if not (qgis_min or qgis_max):
-                break
-
-            if qgis_min <= Qgis.versionInt() < qgis_max:
-                self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
-            else:
-                self.dlg.qgis_and_lwc_versions_issue.setVisible(True)
+        self.version_mngr.lwc_version_changed(self.layers_table)
 
     def check_webdav(self):
         """ Check if we can enable or the webdav, according to the current selected server. """
         # I hope temporary, to force the version displayed
-        self.dlg.refresh_helper_target_version(self.current_lwc_version())
+        self.dlg.refresh_helper_target_version(self.lwc_version)
 
         def disable_upload_panel():
             self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(True)
@@ -952,18 +871,12 @@ class Lizmap:
                 self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
 
         if not self.webdav:
-            # QGIS <= 3.22
-            # self.dlg.group_upload.setVisible(False)
-            # self.dlg.send_webdav.setChecked(False)
-            # self.dlg.send_webdav.setEnabled(False)
-            # self.dlg.send_webdav.setVisible(False)
             self.dlg.webdav_frame.setVisible(False)
             self.dlg.button_upload_thumbnail.setVisible(False)
             self.dlg.button_upload_action.setVisible(False)
             self.dlg.button_upload_media.setVisible(False)
             self.dlg.button_create_media_remote.setVisible(False)
             disable_upload_panel()
-            # LOGGER.critical("RETURN 1")
             return
 
         self.webdav.config_project()
@@ -1081,12 +994,8 @@ class Lizmap:
         # initial extent
         self.dlg.btSetExtentFromProject.clicked.connect(self.set_initial_extent_from_project)
         self.dlg.btSetExtentFromProject.setIcon(QIcon(":images/themes/default/propertyicons/overlay.svg"))
-
         # Dataviz options
-        for item in Theme:
-            self.global_options['theme']['widget'].addItem(item.value["label"], item.value["data"])
-        index = self.global_options['theme']['widget'].findData(Theme.Light.value["data"])
-        self.global_options['theme']['widget'].setCurrentIndex(index)
+        self.dataviz_mngr.set_options(self.global_options)
 
         # Manage "delete line" button
         for key, item in self.layers_table.items():
@@ -1152,65 +1061,13 @@ class Lizmap:
                     self.dlg.checkbox_dxf_export_enabled.toggled.connect(on_dxf_export_toggled)
                     continue
 
-                if key == 'atlas':
-                    definition = AtlasDefinitions()
-                    dialog = AtlasEditionDialog
-                elif key == 'attributeLayers':
-                    definition = AttributeTableDefinitions()
-                    dialog = AttributeTableEditionDialog
-                elif key == 'editionLayers':
-                    definition = EditionDefinitions()
-                    dialog = EditionLayerDialog
-                elif key == 'datavizLayers':
-                    definition = DatavizDefinitions()
-                    dialog = DatavizEditionDialog
-                elif key == 'layouts':
-                    definition = LayoutsDefinitions()
-                    dialog = LayoutEditionDialog
-                elif key == 'locateByLayer':
-                    definition = LocateByLayerDefinitions()
-                    dialog = LocateLayerEditionDialog
-                elif key == 'loginFilteredLayers':
-                    definition = FilterByLoginDefinitions()
-                    dialog = FilterByLoginEditionDialog
-                elif key == 'timemanagerLayers':
-                    definition = TimeManagerDefinitions()
-                    dialog = TimeManagerEditionDialog
-                elif key == 'tooltipLayers':
-                    definition = ToolTipDefinitions()
-                    dialog = ToolTipEditionDialog
-                elif key == 'formFilterLayers':
-                    definition = FilterByFormDefinitions()
-                    dialog = FilterByFormEditionDialog
-                elif key == 'filter_by_polygon':
-                    definition = FilterByPolygonDefinitions()
-                    dialog = FilterByPolygonEditionDialog
-                else:
-                    raise Exception('Unknown panel.')
-
                 item['tableWidget'].horizontalHeader().setStretchLastSection(True)
 
                 if key == 'datavizLayers':
-                    # noinspection PyTypeChecker
-                    item['manager'] = TableManagerDataviz(
-                        self.dlg,
-                        definition,
-                        dialog,
-                        item['tableWidget'],
-                        item['editButton'],
-                        item.get('upButton'),
-                        item.get('downButton'),
-                    )
-                    # The drag&drop dataviz HTML layout
-                    self.drag_drop_dataviz = DragDropDatavizManager(
-                        self.dlg,
-                        definition,
-                        item['tableWidget'],
-                        self.dlg.tree_dd_plots,
-                        self.dlg.combo_plots,
-                    )
-                elif key == 'layouts':
-                    # noinspection PyTypeChecker
+                    self.dataviz_mngr.init_gui(item)
+                if key == 'layouts':
+                    definition = LayoutsDefinitions()
+                    dialog = LayoutEditionDialog
                     item['manager'] = TableManagerLayouts(
                         self.dlg,
                         definition,
@@ -1221,7 +1078,36 @@ class Lizmap:
                         item.get('downButton'),
                     )
                 else:
-                    # noinspection PyTypeChecker
+                    if key == 'atlas':
+                        definition = AtlasDefinitions()
+                        dialog = AtlasEditionDialog
+                    elif key == 'attributeLayers':
+                        definition = AttributeTableDefinitions()
+                        dialog = AttributeTableEditionDialog
+                    elif key == 'editionLayers':
+                        definition = EditionDefinitions()
+                        dialog = EditionLayerDialog
+                    elif key == 'locateByLayer':
+                        definition = LocateByLayerDefinitions()
+                        dialog = LocateLayerEditionDialog
+                    elif key == 'loginFilteredLayers':
+                        definition = FilterByLoginDefinitions()
+                        dialog = FilterByLoginEditionDialog
+                    elif key == 'timemanagerLayers':
+                        definition = TimeManagerDefinitions()
+                        dialog = TimeManagerEditionDialog
+                    elif key == 'tooltipLayers':
+                        definition = ToolTipDefinitions()
+                        dialog = ToolTipEditionDialog
+                    elif key == 'formFilterLayers':
+                        definition = FilterByFormDefinitions()
+                        dialog = FilterByFormEditionDialog
+                    elif key == 'filter_by_polygon':
+                        definition = FilterByPolygonDefinitions()
+                        dialog = FilterByPolygonEditionDialog
+                    else:
+                        raise Exception('Unknown panel.')
+
                     item['manager'] = TableManager(
                         self.dlg,
                         definition,
@@ -1257,29 +1143,6 @@ class Lizmap:
 
         self.project.layersAdded.connect(self.new_added_layers)
         self.project.layerTreeRoot().nameChanged.connect(self.layer_renamed)
-
-        # Dataviz
-        self.dlg.button_add_dd_dataviz.setText('')
-        # noinspection PyCallByClass,PyArgumentList
-        self.dlg.button_add_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-        self.dlg.button_add_dd_dataviz.setToolTip(tr('Add a new container in the layout'))
-        self.dlg.button_add_dd_dataviz.clicked.connect(self.drag_drop_dataviz.add_container)
-
-        self.dlg.button_remove_dd_dataviz.setText('')
-        # noinspection PyCallByClass,PyArgumentList
-        self.dlg.button_remove_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
-        self.dlg.button_remove_dd_dataviz.setToolTip(tr('Remove a container or a plot from the layout'))
-        self.dlg.button_remove_dd_dataviz.clicked.connect(self.drag_drop_dataviz.remove_item)
-
-        self.dlg.button_add_plot.setText('')
-        self.dlg.button_add_plot.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-        self.dlg.button_add_plot.setToolTip(tr('Add the plot in the layout'))
-        self.dlg.button_add_plot.clicked.connect(self.drag_drop_dataviz.add_current_plot_from_combo)
-
-        self.dlg.button_edit_dd_dataviz.setText('')
-        self.dlg.button_edit_dd_dataviz.setIcon(QIcon(QgsApplication.iconPath('symbologyEdit.svg')))
-        self.dlg.button_edit_dd_dataviz.setToolTip(tr('Edit the selected container/group'))
-        self.dlg.button_edit_dd_dataviz.clicked.connect(self.drag_drop_dataviz.edit_row_container)
 
         # Layouts
         # Not connecting the "layoutAdded" signal, it's done when opening the Lizmap plugin
@@ -1557,7 +1420,6 @@ class Lizmap:
             with open(json_file, encoding='utf-8') as f:
                 json_file_reader = f.read()
 
-            # noinspection PyBroadException
             try:
                 sjson = json.loads(json_file_reader)
                 json_options = sjson['options']
@@ -1590,12 +1452,7 @@ class Lizmap:
                                 manager.from_json(data)
 
                         if key == 'datavizLayers':
-                            # The drag&drop dataviz HTML layout
-                            # First load plots into the combobox, because the main dataviz table has been loaded a few
-                            # lines before
-                            self.drag_drop_dataviz.load_dataviz_list_from_main_table()
-                            # Then populate the tree. Icons and titles will use the combobox.
-                            self.drag_drop_dataviz.load_tree_from_cfg(sjson['options'].get('dataviz_drag_drop', []))
+                            self.dataviz_mngr.read_cfg(sjson)
 
             except Exception as e:
                 if self.is_dev_version:
@@ -2106,7 +1963,7 @@ class Lizmap:
         relation_manager = self.project.relationManager()
         html_content = Tooltip.create_popup_node_item_from_form(
             layer, root, 0, [], '', relation_manager,
-            bootstrap_5=self.current_lwc_version() >= LwcVersions.Lizmap_3_9,
+            bootstrap_5=self.lwc_version >= LwcVersions.Lizmap_3_9,
         )
         html_content = Tooltip.create_popup(html_content)
 
@@ -2158,7 +2015,7 @@ class Lizmap:
 
     def check_project_clicked(self):
         """ Launch the check on the current project. """
-        lwc_version = self.current_lwc_version()
+        lwc_version = self.lwc_version
         # Let's trigger UI refresh according to latest releases, if it wasn't available on startup
         self.lwc_version_changed()
         with OverrideCursor(Qt.CursorShape.WaitCursor):
@@ -3447,7 +3304,7 @@ class Lizmap:
         self.project.setCustomVariables(variables)
 
         if not lwc_version:
-            lwc_version = self.current_lwc_version()
+            lwc_version = self.lwc_version
             # Let's trigger UI refresh according to latest releases, if it wasn't available on startup
             self.lwc_version_changed()
 
@@ -3466,7 +3323,7 @@ class Lizmap:
                 self.project.layerTreeRoot(),
                 GroupNames.BaseLayers,
             )
-            if qgis_group and self.current_lwc_version() >= LwcVersions.Lizmap_3_7:
+            if qgis_group and self.lwc_version >= LwcVersions.Lizmap_3_7:
                 self.disable_legacy_empty_base_layer()
 
         if self.version_checker:
@@ -4015,7 +3872,7 @@ class Lizmap:
         self.check_training_panel()
         # Do NOT CALL target_server_changed
         # self.target_server_changed()
-        current_version = self.current_lwc_version()
+        current_version = self.lwc_version
         self.dlg.refresh_helper_target_version(current_version)
         self.lwc_version_changed()
 
@@ -4029,7 +3886,7 @@ class Lizmap:
             if item.isChecked():
                 visible = True
 
-        current_version = self.current_lwc_version()
+        current_version = self.lwc_version
         if not current_version:
             # No server yet
             return
