@@ -27,7 +27,7 @@ def teardown(data: Path) -> None:
 
 
 class TestUiLizmapDialog(TestCase):
-    def test_ui(self, data: Path):
+    def test_ui_base(self, data: Path):
         """Test opening the Lizmap dialog with some basic checks."""
         project = QgsProject.instance()
         project.clear()
@@ -65,23 +65,21 @@ class TestUiLizmapDialog(TestCase):
         config = lizmap.read_cfg_file(skip_tables=True)
         print("\n::test_legend_options::config", config)
 
-        lizmap.myDic = {}
-        lizmap.process_node(project.layerTreeRoot(), None, config)
-        lizmap.layerList = lizmap.myDic
+        lizmap.process_node(lizmap.layerList, project.layerTreeRoot(), None, config)
 
         self.assertEqual("5000", lizmap.dlg.minimum_scale.text())
         self.assertEqual("500000", lizmap.dlg.maximum_scale.text())
         self.assertEqual("5000, 250000, 500000", lizmap.dlg.list_map_scales.text())
 
-        self.assertEqual("disabled", lizmap.myDic.get("legend_disabled_layer_id").get("legend_image_option"))
+        self.assertEqual("disabled", lizmap.layerList.get("legend_disabled_layer_id").get("legend_image_option"))
 
         self.assertEqual(
             "expand_at_startup",
-            lizmap.myDic.get("legend_displayed_startup_layer_id").get("legend_image_option"),
+            lizmap.layerList.get("legend_displayed_startup_layer_id").get("legend_image_option"),
         )
 
         self.assertEqual(
-            "hide_at_startup", lizmap.myDic.get("legend_hidden_startup_layer_id").get("legend_image_option")
+            "hide_at_startup", lizmap.layerList.get("legend_hidden_startup_layer_id").get("legend_image_option")
         )
 
         # For LWC 3.6
@@ -145,9 +143,7 @@ class TestUiLizmapDialog(TestCase):
         self.assertDictEqual({}, config)
 
         # Some process
-        lizmap.myDic = {}
-        lizmap.process_node(project.layerTreeRoot(), None, {})
-        lizmap.layerList = lizmap.myDic
+        lizmap.process_node(lizmap.layerList, project.layerTreeRoot(), None, {})
 
         return lizmap
 

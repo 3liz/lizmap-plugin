@@ -147,8 +147,8 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
             return tr('Start attribute is mandatory.')
 
         msg = tr('The min/max values must be computed.')
-        if self.edit_min_value.isVisible():
-            if self.edit_min_value.text() == '' or self.edit_max_value.text() == '':
-                return msg
+        if self.edit_min_value.isVisible() \
+            and (self.edit_min_value.text() == '' or self.edit_max_value.text() == ''):
+            return msg
 
         return None

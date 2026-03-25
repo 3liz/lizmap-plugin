@@ -90,15 +90,12 @@ ignore = [
     "ANN401", # Dynamically typed expressions (Any)
     "COM812",
     "SIM108",  # Use of ternary operator
-    "SIM102",  # Use a single if
     # TODO: Temporary ignore linter errors until
     # they are fixed
     "T201",
-    "E20",     # Whitespace before/after element
     "E501",    # Line too long
     "RUF012",  # Mutable class attributes should be annotated
     "RUF067",  # `__init__` module should only contain docstrings and re-exports
-    "C4",
 ]
 allowed-confusables = ["’"]  # Used in parsing methods
 

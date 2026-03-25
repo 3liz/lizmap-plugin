@@ -61,15 +61,14 @@ class Tooltip:
         a = ''
         h = ''
 
-        if isinstance(node, QgsAttributeEditorElement):
-            # for text widgets
-            # TODO Qgis.versionInt() 3.32 change to "Qgis.AttributeEditorType.TextElement"
-            if node.type() == 6:
-                label = node.name()
-                expression = node.toDomElement(QDomDocument()).text()
+        # for text widgets
+        # TODO Qgis.versionInt() 3.32 change to "Qgis.AttributeEditorType.TextElement"
+        if isinstance(node, QgsAttributeEditorElement) and node.type() == 6:
+            label = node.name()
+            expression = node.toDomElement(QDomDocument()).text()
 
-                a += '\n' + SPACES * level
-                a += Tooltip._generate_text_label(label, expression)
+            a += '\n' + SPACES * level
+            a += Tooltip._generate_text_label(label, expression)
 
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:
@@ -306,7 +305,7 @@ class Tooltip:
             return value.replace("'", "’")
 
         if isinstance(widget_config['map'], list):
-            values = dict()
+            values = {}
             for row in widget_config['map']:
                 if '<NULL>' not in list(row.keys()):
                     reverted = {escape_value(y): escape_value(x) for x, y in row.items()}

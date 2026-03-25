@@ -22,7 +22,7 @@ changelog=changelog
 # End of qgis-plugin-ci
 
 icon=resources/icons/icon.png
-experimental=False
+experimental=True
 deprecated=False
 server=False
 supportsQt6=true

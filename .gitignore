@@ -50,3 +50,5 @@ tests/data/shortnames.qgs.cfg
 tests/credentials.py
 **/symbology-style.db
 **/*.qgs.bak
+
+lizmap/plugin_refactoring

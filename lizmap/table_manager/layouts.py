@@ -97,7 +97,7 @@ class TableManagerLayouts(TableManager):
             self.table.setRowCount(row + 1)
 
             # We create the empty structure
-            json = dict()
+            json = {}
 
             # We fill with the layout name
             json['layout'] = layout.name()
