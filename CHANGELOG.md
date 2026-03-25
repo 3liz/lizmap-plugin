@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## 5.0.0-beta.1 - 2026-03-25
+
+* Fix: A vector layer can be spatial but having symbology disabled
+* Fix: Project checker - non int4 pkey: Raise warning only for PostgreSQL layers
+* Increase maximum value from 999 to 9999 for the popup maximum features
+* Clean deprecation warnings about layer server properties
+* Clean deprecation warnings about QgsField constructor
+* Replace `Qgis.QGIS_VERSION_INT` by `Qgis.versionInt()`
+* Fix: print template order not persisted on reload
+* Fix: Make filter form title field mandatory
+* Feature: Tooltip - Add LWC 3.10 new feature 'Display layer features with QGIS symbology'
+* Fix: Remember layer group collapsed/expanded state per project
+* Fix: missing type annotations on parent_item parameters
+* Change hash function from MD5 to SHA256
+* Feature: add snap_on_start checkbox for edition layers 
+
 ## 5.0.0-alpha.2 - 2026-02-11
 
 * Fix typo in metadata key for LWC version detection
