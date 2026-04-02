@@ -1,7 +1,6 @@
 [general]
 name=Lizmap
 qgisMinimumVersion=3.34
-qgisMaximumVersion=3.99
 author=3Liz
 email=info@3liz.com
 description=Publish and share your QGIS maps on the Web via Lizmap Web Client, by 3liz.com

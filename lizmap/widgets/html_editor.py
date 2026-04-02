@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import re
 
@@ -11,9 +10,10 @@ from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QWidget
 
-from lizmap.toolbelt.convert import as_boolean
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import load_ui, resources_path
+from .. import logger
+from ..toolbelt.convert import as_boolean
+from ..toolbelt.i18n import tr
+from ..toolbelt.resources import load_ui, resources_path
 
 WEBKIT_AVAILABLE = False
 try:
@@ -43,7 +43,6 @@ if as_boolean(os.getenv("CI")):
 
 FORM_CLASS = load_ui('ui_html_editor.ui')
 
-LOGGER = logging.getLogger('Lizmap')
 
 # RegEx defined in QgsExpression.replaceExpressionText
 # This function replaces each expression between [% and %] in the string
@@ -78,7 +77,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             self.web_view = QWebView()
         else:
             self.web_view = QgsCodeEditorHTML()
-            LOGGER.warning(
+            logger.warning(
                 "WebKit is not available, falling back on the QGIS native plain HTML editor. Please upgrade your "
                 "set-up to have WebKit installed."
             )
@@ -150,7 +149,7 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
 
     def _insert_qgis_expression(self, text: str):
         """ Insert text at the current cursor position. """
-        LOGGER.debug("Adding expression '{}' in the HTML".format(text))
+        logger.debug("Adding expression '{}' in the HTML".format(text))
         self.insert_text('[% {} %]'.format(text))
 
     def insert_text(self, text: str):

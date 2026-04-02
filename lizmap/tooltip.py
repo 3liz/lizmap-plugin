@@ -5,7 +5,6 @@
 # Desktop lizmap/tooltip.py
 # Server lizmap_server/tooltip.py
 
-import logging
 import re
 
 from textwrap import dedent
@@ -24,7 +23,8 @@ from qgis.core import (
 from qgis.gui import QgsExternalResourceWidget
 from qgis.PyQt.QtXml import QDomDocument
 
-LOGGER = logging.getLogger('Lizmap')
+from . import logger
+
 SPACES = '  '
 
 
@@ -73,7 +73,7 @@ class Tooltip:
         if isinstance(node, QgsAttributeEditorField):
             if node.idx() < 0:
                 # The form might have been imported from QML with some not existing fields
-                LOGGER.warning(
+                logger.warning(
                     f'Layer {layer.id()} does not have a valid editor field')
                 return html
 
@@ -102,7 +102,7 @@ class Tooltip:
             if widget_type == 'ValueRelation':
                 if not QgsProject.instance().mapLayer(widget_config['Layer']):
                     # Issue #287
-                    LOGGER.warning(
+                    logger.warning(
                         'Layer {} does not have a valid value relation layer for field {}'.format(
                             layer.id(), fname))
                     return html
@@ -115,7 +115,7 @@ class Tooltip:
 
                 if not referenced_layer:
                     # Issue #287
-                    LOGGER.warning(
+                    logger.warning(
                         'Layer {} does not have a valid relation reference layer for field {}'.format(
                             layer.id(), fname))
                     return html
@@ -140,7 +140,7 @@ class Tooltip:
                     node.label(), relation.id(), relation.referencingLayerId())
             else:
                 # Ticket https://github.com/3liz/qgis-lizmap-server-plugin/issues/82
-                LOGGER.warning(
+                logger.warning(
                     f"The node '{node.name()}::{node.label()}' cannot be processed for the tooltip "
                     f"because the relation has not been found.")
 

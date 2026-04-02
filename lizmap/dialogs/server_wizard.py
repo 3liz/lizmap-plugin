@@ -1,6 +1,5 @@
 import configparser
 import json
-import logging
 import sys
 
 from base64 import b64encode
@@ -44,21 +43,20 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
-from lizmap.definitions.definitions import UNSTABLE_VERSION_PREFIX
-from lizmap.definitions.online_help import online_lwc_help
-from lizmap.definitions.qgis_settings import Settings
-from lizmap.logger import log_function
-from lizmap.saas import is_lizmap_cloud, webdav_properties
-from lizmap.server_dav import WebDav
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
-from lizmap.toolbelt.version import version
+from .. import logger
+from ..definitions.definitions import UNSTABLE_VERSION_PREFIX
+from ..definitions.online_help import online_lwc_help
+from ..definitions.qgis_settings import Settings
+from ..saas import is_lizmap_cloud, webdav_properties
+from ..server_dav import WebDav
+from ..toolbelt.i18n import tr
+from ..toolbelt.plugin import lizmap_user_folder, user_settings
+from ..toolbelt.version import version
 
 if TYPE_CHECKING:
     from qgis.PyQt.QtWidgets import QWidget
 
 
-LOGGER = logging.getLogger('Lizmap')
 THUMBS = " 👍"
 DEBUG = True
 
@@ -338,10 +336,10 @@ class MasterPasswordPage(QWizardPage):
         layout.addWidget(label_warning)
 
         if QgsApplication.authManager().masterPasswordIsSet():
-            LOGGER.debug("Master password is set : False")
+            logger.debug("Master password is set : False")
             label_warning.setVisible(False)
         else:
-            LOGGER.debug("Master password is set : True")
+            logger.debug("Master password is set : True")
             label_warning.setVisible(True)
 
         self.result_master_password = QLabel()
@@ -349,17 +347,17 @@ class MasterPasswordPage(QWizardPage):
         # noinspection PyArgumentList
         layout.addWidget(self.result_master_password)
 
-    @log_function
+    @logger.log_function
     def nextId(self) -> int:
         """ Next page, according to lizmap.com hosting. """
         # Temporary disable the PG page
         # parent_wizard: ServerWizard = self.wizard()
         # if parent_wizard.is_lizmap_cloud:
-        #     LOGGER.debug("After saving the auth ID, go the PostgreSQL page.")
+        #     logger.debug("After saving the auth ID, go the PostgreSQL page.")
         #     return WizardPages.AddOrNotPostgresqlPage
 
         # Finished
-        LOGGER.debug("After saving the auth ID, it's finished")
+        logger.debug("After saving the auth ID, it's finished")
         return -1
 
 
@@ -369,7 +367,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
 
     def __init__(self, parent: Optional["QWidget"] = None):
         super().__init__(parent)
-        LOGGER.debug("Page : Add the PostgreSQL connection delivered with Lizmap")
+        logger.debug("Page : Add the PostgreSQL connection delivered with Lizmap")
         self.setTitle(tr("PostgreSQL"))
 
         layout = QVBoxLayout()
@@ -399,12 +397,12 @@ class AddOrNotPostgresqlPage(QWizardPage):
 
     # def isComplete(self) -> bool:
     #     """ Form validation before the next step. """
-    #     LOGGER.debug("Calling AddOrNotPGPage::isComplete")
+    #     logger.debug("Calling AddOrNotPGPage::isComplete")
     #     if self.field("postgresql_yes"):
     #         # Add PG
     #         # self.wizard().button(QWizard.NextButton).setVisible(True)
     #         self.setFinalPage(False)
-    #         LOGGER.debug("Enf of function isComplete, returning True to PG page")
+    #         logger.debug("Enf of function isComplete, returning True to PG page")
     #         self.completeChanged.emit()
     #         return True
     #
@@ -414,7 +412,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
     #         # No webdav module
     #         self.setFinalPage(True)
     #         # self.wizard().button(QWizard.NextButton).setVisible(False)
-    #         LOGGER.debug("Enf of function isComplete, returning True, no dav")
+    #         logger.debug("Enf of function isComplete, returning True, no dav")
     #         self.completeChanged.emit()
     #         return True
     #
@@ -422,21 +420,21 @@ class AddOrNotPostgresqlPage(QWizardPage):
     #         # Already has some repository, we do not suggest a new one
     #         self.setFinalPage(True)
     #         # self.wizard().button(QWizard.NextButton).setVisible(False)
-    #         LOGGER.debug("Enf of function isComplete, returning True, already repositories")
+    #         logger.debug("Enf of function isComplete, returning True, already repositories")
     #         self.completeChanged.emit()
     #         return True
     #
     #     # Webdav repository
     #     self.setFinalPage(False)
     #     # self.wizard().button(QWizard.NextButton).setVisible(True)
-    #     LOGGER.debug("Enf of function isComplete, returning True to add webdav directory")
+    #     logger.debug("Enf of function isComplete, returning True to add webdav directory")
     #     self.completeChanged.emit()
     #     return True
 
-    @log_function
+    @logger.log_function
     def nextId(self) -> int:
         """ Next step. """
-        LOGGER.debug("Calling AddOrNotPGPage::nextId")
+        logger.debug("Calling AddOrNotPGPage::nextId")
         if self.field("postgresql_yes"):
             return WizardPages.PostgresqlPage
 
@@ -692,7 +690,7 @@ class CreateNewFolderDavPage(QWizardPage):
         dav_url = parent_wizard.dav_url
         auth_id = parent_wizard.auth_id
 
-        LOGGER.debug("Creating a folder called '{}' on {}".format(self.custom_name.text(), dav_url))
+        logger.debug("Creating a folder called '{}' on {}".format(self.custom_name.text(), dav_url))
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             server_dav = WebDav(dav_url, auth_id)
             if parent_wizard._user:
@@ -876,7 +874,7 @@ class ServerWizard(BaseWizard):
         self.setPage(WizardPages.CreateNewFolderDav, CreateNewFolderDavPage())
         self.setPage(WizardPages.LizmapNewRepository, LizmapNewRepositoryPage())
 
-    @log_function
+    @logger.log_function
     def validateCurrentPage(self):
         """Specific rules for page validation. """
         if self.currentId() == WizardPages.LoginPasswordPage:
@@ -917,9 +915,9 @@ class ServerWizard(BaseWizard):
             return False
 
         if self.currentId() == WizardPages.MasterPasswordPage:
-            LOGGER.debug("Validate current page, going to save the auth")
+            logger.debug("Validate current page, going to save the auth")
             result = self.save_auth_id()
-            LOGGER.debug("Saving to the authentication database is : {} valid".format("" if result else "not"))
+            logger.debug("Saving to the authentication database is : {} valid".format("" if result else "not"))
             return result
 
         if self.currentId() == WizardPages.PostgresqlPage:
@@ -949,14 +947,14 @@ class ServerWizard(BaseWizard):
         """ Cleaned input login. """
         return self.clean_data(self.field("login"))
 
-    @log_function
+    @logger.log_function
     def save_auth_id(self) -> bool:
         """ Save login and password in the QGIS password manager.
 
         Only if it's a new server, it will be saved in the JSON file.
         """
         if self.page(WizardPages.LoginPasswordPage).auth_widget.configId() != "":
-            LOGGER.info("The user is advanced, he used an existing auth, skip saving.")
+            logger.info("The user is advanced, he used an existing auth, skip saving.")
             self.auth_id = self.page(WizardPages.LoginPasswordPage).auth_widget.configId()
             self.save_json_server()
             return True
@@ -976,7 +974,7 @@ class ServerWizard(BaseWizard):
         # noinspection PyArgumentList,PyUnresolvedReferences
         config.setConfig('realm', QUrl(url).host())
         if self.auth_id:
-            LOGGER.debug("Edit current information authentication ID : {}".format(self.auth_id))
+            logger.debug("Edit current information authentication ID : {}".format(self.auth_id))
             # Edit
             config.setId(self.auth_id)
             result = auth_manager.storeAuthenticationConfig(config, True)
@@ -984,27 +982,27 @@ class ServerWizard(BaseWizard):
         else:
             # Creation
             self.auth_id = auth_manager.uniqueConfigId()
-            LOGGER.debug("New authentication ID : {} is going to be created".format(self.auth_id))
+            logger.debug("New authentication ID : {} is going to be created".format(self.auth_id))
             config.setId(self.auth_id)
             result = auth_manager.storeAuthenticationConfig(config)
-            LOGGER.debug("New auth ID {} created".format(self.auth_id))
+            logger.debug("New auth ID {} created".format(self.auth_id))
             if result[0]:
                 # Only for creation of the server, we save in the JSON
                 self.save_json_server()
 
         if result[0]:
-            LOGGER.debug("Set thumbs")
+            logger.debug("Set thumbs")
             self.currentPage().result_master_password.setText(THUMBS)
-            LOGGER.info(
+            logger.info(
                 "Saving configuration with login/password ID {} = OK".format(self.auth_id))
             return True
 
-        LOGGER.warning(
+        logger.warning(
             "Saving configuration with login/password ID {} = NOK".format(self.auth_id))
         self.currentPage().result_master_password.setText(
             tr("We couldn't save the login/password into the QGIS authentication database : NOK")
         )
-        LOGGER.debug("Leaving function save_auth_id")
+        logger.debug("Leaving function save_auth_id")
         return False
 
     def save_json_server(self):
@@ -1031,7 +1029,7 @@ class ServerWizard(BaseWizard):
         with open(user_settings(), 'w') as json_file:
             json_file.write(file_content)
 
-        LOGGER.debug("Server saved in the JSON file")
+        logger.debug("Server saved in the JSON file")
 
     @classmethod
     def override_url(cls, base_url: str, metadata: bool = True) -> Optional[str]:
@@ -1047,7 +1045,7 @@ class ServerWizard(BaseWizard):
         if base_url not in config.sections() and base_url[0:-1] not in config.sections():
             return None
 
-        LOGGER.info("Found a server override for server <a href='{0}'>{0}</a>".format(base_url))
+        logger.info("Found a server override for server <a href='{0}'>{0}</a>".format(base_url))
 
         key = 'metadata' if metadata else 'dataviz'
         try:
@@ -1166,7 +1164,7 @@ class ServerWizard(BaseWizard):
         )
         return uri
 
-    @log_function
+    @logger.log_function
     def test_pg(self) -> bool:
         """ Test the connection. """
         uri = self._uri()
@@ -1178,7 +1176,7 @@ class ServerWizard(BaseWizard):
             result = connection.executeSql("SELECT 1 AS lizmap_plugin_test")
         except QgsProviderConnectionException:
             # Credentials are wrong
-            LOGGER.warning("Wrong credentials about the PostgreSQL database")
+            logger.warning("Wrong credentials about the PostgreSQL database")
         else:
             if len(result) >= 1:
                 self.currentPage().result_pg.setText(THUMBS)
@@ -1190,7 +1188,7 @@ class ServerWizard(BaseWizard):
         self.currentPage().skip_db_label.setVisible(True)
         return False
 
-    @log_function
+    @logger.log_function
     def save_pg(self) -> bool:
         """ Save the current connection in the QGIS browser. """
         name = self.field("pg_name")
@@ -1206,10 +1204,10 @@ class ServerWizard(BaseWizard):
         return True
 
     @staticmethod
-    @log_function
+    @logger.log_function
     def _save_pg(name: str, uri: QgsDataSourceUri) -> bool:
         """ Save a PG connection from a URI. """
-        LOGGER.info(
+        logger.info(
             "Create PG connection '{}' : host {}, database {}, user {}, pass XXXXX, port {}".format(
                 name, uri.host(), uri.database(), uri.username(), uri.port())
         )

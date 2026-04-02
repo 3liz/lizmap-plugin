@@ -1,5 +1,3 @@
-import logging
-
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
@@ -62,15 +60,17 @@ from lizmap.project_checker_tools import (
     simplify_provider_side,
     use_estimated_metadata,
 )
-from lizmap.qt_style_sheets import COMPLETE_STYLE_SHEET
-from lizmap.saas import fix_ssl, is_lizmap_cloud
-from lizmap.table_manager.upload_files import TableFilesManager
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.layer import relative_path
-from lizmap.toolbelt.resources import load_ui, resources_path
-from lizmap.toolbelt.strings import human_size
-from lizmap.toolbelt.version import qgis_version_info
-from lizmap.widgets.check_project import Checks, Headers, TableCheck
+
+from .. import logger
+from ..qt_style_sheets import COMPLETE_STYLE_SHEET
+from ..saas import fix_ssl, is_lizmap_cloud
+from ..table_manager.upload_files import TableFilesManager
+from ..toolbelt.i18n import tr
+from ..toolbelt.layer import relative_path
+from ..toolbelt.resources import load_ui, resources_path
+from ..toolbelt.strings import human_size
+from ..toolbelt.version import qgis_version_info
+from ..widgets.check_project import Checks, Headers, TableCheck
 
 WEBKIT_AVAILABLE = False
 try:
@@ -97,7 +97,6 @@ if TYPE_CHECKING:
 
 
 FORM_CLASS = load_ui('ui_lizmap.ui')
-LOGGER = logging.getLogger("Lizmap")
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
@@ -732,7 +731,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             return False
 
         title = tr('QGIS server version is lower than QGIS desktop version')
-        LOGGER.error(title)
+        logger.error(title)
 
         description = tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
 
@@ -1364,7 +1363,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             ")"
         ).format(field=field, groups=groups)
         layer.removeSelection()
-        LOGGER.debug("Expression used for checking groups not on the server :\n" + expression)
+        logger.debug("Expression used for checking groups not on the server :\n" + expression)
         layer.selectByExpression(expression)
         count = layer.selectedFeatureCount()
         self.display_message_bar(
@@ -1420,5 +1419,5 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ When the dialog displayed, to trigger functions in the plugin when the dialog is opening. """
         self.check_project_thumbnail()
         self.check_action_file_exists()
-        LOGGER.info("Opening the Lizmap dialog.")
+        logger.info("Opening the Lizmap dialog.")
         super().activateWindow()

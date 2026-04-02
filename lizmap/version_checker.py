@@ -1,25 +1,26 @@
+"""
 __copyright__ = 'Copyright 2020, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
+"""
 
 import json
-import logging
 
 from qgis.core import Qgis, QgsNetworkContentFetcher
 from qgis.PyQt.QtCore import QDate, QLocale, QUrl
 
-from lizmap.definitions.definitions import (
+from . import logger
+from .definitions.definitions import (
     LwcVersions,
     ReleaseStatus,
     ServerComboData,
 )
-from lizmap.definitions.online_help import current_locale
-from lizmap.dialogs.main import LizmapDialog
-from lizmap.dialogs.news import NewVersionDialog
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.plugin import lizmap_user_folder
+from .definitions.online_help import current_locale
+from .dialogs.main import LizmapDialog
+from .dialogs.news import NewVersionDialog
+from .toolbelt.i18n import tr
+from .toolbelt.plugin import lizmap_user_folder
 
-LOGGER = logging.getLogger('Lizmap')
 DAYS_BEING_OUTDATED = 90
 
 
@@ -55,7 +56,7 @@ class VersionChecker:
             released_versions = json.loads(content)
         except json.JSONDecodeError:
             # Issue reported by rldhont by mail
-            LOGGER.error(
+            logger.error(
                 "Error while reading the JSON file from Lizmap Web Client main repository, check the content with the "
                 "QGIS debug panel"
             )
@@ -204,7 +205,7 @@ class VersionChecker:
             self.dialog.display_message_bar(title, description, Qgis.MessageLevel.Warning, 10, details)
             return
 
-        LOGGER.warning(
+        logger.warning(
             "This branch of Lizmap Web Client {} is already outdated for more than {} days. We encourage you "
             "to upgrade to the latest {} or {}. A possible update of the plugin in a few months will remove "
             "the support for writing the Lizmap configuration file to this version".format(

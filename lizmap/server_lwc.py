@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import time
 
@@ -57,13 +56,13 @@ from lizmap.dialogs.server_wizard import (
     NamePage,
     ServerWizard,
 )
-from lizmap.saas import is_lizmap_cloud, webdav_properties
-from lizmap.toolbelt.convert import ambiguous_to_bool
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
-from lizmap.toolbelt.version import qgis_version_info, version
 
-LOGGER = logging.getLogger('Lizmap')
+from . import logger
+from .saas import is_lizmap_cloud, webdav_properties
+from .toolbelt.convert import ambiguous_to_bool
+from .toolbelt.i18n import tr
+from .toolbelt.plugin import lizmap_user_folder, user_settings
+from .toolbelt.version import qgis_version_info, version
 
 
 class TableCell(Enum):
@@ -234,16 +233,16 @@ class ServerManager:
         """ Fetch the authentication settings for a given token. """
         auth_manager = QgsApplication.authManager()
         if not auth_manager.masterPasswordIsSet():
-            LOGGER.warning(f"Master password is not set, could not look for ID {auth_id}")
+            logger.warning(f"Master password is not set, could not look for ID {auth_id}")
             return None
 
         conf = QgsAuthMethodConfig()
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
         if not conf.id():
-            LOGGER.debug(f"Skipping password ID {auth_id}, it wasn't found in the password manager")
+            logger.debug(f"Skipping password ID {auth_id}, it wasn't found in the password manager")
             return None
 
-        # LOGGER.info("Found password ID {}".format(auth_id))
+        # logger.info("Found password ID {}".format(auth_id))
         return conf
 
     @classmethod
@@ -411,7 +410,7 @@ class ServerManager:
                     QMessageBox.StandardButton.Ok)
                 self.table.clearSelection()
                 return
-            LOGGER.debug(f"Row {auth_id} removed from the QGIS authentication database")
+            logger.debug(f"Row {auth_id} removed from the QGIS authentication database")
 
         self.table.clearSelection()
         self.table.removeRow(row)
@@ -642,7 +641,7 @@ class ServerManager:
         # Add the JSON metadata in the server combobox
         index = self.server_combo.findData(url, ServerComboData.ServerUrl.value)
         self.server_combo.setItemData(index, content, ServerComboData.JsonMetadata.value)
-        LOGGER.info(f"Saving server metadata from network : {index} - {server_alias}")
+        logger.info(f"Saving server metadata from network : {index} - {server_alias}")
         self.parent.tooltip_server_combo(index)
         # Server combo is refreshed, maybe we can allow the menu bar
         self.check_dialog_validity()
@@ -829,10 +828,10 @@ class ServerManager:
                 with open(cache_file, encoding='utf8') as f:
                     metadata = json.load(f)
                     self.server_combo.setItemData(index, metadata, ServerComboData.JsonMetadata.value)
-                    LOGGER.info(f"Loading server <a href='{url}'>{name}</a> using cache in the drop down list")
+                    logger.info(f"Loading server <a href='{url}'>{name}</a> using cache in the drop down list")
             else:
                 self.server_combo.setItemData(index, {}, ServerComboData.JsonMetadata.value)
-                LOGGER.info(
+                logger.info(
                     f"Loading server <a href='{url}'>{name}</a> without metadata in the drop down list")
 
             self.parent.tooltip_server_combo(index)
@@ -1373,7 +1372,7 @@ class ServerManager:
 
             if '@{}'.format(url) in conf.name():
                 # Old format
-                LOGGER.warning(f"Migrating the URL {url} in the QGIS authentication database")
+                logger.warning(f"Migrating the URL {url} in the QGIS authentication database")
                 user = conf.config('username')
                 password = conf.config('password')
 
@@ -1388,7 +1387,7 @@ class ServerManager:
                 result = auth_manager.storeAuthenticationConfig(config, True)
 
                 if not result:
-                    LOGGER.critical("Error while migrating the server")
+                    logger.critical("Error while migrating the server")
 
         # Other entries in the authentication database
         for config in auth_manager.configIds():
@@ -1405,7 +1404,7 @@ class ServerManager:
 
             split = conf.name().split('@')
             if QUrl(split[-1]).isValid():
-                LOGGER.critical(
+                logger.critical(
                     f"Is the password ID '{config}' in the QGIS authentication database a Lizmap server URL ? If yes, "
                     f"please remove it manually, otherwise skip this message. Go in the QGIS global properties, "
                     f"then 'Authentication' panel and check this ID."

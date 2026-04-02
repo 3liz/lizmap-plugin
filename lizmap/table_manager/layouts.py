@@ -1,7 +1,5 @@
 """ Table manager for layouts. """
 
-import logging
-
 from enum import Enum
 from typing import Optional
 
@@ -9,12 +7,10 @@ from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QWidget
 
-from lizmap.definitions.base import BaseDefinitions
-from lizmap.definitions.definitions import LwcVersions
-from lizmap.table_manager.base import TableManager
-from lizmap.toolbelt.resources import plugin_name
-
-LOGGER = logging.getLogger(plugin_name())
+from .. import logger
+from ..definitions.base import BaseDefinitions
+from ..definitions.definitions import LwcVersions
+from .base import TableManager
 
 
 class TableManagerLayouts(TableManager):
@@ -50,7 +46,7 @@ class TableManagerLayouts(TableManager):
 
     def load_qgis_layouts(self, data: dict):
         """ Load QGIS layouts into the table. """
-        LOGGER.debug("Loading all layouts from the QGIS project :")
+        logger.debug("Loading all layouts from the QGIS project :")
         tmp_layout_cfg = {}
         if data:
             for layout in data.get(self.label_dictionary_list()):
@@ -92,7 +88,7 @@ class TableManagerLayouts(TableManager):
         for layout_name in ordered_names:
             layout = qgis_layouts_by_name[layout_name]
             # TODO check for report ?
-            LOGGER.debug("  * reading layout {}".format(layout.name()))
+            logger.debug("  * reading layout {}".format(layout.name()))
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)
 
@@ -171,7 +167,7 @@ class TableManagerLayouts(TableManager):
 
             value = cell.data(Qt.ItemDataRole.UserRole)
             if value == old_name:
-                LOGGER.info("Renaming layout from '{}' to '{}'".format(old_name, new_name))
+                logger.info("Renaming layout from '{}' to '{}'".format(old_name, new_name))
                 cell.setData(Qt.ItemDataRole.UserRole, new_name)
                 cell.setText(new_name)
                 break

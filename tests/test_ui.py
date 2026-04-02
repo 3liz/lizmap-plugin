@@ -1,7 +1,6 @@
 """Test Lizmap dialog UI."""
 
 import json
-import logging
 
 from pathlib import Path
 
@@ -91,7 +90,6 @@ class TestUiLizmapDialog(TestCase):
 
         # NOTE: Seems that HTML widget not working in tests
         # See lizmap.widgets.html_editor line 117
-        logging.warning("HTML widget not working in tests")
         # self.assertTrue('<table>' in output['options']['datavizTemplate'])
 
         self.assertEqual(

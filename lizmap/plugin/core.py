@@ -1,12 +1,8 @@
 import contextlib
 import json
-import logging
-import os
-import tempfile
 
 from functools import partial
 from os.path import relpath
-from pathlib import Path
 from typing import (
     Dict,
     Optional,
@@ -106,33 +102,29 @@ except ModuleNotFoundError:
     QGIS_PLUGIN_MANAGER = False
 
 
-from lizmap.qt_style_sheets import NEW_FEATURE_CSS
-from lizmap.server_lwc import MAX_DAYS, ServerManager
-from lizmap.toolbelt.convert import ambiguous_to_bool, as_boolean
-from lizmap.toolbelt.custom_logging import (
-    add_logging_handler_once,
-    setup_logger,
-)
-from lizmap.toolbelt.git import current_git_hash, next_git_tag
-from lizmap.toolbelt.i18n import setup_translation, tr
-from lizmap.toolbelt.layer import (
+from ..qt_style_sheets import NEW_FEATURE_CSS
+from ..server_lwc import MAX_DAYS, ServerManager
+from ..toolbelt.convert import ambiguous_to_bool
+from ..toolbelt.git import current_git_hash, next_git_tag
+from ..toolbelt.i18n import setup_translation, tr
+from ..toolbelt.layer import (
     layer_property,
 )
-from lizmap.toolbelt.lizmap import convert_lizmap_popup
-from lizmap.toolbelt.resources import (
+from ..toolbelt.lizmap import convert_lizmap_popup
+from ..toolbelt.resources import (
     load_icon,
-    plugin_name,
     plugin_path,
     window_icon,
 )
-from lizmap.toolbelt.version import (
+from ..toolbelt.version import (
     qgis_version_info,
     version,
 )
-from lizmap.tooltip import Tooltip
-from lizmap.version_checker import VersionChecker
+from ..tooltip import Tooltip
+from ..version_checker import VersionChecker
 
-from . import helpers
+from .. import logger
+
 from .baselayers import BaseLayersManager
 from .config import ConfigFileManager
 from .dataviz import DatavizManager
@@ -145,7 +137,9 @@ from .settings import configure_qgis_settings
 from .training import TrainingManager
 from .webdav import WebDavManager
 
-LOGGER = logging.getLogger(plugin_name())
+from . import helpers
+
+
 VERSION_URL = "https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json"
 # To try a local file
 # VERSION_URL = 'file:///home/etienne/.local/share/QGIS/QGIS3/profiles/default/Lizmap/released_versions.json'
@@ -174,7 +168,7 @@ class Lizmap(
 
     def __init__(self, iface: QgisInterface, lwc_version: LwcVersions = None):
         """Constructor of the Lizmap plugin."""
-        LOGGER.info("Plugin starting")
+        logger.info("Plugin starting")
         self.iface = iface
         # noinspection PyArgumentList
         self.project = QgsProject.instance()
@@ -187,10 +181,8 @@ class Lizmap(
 
         self.update_plugin = None
 
-        setup_logger(plugin_name())
-
         locale, file_path = setup_translation("lizmap_qgis_plugin_{}.qm", plugin_path("i18n"))
-        LOGGER.info("Language in QGIS : {}".format(locale))
+        logger.info("Language in QGIS : {}".format(locale))
 
         if file_path:
             self.translator = QTranslator()
@@ -523,33 +515,12 @@ class Lizmap(
         self.help_action_cloud = None
 
     def configure_dev_version(self):
-        # File handler for logging
-        temp_dir = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
-        if not temp_dir.exists():
-            temp_dir.mkdir()
-
-        if not as_boolean(os.getenv("CI")):
-            file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
-            file_handler.setLevel(logging.DEBUG)
-            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-            file_handler.setFormatter(formatter)
-            add_logging_handler_once(LOGGER, file_handler)
-            LOGGER.debug(
-                f"The directory <a href='file://{temp_dir}'>{temp_dir}</a> "
-                "is currently used for file logging."
-            )
-
-        # All logs
-        def write_log_message(message, tag, level):
-            """Write all tabs from QGIS to files."""
-            temp_dir_log = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
-            with open(temp_dir_log.joinpath("all.log"), "a") as log_file:
-                log_file.write("{tag}({level}): {message}".format(tag=tag, level=level, message=message))
-
-        QgsApplication.messageLog().messageReceived.connect(write_log_message)
-
         self.dlg.setWindowTitle(
-            "Lizmap branch {}, commit {}, next {}".format(self.version, current_git_hash(), next_git_tag())
+            "Lizmap branch {}, commit {}, next {}".format(
+                self.version,
+                current_git_hash(),
+                next_git_tag(),
+            ),
         )
 
     def target_server_changed(self):
@@ -631,7 +602,7 @@ class Lizmap(
 
     def initGui(self):
         """Create action that will start plugin configuration"""
-        LOGGER.debug("Plugin starting in the initGui")
+        logger.debug("Plugin starting in the initGui")
 
         icon = window_icon()
         self.action = QAction(icon, "Lizmap", self.iface.mainWindow())
@@ -1066,7 +1037,7 @@ class Lizmap(
         self.dlg.widget_initial_extent.setOutputExtentFromUser(
             extent, self.iface.mapCanvas().mapSettings().destinationCrs()
         )
-        LOGGER.info("Setting extent from the project")
+        logger.info("Setting extent from the project")
 
     def remove_selected_layer_from_table(self, key):
         """
@@ -1075,7 +1046,7 @@ class Lizmap(
         """
         tw = self.layers_table[key]["tableWidget"]
         tw.removeRow(tw.currentRow())
-        LOGGER.info('Removing one row in table "{}"'.format(key))
+        logger.info('Removing one row in table "{}"'.format(key))
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
@@ -1109,7 +1080,7 @@ class Lizmap(
                     if item_layer_id in layer_ids:
                         tw.removeRow(row)
 
-        LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
+        logger.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
 
     def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
         """When a layout has been renamed in the project."""
@@ -1203,7 +1174,7 @@ class Lizmap(
         else:
             text = ""
 
-        LOGGER.info("Opening the popup configuration")
+        logger.info("Opening the popup configuration")
 
         layer = self._current_selected_layer()
         data = self.layer_options_list["popupSource"]["widget"].currentData()
@@ -1211,7 +1182,7 @@ class Lizmap(
             # Legacy
             # Lizmap HTML popup
             if isinstance(layer, QgsVectorLayer):
-                LOGGER.warning(
+                logger.warning(
                     "The 'lizmap' popup is deprecated for vector layer. This will be removed soon."
                 )
 
@@ -1228,7 +1199,7 @@ class Lizmap(
             # Write the content into the global object
             self.layerList[layer_or_group]["popupTemplate"] = content
             if isinstance(layer, QgsVectorLayer):
-                LOGGER.warning(
+                logger.warning(
                     "The 'lizmap' popup is deprecated for vector layer. This will be removed soon."
                 )
 
@@ -1311,7 +1282,7 @@ class Lizmap(
         config = layer.editFormConfig()
         # noinspection PyUnresolvedReferences
         if config.layout() != QgsEditFormConfig.EditorLayout.TabLayout:
-            LOGGER.warning("Maptip : the layer is not using a drag and drop form.")
+            logger.warning("Maptip : the layer is not using a drag and drop form.")
             QMessageBox.warning(
                 self.dlg,
                 tr("Lizmap - Warning"),
@@ -1358,7 +1329,7 @@ class Lizmap(
         with open(json_file, "w", encoding="utf8") as cfg_file:
             cfg_file.write(json_file_content)
 
-        LOGGER.info(
+        logger.info(
             'The Lizmap configuration file has been written to <a href="file://{path}">"{path}"</a>'.format(
                 path=json_file.absolute(),
             )
