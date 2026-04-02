@@ -107,6 +107,7 @@ except ModuleNotFoundError:
     QGIS_PLUGIN_MANAGER = False
 
 
+from .. import logger
 from ..qt_style_sheets import NEW_FEATURE_CSS
 from ..server_lwc import MAX_DAYS, ServerManager
 from ..toolbelt.convert import ambiguous_to_bool
@@ -127,9 +128,7 @@ from ..toolbelt.version import (
 )
 from ..tooltip import Tooltip
 from ..version_checker import VersionChecker
-
-from .. import logger
-
+from . import helpers
 from .baselayers import BaseLayersManager
 from .config import ConfigFileManager
 from .dataviz import DatavizManager

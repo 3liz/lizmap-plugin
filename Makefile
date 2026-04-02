@@ -86,7 +86,7 @@ test:
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/
 else
-REGISTRY_PREFIX=3liz
+REGISTRY_PREFIX=3liz/
 endif
 
 QGIS_VERSION ?= 3.44
@@ -100,7 +100,7 @@ export GID=$(shell id -g)
 
 docker-test:
 	set -e; \
-	cd .docker; 
+	cd .docker; \
 	docker compose up \
 		--quiet-pull \
 		--abort-on-container-exit \
