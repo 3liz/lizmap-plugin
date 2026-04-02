@@ -1,9 +1,7 @@
 """Table manager."""
-from __future__ import annotations
 
 import inspect
 import json
-import logging
 import os
 
 from collections import namedtuple
@@ -21,18 +19,16 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
-from lizmap.definitions.base import BaseDefinitions, InputType, InputTypeError
-from lizmap.definitions.dataviz import AggregationType, GraphType
-from lizmap.definitions.definitions import LwcVersions
-from lizmap.qt_style_sheets import NEW_FEATURE_CSS
-from lizmap.toolbelt.convert import as_boolean
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import plugin_name
+from .. import logger
+from ..definitions.base import BaseDefinitions, InputType
+from ..definitions.dataviz import AggregationType, GraphType
+from ..definitions.definitions import LwcVersions
+from ..qt_style_sheets import NEW_FEATURE_CSS
+from ..toolbelt.convert import as_boolean
+from ..toolbelt.i18n import tr
 
 if TYPE_CHECKING:
-    from lizmap.dialogs.main import LizmapDialog
-
-LOGGER = logging.getLogger(plugin_name())
+    from .dialogs.main import LizmapDialog
 
 
 class CellError(Exception):
@@ -166,7 +162,7 @@ class TableManager:
 
     def set_lwc_version(self, current_version: LwcVersions):
         """ When the target LWC version is changed, we need to update all widgets to set the color. """
-        # LOGGER.debug("Set new LWC version {} in {}".format(current_version.value, self.definitions.key()))
+        # logger.debug("Set new LWC version {} in {}".format(current_version.value, self.definitions.key()))
         found = False
         for lwc_version in self.lwc_versions:
             if found:
@@ -392,8 +388,9 @@ class TableManager:
                                 break
                         else:
                             msg = f'Error with value = "{value}" in list "{key}"'
-                            LOGGER.critical(msg)
+                            logger.critical(msg)
                             raise InputTypeError(msg)
+
                         cell.setText(text)
                         if icon:
                             cell.setIcon(QIcon(icon))
@@ -526,7 +523,7 @@ class TableManager:
                 value = cell.data(Qt.ItemDataRole.UserRole)
                 if value == layer_id:
                     self.table.removeRow(i)
-                    LOGGER.info(f"Removing '{layer_id}' from table {self.definitions.key()}")
+                    logger.info(f"Removing '{layer_id}' from table {self.definitions.key()}")
                     continue
 
     def truncate(self):
@@ -705,7 +702,7 @@ class TableManager:
                 if layer_data.get('type') == 'numeric':
                     if layer_data.get('end_field'):
                         # Incompatible with this format, but we don't remove it just in case
-                        LOGGER.error(
+                        logger.error(
                             "A end_field is defined for the form filter. "
                             "This is not compatible for this version of Lizmap Web Client"
                         )
@@ -766,7 +763,7 @@ class TableManager:
                 else:
                     key = layer_name
                 if result.get(layer_name):
-                    LOGGER.warning(
+                    logger.warning(
                         f'Skipping "{layer_name}" while saving "{self.definitions.key()}" JSON configuration. Duplicated entry.')
                 result[key] = layer
                 result[key]['order'] = i
@@ -947,7 +944,7 @@ class TableManager:
                 if widget_type == InputType.Layer:
                     vector_layer = self.project.mapLayer(value)
                     if not vector_layer or not vector_layer.isValid():
-                        LOGGER.warning(
+                        logger.warning(
                             f'In Lizmap configuration file, section "{self.definitions.key()}" with key {config_key}, the layer with ID "{value}" is '
                             'invalid or does not exist. Skipping that layer.')
                     else:
@@ -998,7 +995,7 @@ class TableManager:
                         if not vector_layer or not vector_layer.isValid():
                             # A layer temporary not available will be found in the project, but "not valid".
                             # Some metadata like CRS was still imported from the QGS file, but not fields
-                            LOGGER.warning(
+                            logger.warning(
                                 f'In Lizmap configuration file, section "{self.definitions.key()}", the layer with ID "{value}" is invalid or does '
                                 'not exist. Trying to keep configuration.')
                             # Let's try to keep the configuration
@@ -1033,7 +1030,7 @@ class TableManager:
                                     msg = (
                                         f'Error with value = "{value}" in list "{key}", set default to {default_list_value}'
                                     )
-                                    LOGGER.warning(msg)
+                                    logger.warning(msg)
                                     value = default_list_value
                             layer_data[key] = value
                     elif definition['type'] == InputType.SpinBox or definition['type'] == InputType.Text or definition['type'] == InputType.MultiLine or definition['type'] == InputType.HtmlWysiwyg or definition['type'] == InputType.Collection:
@@ -1055,7 +1052,7 @@ class TableManager:
                         layer_data[key] = default_value
                     else:
                         # raise InvalidCfgFile(')
-                        LOGGER.warning(
+                        logger.warning(
                             f'In Lizmap configuration file, section "{self.definitions.key()}", one layer is missing the key "{key}" which is '
                             'mandatory. Skipping that layer.')
                         valid_layer = False
@@ -1064,7 +1061,7 @@ class TableManager:
             if not valid_layer:
                 # We didn't find any valid layer during the process of reading this JSON dictionary
                 row = self.table.rowCount()
-                LOGGER.info(
+                logger.info(
                     f"No valid layer found when reading this section {row + 1}. Not adding the row number {self.definitions.key()}"
                 )
                 continue
@@ -1077,7 +1074,7 @@ class TableManager:
 
                 # In CI, we still want to test this layer, sorry.
                 if vector_layer.dataProvider().name() != 'postgres':
-                    LOGGER.warning(
+                    logger.warning(
                         f"The layer for editing {vector_layer.id()} is not stored in PostgreSQL. Now, only PostgreSQL layers "
                         "are supported for editing capabilities. Removing this layer from the "
                         "configuration.")

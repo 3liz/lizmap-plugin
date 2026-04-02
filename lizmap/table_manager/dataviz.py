@@ -1,8 +1,6 @@
 """ Table manager for dataviz. """
-from __future__ import annotations
 
 import json
-import logging
 
 from typing import TYPE_CHECKING
 
@@ -27,20 +25,20 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QLabel, QWidget
 from qgis.utils import OverrideCursor
 
-from lizmap.definitions.dataviz import GraphType
-from lizmap.definitions.definitions import ServerComboData
-from lizmap.dialogs.server_wizard import ServerWizard
-from lizmap.table_manager.base import TableManager
-from lizmap.toolbelt.convert import as_boolean
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import plugin_name, resources_path
-from lizmap.toolbelt.strings import merge_strings
+from .. import logger
+from ..definitions.dataviz import GraphType
+from ..definitions.definitions import ServerComboData
+from ..dialogs.server_wizard import ServerWizard
+from ..table_manager.base import TableManager
+from ..toolbelt.convert import as_boolean
+from ..toolbelt.i18n import tr
+from ..toolbelt.resources import resources_path
+from ..toolbelt.strings import merge_strings
 
 if TYPE_CHECKING:
     from lizmap.definitions.base import BaseDefinitions
     from lizmap.dialogs.main import LizmapDialog
 
-LOGGER = logging.getLogger(plugin_name())
 
 
 class TableManagerDataviz(TableManager):
@@ -295,7 +293,7 @@ class TableManagerDataviz(TableManager):
             return None
 
         if len(relations) >= 2:
-            LOGGER.warning(
+            logger.warning(
                 f"Many relations has been found for the dataviz preview with the layer ID '{layer_id}'. "
                 "Only the first one is used."
             )
