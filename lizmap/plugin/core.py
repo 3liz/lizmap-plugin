@@ -102,6 +102,7 @@ except ModuleNotFoundError:
     QGIS_PLUGIN_MANAGER = False
 
 
+from .. import logger
 from ..qt_style_sheets import NEW_FEATURE_CSS
 from ..server_lwc import MAX_DAYS, ServerManager
 from ..toolbelt.convert import ambiguous_to_bool
@@ -122,9 +123,7 @@ from ..toolbelt.version import (
 )
 from ..tooltip import Tooltip
 from ..version_checker import VersionChecker
-
-from .. import logger
-
+from . import helpers
 from .baselayers import BaseLayersManager
 from .config import ConfigFileManager
 from .dataviz import DatavizManager
@@ -136,9 +135,6 @@ from .scales import ScalesManager
 from .settings import configure_qgis_settings
 from .training import TrainingManager
 from .webdav import WebDavManager
-
-from . import helpers
-
 
 VERSION_URL = "https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json"
 # To try a local file

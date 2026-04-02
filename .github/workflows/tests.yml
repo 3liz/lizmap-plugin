@@ -16,13 +16,13 @@ jobs:
           python-version: "3.12"
           architecture: x64
           cache: "pip"
-          cache-dependency-path: "requirements/dev.txt"
+          cache-dependency-path: "requirements/lint.txt"
 
       - name: Install Python requirements
         run: pip install --quiet -r requirements/lint.txt
 
       - name: Run linter
-        run: ruff check --preview --output-format=concise lizmap
+        run: ruff check --output-format=concise lizmap
 
       - name: Run security check
         run: bandit -r lizmap --severity-level=high
@@ -36,6 +36,7 @@ jobs:
             "3.34",
             "3.40",
             "3.44",
+            "4.0",
         ]
     steps:
 

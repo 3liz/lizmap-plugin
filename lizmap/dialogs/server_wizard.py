@@ -8,6 +8,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Optional, Tuple
 
 from qgis.core import (
+    Qgis,
     QgsAbstractDatabaseProviderConnection,
     QgsApplication,
     QgsAuthMethodConfig,
@@ -874,6 +875,11 @@ class ServerWizard(BaseWizard):
         self.setPage(WizardPages.CreateNewFolderDav, CreateNewFolderDavPage())
         self.setPage(WizardPages.LizmapNewRepository, LizmapNewRepositoryPage())
 
+    # TODO: If these methods raises an exception while called
+    # by the Qt framework this cause a "Fatal Python error"
+    # These method should be bounded by try/except when used from
+    # Qt framework.
+
     @logger.log_function
     def validateCurrentPage(self):
         """Specific rules for page validation. """
@@ -1090,7 +1096,12 @@ class ServerWizard(BaseWizard):
         net_req.setUrl(QUrl(url))
         token = b64encode(f"{login}:{password}".encode())
         net_req.setRawHeader(b"Authorization", b"Basic %s" % token)
-        net_req.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
+        # NOTE: According to QT6 doc this is enabled by default
+        # See https://doc.qt.io/archives/qt-5.15/qnetworkrequest.html#RedirectPolicy-enum
+        # See https://doc.qt.io/qt-6/network-changes-qt6.html#redirect-policies
+        if Qgis.versionInt() < 40000:
+            net_req.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
+
         request = QgsBlockingNetworkRequest()
         error = request.get(net_req)
         if error == QgsBlockingNetworkRequest.ErrorCode.NetworkError:
