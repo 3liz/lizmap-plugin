@@ -142,7 +142,7 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         # Allow display layer style only for point
         # LWC 3.10
         # Could be changed in future version
-        if layer.geometryType() != QgsWkbTypes.PointGeometry:
+        if self.display_layer_style.isChecked() and layer.geometryType() != QgsWkbTypes.PointGeometry:
             return tr(
                 "At present, the option 'Display layer feature'"
                 " is only available for point layers."
