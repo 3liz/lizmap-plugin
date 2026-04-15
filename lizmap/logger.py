@@ -1,26 +1,35 @@
 import functools
-import logging
 import time
 
-LOGGER = logging.getLogger('Lizmap')
-DEBUG = True
+from qgis.core import Qgis, QgsMessageLog
 
-# Re-export
+PLUGIN = "Lizmap"
+PROFILE = False
 
-debug = LOGGER.debug
-info = LOGGER.info
-warning = LOGGER.warning
-error = LOGGER.error
-critical = LOGGER.critical
+
+def info(message: str):
+    QgsMessageLog.logMessage(message, PLUGIN, Qgis.MessageLevel.Info)
+
+
+def warning(message: str):
+    QgsMessageLog.logMessage(message, PLUGIN, Qgis.MessageLevel.Warning)
+
+
+def critical(message: str):
+    QgsMessageLog.logMessage(message, PLUGIN, Qgis.MessageLevel.Critical)
+
+
+debug = info
+error = critical
 
 
 def log_function(func):
     """ Decorator to log function. """
     @functools.wraps(func)
     def log_function_core(*args, **kwargs):
-        LOGGER.info(f"Calling function {func.__name__}")
+        info(f"Calling function {func.__name__}")
         value = func(*args, **kwargs)
-        LOGGER.info(f"End of function {func.__name__} with return : {value!s}")
+        info(f"End of function {func.__name__} with return : {value!s}")
         return value
 
     return log_function_core
@@ -34,7 +43,7 @@ def profiling(func):
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
-        LOGGER.info("{} ran in {}s".format(func.__name__, round(end - start, 2)))
+        info("{} ran in {}s".format(func.__name__, round(end - start, 2)))
         return result
 
     return wrapper
@@ -46,10 +55,7 @@ def log_output_value(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
-        if DEBUG:
-            LOGGER.info("{} output is {} for parameter {}".format(func.__name__, result, str(args)))
-        else:
-            LOGGER.info("{} output is {}… for parameter {}".format(func.__name__, result[0:200], str(args)))
+        debug("{} output is {} for parameter {}".format(func.__name__, result, str(args)))
         return result
 
     return wrapper

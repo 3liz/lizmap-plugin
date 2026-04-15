@@ -2,8 +2,58 @@ variables:
   PRODUCT_NAME: lizmap_qgis_plugin
 
 stages:
+- lint
+- test
 - build
 - deploy
+
+# ------------
+# Lint
+# ------------
+
+lint:
+  image: ${REGISTRY_URL}/factory-ci-runner:qgis-${QGIS_FLAVOR}
+  tags:
+    - factory-plain
+  stage: lint
+  script:
+    # No need since we do not type checking atm
+    #- pip install --quiet -r requirements/dev.txt
+    - make lint
+  parallel:
+    matrix:
+      - QGIS_FLAVOR: [ "ltr", "release" ]
+
+# ------------
+# Tests
+# ------------
+
+.tests:
+  image: ${REGISTRY_URL}/factory-ci-runner:factory-ci
+  tags:
+    - factory-dind
+  stage: test
+  script:
+    - make docker-test QGIS_VERSION=$QGIS_FLAVOR
+
+qgis-tests:
+  extends: .tests
+  parallel:
+    matrix:
+      - QGIS_FLAVOR: [
+        "3.34",
+        "3.40",
+        "3.44",
+        "4.0",
+      ]
+
+
+# NOTE: Following jobs are triggered only on RELEASE_BRANCH == "true"
+
+# 
+# Packages 
+#
+
 
 build:
   image: $REGISTRY_URI/factory-ci-runner:qgis-plugin-ci

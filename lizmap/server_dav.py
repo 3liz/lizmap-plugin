@@ -1,5 +1,3 @@
-import logging
-
 from base64 import b64encode
 from collections import namedtuple
 from pathlib import Path
@@ -17,13 +15,12 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QDateTime, QEventLoop, QLocale, Qt, QUrl
 from qgis.PyQt.QtNetwork import QHttpMultiPart, QNetworkReply, QNetworkRequest
 
-from lizmap.definitions.definitions import RepositoryComboData, ServerComboData
-from lizmap.dialogs.main import LizmapDialog
-from lizmap.saas import webdav_properties
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.strings import path_to_url
-
-LOGGER = logging.getLogger("Lizmap")
+from . import logger
+from .definitions.definitions import RepositoryComboData, ServerComboData
+from .dialogs.main import LizmapDialog
+from .saas import webdav_properties
+from .toolbelt.i18n import tr
+from .toolbelt.strings import path_to_url
 
 PropFindFileResponse = namedtuple(
     'PropFindFile',
@@ -171,11 +168,11 @@ class WebDav:
         #     return False
 
         if not self.dav_server:
-            LOGGER.debug("Webdav is not installed")
+            logger.debug("Webdav is not installed")
             return False
 
         # If we have the webdav URL, it means the user have 'lizmap.webdav.access'
-        LOGGER.debug("WebDAV is ready : {}".format(self.dav_server))
+        logger.debug("WebDAV is ready : {}".format(self.dav_server))
         return True
 
     def config_project(self):
@@ -191,10 +188,10 @@ class WebDav:
         if not url:
             return False, '', ''
 
-        LOGGER.info("SEND files to {}".format(url))
+        logger.info("SEND files to {}".format(url))
 
         loop = QEventLoop()
-        LOGGER.debug(f"Local path {self.qgs_path} to {url} with token {self.auth_id}")
+        logger.debug(f"Local path {self.qgs_path} to {url} with token {self.auth_id}")
         self.qgs = self.webdav.store(self.qgs_path, url, self.auth_id, Qgis.ActionStart.Deferred)
         self.qgs.stored.connect(loop.quit)
         self.qgs.store()
@@ -202,11 +199,11 @@ class WebDav:
 
         error = self.qgs.errorString()
         if error:
-            LOGGER.error("Error while sending the QGS file : " + error)
+            logger.error("Error while sending the QGS file : " + error)
             return False, error, ''
 
         loop = QEventLoop()
-        LOGGER.debug(f"Local path {self.cfg_path} to {url} with token {self.auth_id}")
+        logger.debug(f"Local path {self.cfg_path} to {url} with token {self.auth_id}")
         self.cfg = self.webdav.store(self.cfg_path, url, self.auth_id, Qgis.ActionStart.Deferred)
         self.cfg.stored.connect(loop.quit)
         self.cfg.store()
@@ -214,11 +211,11 @@ class WebDav:
 
         error = self.cfg.errorString()
         if error:
-            LOGGER.error("Error while sending the Lizmap configuration file : " + error)
+            logger.error("Error while sending the Lizmap configuration file : " + error)
             return False, error, ''
 
         url = self.project_url()
-        LOGGER.info("Project published on {}".format(url))
+        logger.info("Project published on {}".format(url))
         return True, '', url
 
     def send_thumbnail(self) -> tuple[bool, str]:
@@ -235,7 +232,7 @@ class WebDav:
             return False, ''
 
         loop = QEventLoop()
-        LOGGER.debug(f"Local path {self.thumbnail_path} to {url} with token {self.auth_id}")
+        logger.debug(f"Local path {self.thumbnail_path} to {url} with token {self.auth_id}")
         self.thumbnail = self.webdav.store(str(self.thumbnail_path), url, self.auth_id, Qgis.ActionStart.Deferred)
         self.thumbnail.stored.connect(loop.quit)
         self.thumbnail.store()
@@ -243,7 +240,7 @@ class WebDav:
 
         error = self.thumbnail.errorString()
         if error:
-            LOGGER.error("Error while sending the thumbnail : " + error)
+            logger.error("Error while sending the thumbnail : " + error)
             return False, error
 
         return True, self.thumbnail_url()
@@ -262,7 +259,7 @@ class WebDav:
             return False, ''
 
         loop = QEventLoop()
-        LOGGER.debug(f"Local path {self.action_path} to {url} with token {self.auth_id}")
+        logger.debug(f"Local path {self.action_path} to {url} with token {self.auth_id}")
         self.action = self.webdav.store(str(self.action_path), url, self.auth_id, Qgis.ActionStart.Deferred)
         self.action.stored.connect(loop.quit)
         self.action.store()
@@ -270,7 +267,7 @@ class WebDav:
 
         error = self.action.errorString()
         if error:
-            LOGGER.error("Error while sending the thumbnail : " + error)
+            logger.error("Error while sending the thumbnail : " + error)
             return False, error
 
         return True, ''
@@ -287,7 +284,7 @@ class WebDav:
         url += 'media/'
 
         loop = QEventLoop()
-        LOGGER.debug(f"Local path {file_path} to {url} with token {self.auth_id}")
+        logger.debug(f"Local path {file_path} to {url} with token {self.auth_id}")
         self.media = self.webdav.store(str(file_path), url, self.auth_id, Qgis.ActionStart.Deferred)
         self.media.stored.connect(loop.quit)
         self.media.store()
@@ -295,7 +292,7 @@ class WebDav:
 
         error = self.media.errorString()
         if error:
-            LOGGER.error("Error while sending the media : " + error)
+            logger.error("Error while sending the media : " + error)
             return False, error
 
         return True, ''
@@ -391,7 +388,7 @@ class WebDav:
         remote_server = self.dav_server + directory + path_to_url(remote_path)
 
         loop = QEventLoop()
-        LOGGER.debug(f"Local path {file_path} to {remote_server} with token {self.auth_id}")
+        logger.debug(f"Local path {file_path} to {remote_server} with token {self.auth_id}")
         self.generic = self.webdav.store(str(file_path), remote_server, self.auth_id, Qgis.ActionStart.Deferred)
         self.generic.stored.connect(loop.quit)
         self.generic.store()
@@ -399,7 +396,7 @@ class WebDav:
 
         error = self.generic.errorString()
         if error:
-            LOGGER.error("Error while sending the generic file : " + error)
+            logger.error("Error while sending the generic file : " + error)
             return False, error
 
         return True, ''
@@ -492,7 +489,7 @@ class WebDav:
     #     if reply.error() == QNetworkReply.ContentNotFoundError:
     #         return False, 'The file does not exist on the server.'
     #
-    #     LOGGER.error(reply.errorString())
+    #     logger.error(reply.errorString())
     #     return False, self.xml_reply_from_dav(reply)
 
     def check_exists_qgs(self) -> Tuple[bool, Optional[str]]:
@@ -575,7 +572,7 @@ class WebDav:
             # Return None and empty error message
             return None, ''
 
-        LOGGER.error(reply.errorString())
+        logger.error(reply.errorString())
         # Return None but try to parse the error message
         return None, self.xml_reply_from_dav(reply)
 

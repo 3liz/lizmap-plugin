@@ -1,21 +1,19 @@
+"""
 __copyright__ = 'Copyright 2024, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-
-import logging
-
+"""
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import Qt, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QPixmap
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
-from lizmap.definitions.definitions import LwcVersions
-from lizmap.definitions.online_help import online_lwc_help
-from lizmap.definitions.qgis_settings import Settings
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import load_ui, resources_path
+from ..definitions.definitions import LwcVersions
+from ..definitions.online_help import online_lwc_help
+from ..definitions.qgis_settings import Settings
+from ..toolbelt.i18n import tr
+from ..toolbelt.resources import load_ui, resources_path
 
-LOGGER = logging.getLogger('Lizmap')
 FORM_CLASS = load_ui('ui_news.ui')
 
 

@@ -1,9 +1,8 @@
+"""
 __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-
-import logging
-
+"""
 from collections import namedtuple
 from typing import Optional
 
@@ -11,16 +10,15 @@ from pyplugin_installer import instance
 from qgis.PyQt.QtCore import QDate, QDateTime, QLocale, Qt
 from qgis.utils import iface
 
-from lizmap.definitions.definitions import DEV_VERSION_PREFIX
-from lizmap.server_lwc import ServerManager
-from lizmap.toolbelt.plugin import plugin_date
-from lizmap.toolbelt.version import version
+from . import logger
+from .definitions.definitions import DEV_VERSION_PREFIX
+from .server_lwc import ServerManager
+from .toolbelt.plugin import plugin_date
+from .toolbelt.version import version
 
 Plugin = namedtuple('Plugin', ['name', 'version', 'date', 'template'])
 
 DAYS_BEFORE_OUTDATED = 60
-
-LOGGER = logging.getLogger('Lizmap')
 
 
 class QgisPluginManager:
@@ -55,7 +53,7 @@ class QgisPluginManager:
                 date_string = latest_stable_date.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
 
                 template = (
-                    '{name} <a href="{url}">'   # noqa RUF027
+                    '{name} <a href="{url}">'
                     '{tag}   -    {date}'
                     '</a>'
                 )
@@ -79,26 +77,26 @@ class QgisPluginManager:
         current_version = version()
         if current_version in DEV_VERSION_PREFIX:
             # We trust developers
-            LOGGER.debug("Version checker : in developers I trust")
+            logger.debug("Version checker : in developers I trust")
             return False
 
         current_version = ServerManager.split_lizmap_version(current_version)
 
         if 'Lizmap' not in self.metadata:
             # No QGIS plugin manager, nothing we can do now...
-            LOGGER.debug("Version checker : NO QPM, nothing we can do now...")
+            logger.debug("Version checker : NO QPM, nothing we can do now...")
             return False
 
         latest_version = self.metadata['Lizmap'].version
         if latest_version is None or latest_version == '':
-            LOGGER.debug("Version checker : NO QPM, nothing we can do now...")
+            logger.debug("Version checker : NO QPM, nothing we can do now...")
             return False
 
         latest_version = ServerManager.split_lizmap_version(latest_version)
         if current_version >= latest_version:
             # Need to check this one if the previous check
             # The current version is equal to the version in QGIS plugin manager
-            LOGGER.warning(
+            logger.warning(
                 "Version checker : running a higher version than on plugins.qgis.org : "
                 "current {current} >= latest {latest}".format(
                     current='.'.join([str(i) for i in current_version]),
@@ -114,13 +112,13 @@ class QgisPluginManager:
 
         if not latest_date.isValid() or not current_plugin_date.isValid():
             # We are missing some info, let's force them to update...
-            LOGGER.debug("Version checker : Missing some dates, they should upgrade")
+            logger.debug("Version checker : Missing some dates, they should upgrade")
             return True
 
         # We are nice, we let them quite a lot of days to update
         # Because we release a few versions per month
         must_update = latest_date.daysTo(current_plugin_date) > DAYS_BEFORE_OUTDATED
-        LOGGER.debug("Version checker : needs update : {}".format(must_update))
+        logger.debug("Version checker : needs update : {}".format(must_update))
         return must_update
 
     def lizmap_version(self):

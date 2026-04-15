@@ -11,6 +11,7 @@ license-files = ["LICENSE"]
 readme = "README.md"
 classifiers = [
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.11",
@@ -28,11 +29,14 @@ repository ="https://github.com/3liz/lizmap-plugin"
 
 [dependency-groups]
 dev = [
+    "coverage[toml]",
     {include-group = "tests"},
     {include-group = "lint"},
 ]
 tests = [
-    "pytest >= 5.3",
+    "semver",
+    "pytest",
+    "pytest-qgis; python_full_version >= '3.10'",
     "webdavclient3",
     "psycopg[binary]",
 ]
@@ -45,9 +49,13 @@ lint = [
 packaging = [
     "qt-transifex; python_full_version >= '3.12'",
 ]
+tools = [
+    "ipython",
+]
 
 [tool.uv.sources]
 qt-transifex =  { git = "https://github.com/3liz/qt-transifex" }
+pytest-qgis = { git = "https://github.com/3liz/pytest-qgis.git" }
 
 [tool.yapt]
 plugin_source = "lizmap"
@@ -80,7 +88,7 @@ indent-style = "space"
 [tool.ruff.lint]
 extend-select = [
     "E", "F", "I", "ANN", "W", "T", "COM", "RUF",
-    "C4", "SIM", "TC", "RET",
+    "C4", "SIM", "TC", "RET", "PTH"
 ]
 # COM812 conflict with formatter
 ignore = [
@@ -92,7 +100,8 @@ ignore = [
     "SIM108",  # Use of ternary operator
     # TODO: Temporary ignore linter errors until
     # they are fixed
-    "T201",
+    "PTH",     # Use pathlib
+    "T201",    # print() 
     "E501",    # Line too long
     "RUF012",  # Mutable class attributes should be annotated
     "RUF067",  # `__init__` module should only contain docstrings and re-exports
@@ -123,5 +132,9 @@ suppress-dummy-args = true
 python_version = "3.9"
 
 [[tool.mypy.overrides]]
-module = "qgis.*"
+module = [
+    "qgis.*",
+    "osgeo.*",
+    "processing.*",
+]
 ignore_missing_imports = true

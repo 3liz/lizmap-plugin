@@ -1,16 +1,13 @@
+"""
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-
-import logging
-
+"""
 from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 
-from lizmap.toolbelt.i18n import tr
-from lizmap.widgets.html_editor import HtmlEditorWidget
-
-LOGGER = logging.getLogger('Lizmap')
+from ..toolbelt.i18n import tr
+from ..widgets.html_editor import HtmlEditorWidget
 
 
 class HtmlEditorDialog(QDialog):

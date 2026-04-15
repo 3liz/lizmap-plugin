@@ -1,9 +1,8 @@
+"""
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-
-import logging
-
+"""
 from qgis.core import (
     QgsApplication,
     QgsExpression,
@@ -26,10 +25,8 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import resources_path
-
-LOGGER = logging.getLogger('Lizmap')
+from ..toolbelt.i18n import tr
+from ..toolbelt.resources import resources_path
 
 # Detect available Web widget
 WEBKIT_AVAILABLE = False

@@ -2,7 +2,6 @@ SHELL:=bash
 
 PYTHON_MODULE=lizmap
 
-QGIS_VERSION ?= 3.40
 
 -include .localconfig.mk
 
@@ -17,7 +16,7 @@ ifdef VIRTUAL_ENV
 # Always prefer active environment
 ACTIVE_VENV=--active
 endif
-UV_RUN=uv run $(ACTIVE_VENV)
+UV=uv run $(ACTIVE_VENV)
 endif
 
 
@@ -31,13 +30,6 @@ REQUIREMENTS_GROUPS= \
 .PHONY: update-requirements
 
 REQUIREMENTS=$(patsubst %, requirements/%.txt, $(REQUIREMENTS_GROUPS))
-
-# Update only packaging dependencies
-# Waiting for https://github.com/astral-sh/uv/issues/13705
-update-packaging-dependencies::
-	uv lock -P qgis-plugin-package-ci -P qgis-plugin-transifex-ci
-
-update-packaging-dependencies:: update-requirements
 
 update-requirements: $(REQUIREMENTS)
 
@@ -56,53 +48,92 @@ requirements/%.txt: uv.lock
 # Static analysis
 #
 
-LINT_TARGETS=$(PYTHON_MODULE) tests $(EXTRA_LINT_TARGETS)
+LINT_TARGETS=$(PYTHON_MODULE) $(EXTRA_LINT_TARGETS)
 
 lint:
-	@ $(UV_RUN) ruff check --output-format=concise $(LINT_TARGETS)
+	@ $(UV) ruff check --output-format=concise $(LINT_TARGETS)
+	@ $(UV) ruff check --output-format=concise --target-version=py310 tests
 
 lint-fix:
-	@ $(UV_RUN) ruff check --fix $(LINT_TARGETS)
+	@ $(UV) ruff check --fix $(LINT_TARGETS)
+	@ $(UV) ruff check --fix --target-version=py310 tests
+
+lint-preview:
+	@ $(UV) ruff check --preview --output-format=concise  $(LINT_TARGETS)
 
 format:
-	@ $(UV_RUN) ruff format $(LINT_TARGETS) 
+	@ $(UV) ruff format $(LINT_TARGETS) 
 
 typecheck:
-	$(UV_RUN)  mypy $(PYTHON_MODULE)
+	$(UV) mypy $(PYTHON_MODULE)
+	$(UV) mypy tests --python-version 3.10
 
 scan:
-	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
+	@ $(UV) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
 
-
-check-uv-install:
-	@which uv > /dev/null || { \
-		echo "You must install uv (https://docs.astral.sh/uv/)"; \
-		exit 1; \
-	}
 
 #
 # Tests
 #
 
 test:
-	$(UV_RUN) pytest -v tests/
+	$(UV) pytest -v tests/
 
 #
 # Test using docker image
 #
-QGIS_IMAGE_REPOSITORY ?= qgis/qgis
+
+ifdef REGISTRY_URL
+REGISTRY_PREFIX=$(REGISTRY_URL)/
+else
+REGISTRY_PREFIX=3liz/
+endif
+
+QGIS_VERSION ?= 3.44
+QGIS_IMAGE_REPOSITORY ?= ${REGISTRY_PREFIX}qgis-platform
 QGIS_IMAGE_TAG ?= $(QGIS_IMAGE_REPOSITORY):$(QGIS_VERSION)
 
 export QGIS_VERSION
 export QGIS_IMAGE_TAG
 export UID=$(shell id -u)
 export GID=$(shell id -g)
+
 docker-test:
-	cd .docker && docker compose up \
+	set -e; \
+	cd .docker; \
+	docker compose up \
 		--quiet-pull \
 		--abort-on-container-exit \
-		--exit-code-from qgis
-	cd .docker && docker compose down -v
+		--exit-code-from qgis; \
+	docker compose down -v;
+
+#
+# Install/sync
+#
+
+sync:
+	@echo "Synchronizing python's environment with frozen dependencies"
+	uv sync --all-groups --frozen --all-extras
+
+install-dev::
+	@echo "Creating virtual python environment"
+	uv venv --system-site-packages --no-managed-python
+
+install-dev:: sync
+
+#
+# Coverage 
+#
+
+# Run tests coverage
+covtests:
+	@echo "Running coverage tests"
+	@ $(UV) coverage run -m pytest tests/
+
+coverage: covtests
+	@echo "Building coverage html"
+	@ $(UV) coverage html
+
 
 #
 # Code managment

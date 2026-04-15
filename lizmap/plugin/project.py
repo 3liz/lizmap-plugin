@@ -538,14 +538,13 @@ class ProjectManager(LizmapProtocol):
             GroupNames.BaseLayers,
         )
 
-        if base_layers_group:
+        if base_layers_group is not None:
             base_layers_group: QgsLayerTreeGroup
             base_layers_group.setIsMutuallyExclusive(True, -1)
 
-            default_background_color_index = LayerTreeManager.existing_group(
+            default_background_color_index = LayerTreeManager.existing_group_index(
                 base_layers_group,
                 GroupNames.BackgroundColor,
-                index=True,
             )
 
             if default_background_color_index is not None and default_background_color_index >= 0:
