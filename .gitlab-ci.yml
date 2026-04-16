@@ -2,8 +2,17 @@ variables:
   PRODUCT_NAME: lizmap_qgis_plugin
 
 stages:
+- lint
 - build
 - deploy
+
+lint:
+  image: $REGISTRY_URI/factory-ci-runner:qgis-ltr
+  stage: lint
+  tags:
+    - factory-plain
+  script:
+    - make lint
 
 build:
   image: $REGISTRY_URI/factory-ci-runner:qgis-plugin-ci
