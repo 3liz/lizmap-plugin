@@ -113,18 +113,14 @@ def project_safeguards_checks(
             # The layer is not file base.
             continue
 
-        layer_path = Path(components['path'])
-        try:
-            if not layer_path.exists():
-                # Let's skip, QGIS is already warning this layer
-                # Or the file might be a COG on Linux :
-                # /vsicurl/https://demo.snap.lizmap.com/lizmap_3_6/cog/...
-                continue
-        except OSError:
-            # Ticket https://github.com/3liz/lizmap-plugin/issues/541
-            # OSError: [WinError 123] La syntaxe du nom de fichier, de répertoire ou de volume est incorrecte:
-            # '\\vsicurl\\https:\\XXX.lizmap.com\\YYY\\cog\\ZZZ.tif'
+        # Use QGIS's already-resolved validity rather than probing the filesystem.
+        # A fresh layer_path.exists() call blocks the main thread for the full OS
+        # network timeout (~20-30s) on Windows when the layer source is on an
+        # unavailable mapped or network drive.
+        if not layer.isValid():
             continue
+
+        layer_path = Path(components['path'])
 
         try:
             relative_path = relpath(layer_path, project_home)
