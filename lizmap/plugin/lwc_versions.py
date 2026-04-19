@@ -212,6 +212,8 @@ def configure_lwc_versions(dlg: "LizmapDialog") -> OrderedDict:
         dlg.checkbox_geolocation_direction,
         # Exclude basemaps from single WMS
         dlg.checkbox_exclude_basemaps_from_single_wms,
+        # Portfolio
+        dlg.label_portfolios_panel,
         # Export DXF panel
         dlg.label_dxf_export_panel,
         dlg.label_dxf_export_enabled,
