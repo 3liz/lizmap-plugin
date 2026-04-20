@@ -169,10 +169,10 @@ class Tooltip:
                 if bootstrap_5:
                     h += (
                         f'<li class="nav-item">'
-                        f'<button class="nav-link {active}" data-bs-toggle="tab" '
-                        f'data-bs-target="#popup_dd_[% $id %]_{id_tab}">'
+                        f'<a class="nav-link {active}" data-bs-toggle="tab" data-toggle="tab" '
+                        f'href="#popup_dd_[% $id %]_{id_tab}" role="tab">'
                         f'{node.name()}'
-                        f'</button>'
+                        f'</a>'
                         f'</li>'
                     )
                 else:

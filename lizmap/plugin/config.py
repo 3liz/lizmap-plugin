@@ -103,7 +103,7 @@ class ConfigFileManager(LizmapProtocol):
                                 manager.from_json(data)
 
                         if key == "datavizLayers":
-                            self.dataviz_mngr.read_cfg(sjson)
+                            self.read_cfg(sjson)
 
             except Exception as e:
                 if self.is_dev_version:
