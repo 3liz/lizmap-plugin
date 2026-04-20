@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 4.5.10 - 2026-04-20
+
+* Fix blocking I/O on unavailable network drives during project checks
+* fix: use anchor tags for Bootstrap 5 tabs in drag-drop maptip HTML
+
 ## 4.5.9 - 2026-03-09
 
 * Increase maximum value from 999 to 9999 for the popup maximum features
