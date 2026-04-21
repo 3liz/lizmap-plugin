@@ -10,7 +10,7 @@ idna==3.11
 iniconfig==2.1.0 ; python_full_version < '3.10'
 iniconfig==2.3.0 ; python_full_version >= '3.10'
 librt==0.8.1 ; platform_python_implementation != 'PyPy'
-lxml==6.0.2
+lxml==6.1.0
 markdown-it-py==3.0.0 ; python_full_version < '3.10'
 markdown-it-py==4.0.0 ; python_full_version >= '3.10'
 mdurl==0.1.2
