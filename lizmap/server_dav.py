@@ -723,7 +723,7 @@ class WebDav:
                     <d:propstat>
                         <d:prop>
                             <d:getlastmodified>Wed, 03 May 2017 11:05:49 GMT</d:getlastmodified>
-                            <d:getetag>"0169c644a1580687b346ef43315d5ac8"</d:getetag>
+                            <d:getetag>"etag123456789"</d:getetag>
                             <d:getcontenttype>image/jpeg</d:getcontenttype>
                             <d:resourcetype/>
                             <d:getcontentlength>233724</d:getcontentlength>
