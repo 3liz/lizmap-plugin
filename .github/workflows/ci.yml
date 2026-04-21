@@ -17,7 +17,7 @@ on:
 
 jobs:
 
-  flake8:
+  quality-assurance:
     runs-on: ubuntu-latest
     steps:
 
@@ -37,6 +37,14 @@ jobs:
 
       - name: Run flake8
         run: flake8
+
+      - name: Run Bandit (Security Scan)
+        # Scan the lizmap folder for vulnerabilities, excluding the test directory
+        run: bandit -r ./lizmap/ -ll --exclude ./lizmap/test
+
+      - name: Run Detect Secrets
+        # Scan the plugin directory for hardcoded secrets/credentials
+        run: detect-secrets scan ./lizmap/ --all-files
 
   tests:
     runs-on: ubuntu-latest
@@ -68,7 +76,7 @@ jobs:
         run: ./exec.sh
 
   release:
-    needs: [tests, flake8]
+    needs: [tests, quality-assurance]
 
     runs-on: ubuntu-latest
     if: github.repository_owner == '3liz' && contains(github.ref, 'refs/tags/')
