@@ -4,6 +4,7 @@ from os.path import relpath
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+from psycopg2 import connect, sql
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsDataSourceUri,
@@ -585,18 +586,24 @@ def _clean_result(results: dict) -> dict:
 
 def table_type(layer: QgsVectorLayer) -> Optional[QgsAbstractDatabaseProviderConnection.TableFlag]:
     """ Check the vector layer if it's a view. """
-    uri = layer.dataProvider().uri()
+    datasource = layer.dataProvider().uri()
 
     metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
-    connection = metadata.createConnection(uri.uri(), {})
-
-    sql = (
-        f"SELECT relkind "
-        f"FROM pg_catalog.pg_class "
-        f"WHERE oid = '\"{uri.schema()}\".\"{uri.table()}\"'::regclass;"
+    connection = metadata.createConnection(datasource.uri(), {})
+    # psycopg2 composed request
+    query = sql.SQL("""
+        SELECT relkind
+        FROM pg_catalog.pg_class
+        WHERE oid = {}::regclass;
+    """).format(
+        sql.Literal(f"\"{datasource.schema()}\".\"{datasource.table()}\"")
     )
-
-    result = connection.executeSql(sql)
+    # psycopg2 connection
+    conn = connect(datasource.connectionInfo())
+    # psycopg2 rcomposed request as string
+    result = connection.executeSql(query.as_string(conn))
+    # psycopg2 connection close
+    conn.close()
     if not result:
         return None
 

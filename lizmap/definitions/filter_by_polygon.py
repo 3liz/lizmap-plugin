@@ -3,6 +3,7 @@
 from enum import Enum, unique
 from typing import Optional, Tuple
 
+from psycopg2 import connect, sql
 from qgis.core import (
     QgsApplication,
     QgsDataSourceUri,
@@ -132,14 +133,25 @@ class FilterByPolygonDefinitions(BaseDefinitions):
 
         metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
         connection = metadata.createConnection(datasource.uri(), {})
-        result = connection.executeSql(f"""
+        # psycopg2 composed request
+        query = sql.SQL("""
             SELECT tablename, indexname, indexdef
             FROM pg_indexes
-            WHERE schemaname = '{datasource.schema()}'
-            AND tablename = '{datasource.table()}'
-            AND indexdef ILIKE '%{datasource.geometryColumn()}%'
-            AND indexdef ILIKE '%st_centroid%'"""
+            WHERE schemaname = {schemaname}
+            AND tablename = {tablename}
+            AND indexdef ILIKE {geometryname}
+            AND indexdef ILIKE '%st_centroid%'
+        """).format(
+            schemaname=sql.Literal(datasource.schema()),
+            tablename=sql.Literal(datasource.table()),
+            geometryname=sql.Literal(f"%{datasource.geometryColumn()}%")
         )
+        # psycopg2 connection
+        conn = connect(datasource.connectionInfo())
+        # psycopg2 rcomposed request as string
+        result = connection.executeSql(query.as_string(conn))
+        # psycopg2 connection close
+        conn.close()
         if len(result) >= 1:
             return True, None
 
