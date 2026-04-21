@@ -4,7 +4,6 @@ from base64 import b64encode
 from collections import namedtuple
 from pathlib import Path
 from typing import Optional, Tuple, Union
-from xml.dom.minidom import parseString
 
 from qgis.core import (
     Qgis,
@@ -16,6 +15,7 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QDateTime, QEventLoop, QLocale, Qt, QUrl
 from qgis.PyQt.QtNetwork import QHttpMultiPart, QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtXml import QDomDocument
 
 from lizmap.definitions.definitions import RepositoryComboData, ServerComboData
 from lizmap.dialogs.main import LizmapDialog
@@ -685,7 +685,15 @@ class WebDav:
 
     @classmethod
     def xml_reply_from_dav(cls, reply: QNetworkReply) -> str:
-        """ Read the error message in a reply from the dav server. """
+        """ Read the error message in a reply from the dav server.
+
+            Exemple of content:
+            <?xml version="1.0" encoding="utf-8"?>
+            <d:error xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">
+            <s:exception>Sabre\\DAV\\Exception\\NotFound</s:exception>
+            <s:message>Tag with id 15 not found</s:message>
+            </d:error>
+        """
         data = reply.readAll()
         content = data.data().decode('utf8')
         if not content:
@@ -695,31 +703,51 @@ class WebDav:
 
         # noinspection PyBroadException
         try:
-            xml_dom = parseString(content)
-            root = xml_dom.firstChild
-            item = root.getElementsByTagName("s:message")
-            for i in item[0].childNodes:
-                return i.data
+            dom_doc = QDomDocument('dav')
+            dom_doc.setContent(content)
+            doc_elem = dom_doc.documentElement()
+            nodes = doc_elem.elementsByTagName("s:message")
+            return nodes.item(0).toElement().text()
         except Exception:
             return f'{content} - {reply.errorString()}'
 
     @classmethod
     def parse_propfind_response(cls, xml_data: str) -> Union[PropFindFileResponse, PropFindDirResponse]:
-        """ Parse a response from a PROPFIND request. """
-        xml_dom = parseString(xml_data)
-        root = xml_dom.firstChild
+        """ Parse a response from a PROPFIND request.
+
+            Exemple of content:
+            <?xml version="1.0"?>
+            <d:multistatus xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">
+                <d:response>
+                    <d:href>/remote.php/webdav/Photos/Squirrel.jpg</d:href>
+                    <d:propstat>
+                        <d:prop>
+                            <d:getlastmodified>Wed, 03 May 2017 11:05:49 GMT</d:getlastmodified>
+                            <d:getetag>"0169c644a1580687b346ef43315d5ac8"</d:getetag>
+                            <d:getcontenttype>image/jpeg</d:getcontenttype>
+                            <d:resourcetype/>
+                            <d:getcontentlength>233724</d:getcontentlength>
+                        </d:prop>
+                        <d:status>HTTP/1.1 200 OK</d:status>
+                    </d:propstat>
+                </d:response>
+            </d:multistatus>
+        """
+        dom_doc = QDomDocument('dav')
+        dom_doc.setContent(xml_data)
+        doc_elem = dom_doc.documentElement()
 
         # HTTP
-        node = root.getElementsByTagName("d:status")[0]
-        http = node.childNodes[0].data
+        node = doc_elem.elementsByTagName("d:status").item(0)
+        http = node.toElement().text()
 
         # Href
-        node = root.getElementsByTagName("d:href")[0]
-        href = node.childNodes[0].data
+        node = doc_elem.elementsByTagName("d:href").item(0)
+        href = node.toElement().text()
 
         # Last modified
-        node = root.getElementsByTagName("d:getlastmodified")[0]
-        last_modified = node.childNodes[0].data
+        node = doc_elem.elementsByTagName("d:getlastmodified").item(0)
+        last_modified = node.toElement().text()
 
         # Transform from UTC to local timezone
         qdate = QDateTime.fromString(last_modified, Qt.DateFormat.RFC2822Date)
@@ -730,29 +758,30 @@ class WebDav:
         date_string += qdate_locale.toString("hh:mm:ss")
 
         # Collections
-        node = root.getElementsByTagName("d:resourcetype")
-        if node[0].getElementsByTagName("d:collection"):
+        node = doc_elem.elementsByTagName("d:resourcetype").item(0)
+        if node.toElement().elementsByTagName("d:collection").length() > 0:
             is_dir = True
         else:
             is_dir = False
 
         if is_dir:
             # Quota used
-            node = root.getElementsByTagName("d:quota-used-bytes")[0]
-            quota_used = node.childNodes[0].data
+            node = doc_elem.elementsByTagName("d:quota-used-bytes").item(0)
+            quota_used = node.toElement().text()
 
             # Quota available
-            node = root.getElementsByTagName("d:quota-available-bytes")[0]
-            quota_available = node.childNodes[0].data
+            node = doc_elem.elementsByTagName("d:quota-available-bytes").item(0)
+            quota_available = node.toElement().text()
 
             return PropFindDirResponse(http, quota_used, quota_available, last_modified, date_string, href)
+
         # Length
-        node = root.getElementsByTagName("d:getcontentlength")[0]
-        length = node.childNodes[0].data
+        node = doc_elem.elementsByTagName("d:getcontentlength").item(0)
+        length = node.toElement().text()
 
         # Etag
-        node = root.getElementsByTagName("d:getetag")[0]
-        etag = node.childNodes[0].data.strip('"')
+        node = doc_elem.elementsByTagName("d:getetag").item(0)
+        etag = node.toElement().text().strip('"')
 
         return PropFindFileResponse(http, etag, length, last_modified, date_string, href)
 
