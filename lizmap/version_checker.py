@@ -197,20 +197,15 @@ class VersionChecker:
                 "This branch of Lizmap Web Client {} is already outdated for more than {} days.").format(
                 lwc_version.value, DAYS_BEING_OUTDATED)
             details = tr(
-                'We encourage you strongly to upgrade to the latest {} or {} as soon as possible. A possible '
+                f'We encourage you strongly to upgrade to the latest {self.newest_release_branch} or {self.oldest_release_branche} as soon as possible. A possible '
                 'update of the plugin in a few months will remove the support for writing the Lizmap configuration '
-                'file to this version.'.format(self.newest_release_branch, self.oldest_release_branche)
+                'file to this version.'
             )
             self.dialog.display_message_bar(title, description, Qgis.MessageLevel.Warning, 10, details)
             return
 
         LOGGER.warning(
-            "This branch of Lizmap Web Client {} is already outdated for more than {} days. We encourage you "
-            "to upgrade to the latest {} or {}. A possible update of the plugin in a few months will remove "
-            "the support for writing the Lizmap configuration file to this version".format(
-                lwc_version.value,
-                DAYS_BEING_OUTDATED,
-                self.newest_release_branch,
-                self.oldest_release_branche
-            )
+            f"This branch of Lizmap Web Client {lwc_version.value} is already outdated for more than {DAYS_BEING_OUTDATED} days. We encourage you "
+            f"to upgrade to the latest {self.newest_release_branch} or {self.oldest_release_branche}. A possible update of the plugin in a few months will remove "
+            "the support for writing the Lizmap configuration file to this version"
         )

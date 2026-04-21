@@ -128,31 +128,21 @@ class WebDav:
         """ Returns the URL to the project in the web browser. """
         return (
             self.server_url()
-            + 'index.php/view/map?repository={repository}&project={project}'.format(
-                repository=self.parent.current_repository(RepositoryComboData.Id),
-                project=Path(self.qgs_path).stem
-            )
+            + f'index.php/view/map?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}'
         )
 
     def thumbnail_url(self) -> str:
         """ Returns the URL to the thumbnail in the web browser. """
         return (
             self.server_url()
-            + 'index.php/view/media/illustration?repository={repository}&project={project}'.format(
-                repository=self.parent.current_repository(RepositoryComboData.Id),
-                project=Path(self.qgs_path).stem
-            )
+            + f'index.php/view/media/illustration?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}'
         )
 
     def media_url(self, media: str) -> str:
         """ Returns the URL to the media in the web browser. """
         return (
             self.server_url()
-            + 'index.php/view/media/getMedia?repository={repository}&project={project}&path={media}'.format(
-                repository=self.parent.current_repository(RepositoryComboData.Id),
-                project=Path(self.qgs_path).stem,
-                media=media
-            )
+            + f'index.php/view/media/getMedia?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}&path={media}'
         )
 
     def setup_webdav_dialog(self, dialog: LizmapDialog = None) -> bool:
@@ -175,7 +165,7 @@ class WebDav:
             return False
 
         # If we have the webdav URL, it means the user have 'lizmap.webdav.access'
-        LOGGER.debug("WebDAV is ready : {}".format(self.dav_server))
+        LOGGER.debug(f"WebDAV is ready : {self.dav_server}")
         return True
 
     def config_project(self):
@@ -191,7 +181,7 @@ class WebDav:
         if not url:
             return False, '', ''
 
-        LOGGER.info("SEND files to {}".format(url))
+        LOGGER.info(f"SEND files to {url}")
 
         loop = QEventLoop()
         LOGGER.debug(f"Local path {self.qgs_path} to {url} with token {self.auth_id}")
@@ -218,7 +208,7 @@ class WebDav:
             return False, error, ''
 
         url = self.project_url()
-        LOGGER.info("Project published on {}".format(url))
+        LOGGER.info(f"Project published on {url}")
         return True, '', url
 
     def send_thumbnail(self) -> tuple[bool, str]:
@@ -680,8 +670,8 @@ class WebDav:
     @classmethod
     def _token(cls, user: str, password: Optional[str] = None) -> bytes:
         """ Return the encoded token for HTTP requests. """
-        token = b64encode(f"{user}:{password}".encode('utf-8')).decode("ascii")
-        return "Basic {}".format(token).encode("utf-8")
+        token = b64encode(f"{user}:{password}".encode()).decode("ascii")
+        return f"Basic {token}".encode()
 
     @classmethod
     def xml_reply_from_dav(cls, reply: QNetworkReply) -> str:

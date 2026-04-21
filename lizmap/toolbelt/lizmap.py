@@ -26,7 +26,7 @@ def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List
     for variable in lizmap_variables:
         for field, alias in translations.items():
             if variable[1].strip() in (alias, field):
-                content = content.replace(variable[0], '[% "{}" %]'.format(field))
+                content = content.replace(variable[0], f'[% "{field}" %]')
                 break
         else:
             errors.append(variable[1])

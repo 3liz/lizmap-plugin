@@ -93,19 +93,19 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         end_field = self.end_field.currentField()
 
         if is_min:
-            expression = 'minimum("{}")'.format(start_field)
+            expression = f'minimum("{start_field}")'
         else:
             if end_field:
-                expression = 'maximum("{}")'.format(end_field)
+                expression = f'maximum("{end_field}")'
             else:
-                expression = 'maximum("{}")'.format(start_field)
+                expression = f'maximum("{start_field}")'
 
         exp_context = QgsExpressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
         exp_context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
         exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
 
-        exp = QgsExpression('to_string({})'.format(expression))
+        exp = QgsExpression(f'to_string({expression})')
         exp.prepare(exp_context)
         return exp.evaluate(exp_context)
 

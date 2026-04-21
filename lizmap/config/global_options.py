@@ -91,7 +91,7 @@ globalOptionDefinitions = {
         "lizmap_web_client_target_version": {
             "wType": "spinbox",
             "type": "integer",
-            "default": format_version_integer("{}.0".format(LwcVersions.latest().value)),
+            "default": format_version_integer(f"{LwcVersions.latest().value}.0"),
         },
     },
     "mapScales": {

@@ -263,7 +263,7 @@ class WebDavManager(LizmapProtocol):
             )
             return False, error, ""
 
-        logger.debug("Webdav has been OK : {}".format(url))
+        logger.debug(f"Webdav has been OK : {url}")
         self.check_latest_update_webdav()
 
         if flag and qgis_exists:

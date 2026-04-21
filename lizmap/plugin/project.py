@@ -333,7 +333,7 @@ class ProjectManager(LizmapProtocol):
             "qgis_desktop_version": Qgis.versionInt(),
             "lizmap_plugin_version_str": current_version,
             "lizmap_plugin_version": int(format_version_integer(current_version)),
-            "lizmap_web_client_target_version": int(format_version_integer("{}.0".format(lwc_version.value))),
+            "lizmap_web_client_target_version": int(format_version_integer(f"{lwc_version.value}.0")),
             "lizmap_web_client_target_status": target_status.value,
             "instance_target_url": self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value),
         }
@@ -473,7 +473,7 @@ class ProjectManager(LizmapProtocol):
             if manager:
                 try:
                     data = manager.to_json()
-                except (AttributeError,) as e:
+                except AttributeError as e:
                     import traceback
 
                     panel_name = self.dlg.mOptionsListWidget.item(
@@ -873,7 +873,7 @@ class ProjectManager(LizmapProtocol):
         duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
         for name, count in duplicated_in_cfg.items():
             if count >= 2:
-                source = '"{}" → "'.format(name) + tr("count {} layers").format(count)
+                source = f'"{name}" → "' + tr("count {} layers").format(count)
                 self.dlg.check_results.add_error(Error(source, checks.DuplicatedLayerNameOrGroup))
 
         # Layer ID as short name
@@ -985,8 +985,7 @@ class ProjectManager(LizmapProtocol):
                 prevent_auth_id = True
                 force_pg_user_pass = True
                 prevent_other_drive = True
-                if count_parent_folder > CLOUD_MAX_PARENT_FOLDER:
-                    count_parent_folder = CLOUD_MAX_PARENT_FOLDER
+                count_parent_folder = min(count_parent_folder, CLOUD_MAX_PARENT_FOLDER)
                 # prevent_service = False  We encourage service
                 # allow_parent_folder = False Of course we can
 

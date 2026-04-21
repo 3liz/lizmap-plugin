@@ -111,11 +111,11 @@ def _update_ssl(
     """ Update SSL connection for a given URI. """
     current_ssl = QgsDataSourceUri.encodeSslMode(uri.sslMode())
     replaced = re.sub(
-        r"sslmode=({})".format(current_ssl),
-        "sslmode={}".format(QgsDataSourceUri.encodeSslMode(mode)),
+        rf"sslmode=({current_ssl})",
+        f"sslmode={QgsDataSourceUri.encodeSslMode(mode)}",
         uri.uri(True))
 
     if force and "sslmode" not in replaced:
-        replaced = 'sslmode={} {}'.format(QgsDataSourceUri.encodeSslMode(mode), replaced)
+        replaced = f'sslmode={QgsDataSourceUri.encodeSslMode(mode)} {replaced}'
 
     return QgsDataSourceUri(replaced)

@@ -124,7 +124,7 @@ class OgcProjectValidity:
             root_layer_name = self.project.baseName()
 
         project_short_name = self.short_name(root_layer_name, existing, 'p')
-        LOGGER.info("Setting a project shortname : {}".format(project_short_name))
+        LOGGER.info(f"Setting a project shortname : {project_short_name}")
         self.project.writeEntry("WMSRootName", "/", project_short_name)
 
     @classmethod
@@ -145,13 +145,13 @@ class OgcProjectValidity:
             layer_short_name = random_string(5)
 
         if layer_short_name[0].isdigit():
-            layer_short_name = '{}_{}'.format(prefix, layer_short_name)
+            layer_short_name = f'{prefix}_{layer_short_name}'
 
         if layer_short_name not in existing:
             return layer_short_name
 
         def increment(name, i, existing_list):
-            tmp_name = '{}_{}'.format(name, i)
+            tmp_name = f'{name}_{i}'
             if tmp_name not in existing_list:
                 return tmp_name
             return increment(name, i + 1, existing_list)

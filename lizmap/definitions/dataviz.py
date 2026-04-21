@@ -16,7 +16,7 @@ from lizmap.toolbelt.strings import random_string
 
 def generate_uuid(layer: QgsVectorLayer, plot_type: str) -> str:
     """ Generate a UUID for the given layer. """
-    return '{}_plot_{}_{}'.format(layer.name(), plot_type, random_string())
+    return f'{layer.name()}_plot_{plot_type}_{random_string()}'
 
 
 @unique
@@ -133,7 +133,7 @@ def represent_traces(data: Dict) -> str:
     for trace in data:
         y_field = trace.get('y_field')
         if y_field:
-            html += '<li>{}: '.format(y_field)
+            html += f'<li>{y_field}: '
 
             color_field = trace.get('colorfield')
             if color_field:

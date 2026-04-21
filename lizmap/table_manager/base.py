@@ -194,7 +194,7 @@ class TableManager:
                         item: QTableWidgetItem
                         if item is None:
                             # Do not put if not item, it might be False
-                            raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+                            raise Exception(f'Cell is not initialized ({row}, {i})')
 
                         if item.isSelected():
                             # We do not want to add selected values in the list.
@@ -204,7 +204,7 @@ class TableManager:
                         cell = item.data(Qt.ItemDataRole.UserRole)
                         if cell is None:
                             # Do not put if not cell, it might be False
-                            raise Exception('Cell has no data ({}, {})'.format(row, i))
+                            raise Exception(f'Cell has no data ({row}, {i})')
 
                         unicity_dict[key].append(cell)
 
@@ -278,7 +278,7 @@ class TableManager:
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 if self._layer:
                     cell.setText(self._layer.name())
-                    cell.setData(Qt.ItemDataRole.ToolTipRole, '{} ({})'.format(self._layer.name(), self._layer.crs().authid()))
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, f'{self._layer.name()} ({self._layer.crs().authid()})')
                     if self._layer.isValid():
                         cell.setIcon(QgsMapLayerModel.iconForLayer(self._layer))
                         cell.setData(Qt.ItemDataRole.UserRole + 1, True)
@@ -383,7 +383,7 @@ class TableManager:
                                 icon = item_enum.value.get('icon')
                                 break
                         else:
-                            msg = 'Error with value = "{}" in list "{}"'.format(value, key)
+                            msg = f'Error with value = "{value}" in list "{key}"'
                             LOGGER.critical(msg)
                             raise Exception(msg)
                         cell.setText(text)
@@ -409,9 +409,9 @@ class TableManager:
             elif input_type == InputType.SpinBox:
                 unit = self.definitions.layer_config[key].get('unit')
                 if unit:
-                    display = '{}{}'.format(value, unit)
+                    display = f'{value}{unit}'
                 else:
-                    display = '{}'.format(value)
+                    display = f'{value}'
                 cell.setText(display)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
@@ -460,7 +460,7 @@ class TableManager:
                 cell.setData(Qt.ItemDataRole.ToolTipRole, function(value))
 
             else:
-                raise Exception('InputType "{}" not implemented'.format(input_type))
+                raise Exception(f'InputType "{input_type}" not implemented')
 
             self.table.setItem(row, i, cell)
         self._layer = None
@@ -518,7 +518,7 @@ class TableManager:
                 value = cell.data(Qt.ItemDataRole.UserRole)
                 if value == layer_id:
                     self.table.removeRow(i)
-                    LOGGER.info("Removing '{}' from table {}".format(layer_id, self.definitions.key()))
+                    LOGGER.info(f"Removing '{layer_id}' from table {self.definitions.key()}")
                     continue
 
     def truncate(self):
@@ -563,7 +563,7 @@ class TableManager:
                 elif input_type == InputType.CheckBoxAsDropdown:
                     data['config'][config_key] = widget.currentData()
                 else:
-                    raise Exception('InputType global "{}" not implemented'.format(input_type))
+                    raise Exception(f'InputType global "{input_type}" not implemented')
 
         data[self.label_dictionary_list()] = []
 
@@ -579,16 +579,16 @@ class TableManager:
                 item = self.table.item(row, i)
 
                 if export_legacy_single_row:
-                    key = '{}{}{}'.format(self.definitions.key(), key[0].capitalize(), key[1:])
+                    key = f'{self.definitions.key()}{key[0].capitalize()}{key[1:]}'
 
                 if item is None:
                     # Do not put if not item, it might be False
-                    raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+                    raise Exception(f'Cell is not initialized ({row}, {i})')
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Do not put if not cell, it might be False
-                    raise Exception('Cell has no data ({}, {})'.format(row, i))
+                    raise Exception(f'Cell has no data ({row}, {i})')
 
                 if input_type == InputType.Layer \
                         or input_type == InputType.Collection \
@@ -617,7 +617,7 @@ class TableManager:
                 elif input_type == InputType.MultiLine or input_type == InputType.HtmlWysiwyg:
                     layer_data[key] = cell
                 else:
-                    raise Exception('InputType "{}" not implemented'.format(input_type))
+                    raise Exception(f'InputType "{input_type}" not implemented')
 
                 if layer_data[key] == '':
                     layer_data.pop(key)
@@ -760,8 +760,7 @@ class TableManager:
                     key = layer_name
                 if result.get(layer_name):
                     LOGGER.warning(
-                        'Skipping "{}" while saving "{}" JSON configuration. Duplicated entry.'.format(
-                            layer_name, self.definitions.key()))
+                        f'Skipping "{layer_name}" while saving "{self.definitions.key()}" JSON configuration. Duplicated entry.')
                 result[key] = layer
                 result[key]['order'] = i
                 if self.definitions.key() == 'formFilterLayers':
@@ -942,15 +941,14 @@ class TableManager:
                     vector_layer = self.project.mapLayer(value)
                     if not vector_layer or not vector_layer.isValid():
                         LOGGER.warning(
-                            'In Lizmap configuration file, section "{}" with key {}, the layer with ID "{}" is '
-                            'invalid or does not exist. Skipping that layer.'.format(
-                                self.definitions.key(), config_key, value))
+                            f'In Lizmap configuration file, section "{self.definitions.key()}" with key {config_key}, the layer with ID "{value}" is '
+                            'invalid or does not exist. Skipping that layer.')
                     else:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
                 elif widget_type in (InputType.Field, InputType.PrimaryKeyField) or widget_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     settings.append(Setting(widget, widget_type, value))
                 else:
-                    raise Exception('InputType global "{}" not implemented'.format(widget_type))
+                    raise Exception(f'InputType global "{widget_type}" not implemented')
 
             # Now in correct order, because the field depends on the layer
             for setting in settings:
@@ -964,7 +962,7 @@ class TableManager:
                     index = setting.widget.findData(setting.value)
                     setting.widget.setCurrentIndex(index)
                 else:
-                    raise Exception('InputType global "{}" not implemented'.format(widget_type))
+                    raise Exception(f'InputType global "{widget_type}" not implemented')
 
         layers = data.get(self.label_dictionary_list())
 
@@ -994,9 +992,8 @@ class TableManager:
                             # A layer temporary not available will be found in the project, but "not valid".
                             # Some metadata like CRS was still imported from the QGS file, but not fields
                             LOGGER.warning(
-                                'In Lizmap configuration file, section "{}", the layer with ID "{}" is invalid or does '
-                                'not exist. Trying to keep configuration.'.format(
-                                    self.definitions.key(), value))
+                                f'In Lizmap configuration file, section "{self.definitions.key()}", the layer with ID "{value}" is invalid or does '
+                                'not exist. Trying to keep configuration.')
                             # Let's try to keep the configuration
                             # valid_layer = False
                         layer_data[key] = value
@@ -1027,8 +1024,7 @@ class TableManager:
                                 else:
                                     default_list_value = definition.get('default').value['data']
                                     msg = (
-                                        'Error with value = "{}" in list "{}", set default to {}'.format(
-                                            value, key, default_list_value)
+                                        f'Error with value = "{value}" in list "{key}", set default to {default_list_value}'
                                     )
                                     LOGGER.warning(msg)
                                     value = default_list_value
@@ -1053,9 +1049,8 @@ class TableManager:
                     else:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
-                            'In Lizmap configuration file, section "{}", one layer is missing the key "{}" which is '
-                            'mandatory. Skipping that layer.'.format(
-                                self.definitions.key(), key))
+                            f'In Lizmap configuration file, section "{self.definitions.key()}", one layer is missing the key "{key}" which is '
+                            'mandatory. Skipping that layer.')
                         valid_layer = False
                         continue
 
@@ -1063,10 +1058,7 @@ class TableManager:
                 # We didn't find any valid layer during the process of reading this JSON dictionary
                 row = self.table.rowCount()
                 LOGGER.info(
-                    "No valid layer found when reading this section {}. Not adding the row number {}".format(
-                        row + 1,
-                        self.definitions.key()
-                    )
+                    f"No valid layer found when reading this section {row + 1}. Not adding the row number {self.definitions.key()}"
                 )
                 continue
 
@@ -1079,9 +1071,9 @@ class TableManager:
                 # In CI, we still want to test this layer, sorry.
                 if vector_layer.dataProvider().name() != 'postgres':
                     LOGGER.warning(
-                        "The layer for editing {} is not stored in PostgreSQL. Now, only PostgreSQL layers "
+                        f"The layer for editing {vector_layer.id()} is not stored in PostgreSQL. Now, only PostgreSQL layers "
                         "are supported for editing capabilities. Removing this layer from the "
-                        "configuration.".format(vector_layer.id()))
+                        "configuration.")
                     valid_layer = False
 
             if valid_layer:

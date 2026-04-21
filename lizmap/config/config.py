@@ -1,12 +1,11 @@
 import json
 import os
 
+from collections.abc import Mapping, Sequence
 from typing import (
     Any,
     Dict,
-    Mapping,
     Optional,
-    Sequence,
 )
 
 from qgis.core import QgsMapLayer, QgsProject

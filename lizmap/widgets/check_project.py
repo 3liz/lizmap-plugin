@@ -69,7 +69,7 @@ class Severity:
                 {
                     "name": "circle",
                     "color": self.color,
-                    "size": "{}".format(self.size),
+                    "size": f"{self.size}",
                 }
             ),
             QSize(16, 16)
@@ -195,31 +195,21 @@ class Check:
 
         severities = Severities()
         return (
-            "<tr {row_class}>"
-            "<td>{title}</td>"
-            "<td>{description}</td>"
-            "<td>{how_to_fix}</td>"
-            "<td>{level}</td>"
-            "<td>{severity}</td>"
+            f"<tr {row_class}>"
+            f"<td>{self.title}</td>"
+            f"<td>{self.description_text(lizmap_cloud)}</td>"
+            f"<td>{self.help_text(lizmap_cloud)}</td>"
+            f"<td>{self.level.label}</td>"
+            f"<td>{severity.label if self.severity == severities.unknown else self.severity.label}</td>"
             "</tr>"
-        ).format(
-            row_class=row_class,
-            title=self.title,
-            description=self.description_text(lizmap_cloud),
-            how_to_fix=self.help_text(lizmap_cloud),
-            level=self.level.label,
-            severity=severity.label if self.severity == severities.unknown else self.severity.label,
         )
 
     def html_tooltip(self, lizmap_cloud: bool = False) -> str:
         """ HTML string to be used as a tooltip. """
         return (
-            "<strong>{description}</strong>"
+            f"<strong>{self.description_text(lizmap_cloud)}</strong>"
             "<br>"
-            "<p>{how_to_fix}</p>"
-        ).format(
-            description=self.description_text(lizmap_cloud),
-            how_to_fix=self.help_text(lizmap_cloud),
+            f"<p>{self.help_text(lizmap_cloud)}</p>"
         )
 
     def __str__(self):
@@ -395,12 +385,9 @@ class Checks:
             tr("Connections to a PostgreSQL database hosted on {} must use a SSL secured connection.").format(CLOUD_NAME),
             (
                 '<ul>'
-                '<li>{auto_fix}</li>'
-                '<li>{help}</li>'
+                f'<li>{qgis_auto_fix_button}</li>'
+                f'<li>{global_connection}</li>'
                 '</ul>'
-            ).format(
-                auto_fix=qgis_auto_fix_button,
-                help=global_connection,
             ),
             Levels.Layer,
             Severities().blocking,
@@ -412,12 +399,9 @@ class Checks:
             tr("PostgreSQL layer can have the use estimated metadata option enabled"),
             (
                 '<ul>'
-                '<li>{auto_fix}</li>'
-                '<li>{help}</li>'
+                f'<li>{qgis_auto_fix_button}</li>'
+                f'<li>{global_connection}</li>'
                 '</ul>'
-            ).format(
-                auto_fix=qgis_auto_fix_button,
-                help=global_connection,
             ),
             Levels.Layer,
             Severities().blocking,
@@ -779,14 +763,10 @@ class Checks:
             ),
             (
                 '<ul>'
-                '<li>{help}</li>'
-                '<li>{other}</li>'
-                '<li>{global_connection}</li>'
-                '</ul>'.format(
-                    help=other_auth,
-                    other=safeguard,
-                    global_connection=global_connection,
-                )
+                f'<li>{other_auth}</li>'
+                f'<li>{safeguard}</li>'
+                f'<li>{global_connection}</li>'
+                '</ul>'
             ),
             Levels.Layer,
             Severities().unknown,
@@ -830,14 +810,10 @@ class Checks:
             ),
             (
                 '<ul>'
-                '<li>{help}</li>'
-                '<li>{other}</li>'
-                '<li>{global_connection}</li>'
-                '</ul>'.format(
-                    help=other_auth,
-                    other=safeguard,
-                    global_connection=global_connection,
-                )
+                f'<li>{other_auth}</li>'
+                f'<li>{safeguard}</li>'
+                f'<li>{global_connection}</li>'
+                '</ul>'
             ),
             Levels.Layer,
             Severities().unknown,
@@ -906,12 +882,9 @@ class Checks:
             tr('The layer is stored on another drive.'),
             (
                 '<ul>'
-                '<li>{help}</li>'
-                '<li>{other}</li>'
-                '</ul>'.format(
-                    help=either_move_file,
-                    other=safeguard,
-                )
+                f'<li>{either_move_file}</li>'
+                f'<li>{safeguard}</li>'
+                '</ul>'
             ),
             Levels.Layer,
             Severities().unknown,
@@ -919,10 +892,8 @@ class Checks:
             tr('The layer is stored on another drive, which is not possible using {}.').format(CLOUD_NAME),
             (
                 '<ul>'
-                '<li>{help}</li>'
+                f'<li>{move_file}</li>'
                 '</ul>'
-            ).format(
-                help=move_file,
             )
         )
         self.PreventParentFolder = Check(
@@ -931,12 +902,9 @@ class Checks:
             tr('The layer is stored in too many parent\'s folder, compare to the QGS file.'),
             (
                 '<ul>'
-                '<li>{help}</li>'
-                '<li>{other}</li>'
-                '</ul>'.format(
-                    help=either_move_file,
-                    other=safeguard,
-                )
+                f'<li>{either_move_file}</li>'
+                f'<li>{safeguard}</li>'
+                '</ul>'
             ),
             Levels.Layer,
             Severities().unknown,
@@ -1086,7 +1054,6 @@ class TableCheck(QTableWidget):
         # Strange bug occurring when we launch the analysis on the second time
         # Lines are disappearing
         # self.sortByColumn(0, Qt.AscendingOrder)
-        pass
 
     def to_json(self) -> list:
         """ Export data to JSON. """
@@ -1126,7 +1093,7 @@ class TableCheck(QTableWidget):
 
         text = 'Validation summarized :\n\n'
         for error_name, count in result.items():
-            text += '* {} → {}\n'.format(error_name, count)
+            text += f'* {error_name} → {count}\n'
         text += '\n'
         return text
 
@@ -1190,7 +1157,7 @@ class TableCheck(QTableWidget):
                 'Field "{}" in layer name "{}"'
             ).format(error.source_type.name, layer.name()))
             # Override the text
-            item.setText('{} ({})'.format(error.source, layer.name()))
+            item.setText(f'{error.source} ({layer.name()})')
             index = layer.fields().indexFromName(error.source_type.name)
             item.setIcon(layer.fields().iconForField(index))
             item.setData(self.JSON, error.source_type.name)

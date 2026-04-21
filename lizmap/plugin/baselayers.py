@@ -140,7 +140,7 @@ def add_french_ign_layer(layer: IgnLayer, proto: LizmapProtocol):
         "url": "https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities",
     }
     # Do not use urlencode
-    source = "&".join(["{}={}".format(k, v) for k, v in params.items()])
+    source = "&".join([f"{k}={v}" for k, v in params.items()])
     proto._add_base_layer(source, layer.title, "https://www.ign.fr/", "IGN France")
 
 

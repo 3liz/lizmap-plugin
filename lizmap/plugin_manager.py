@@ -71,7 +71,7 @@ class QgisPluginManager:
                     name=plugin,
                     version=None,
                     date=QDate(),
-                    template='{name} - Unknown'.format(name=plugin)
+                    template=f'{plugin} - Unknown'
                 )
 
     def current_plugin_needs_update(self) -> Optional[bool]:
@@ -120,7 +120,7 @@ class QgisPluginManager:
         # We are nice, we let them quite a lot of days to update
         # Because we release a few versions per month
         must_update = latest_date.daysTo(current_plugin_date) > DAYS_BEFORE_OUTDATED
-        LOGGER.debug("Version checker : needs update : {}".format(must_update))
+        LOGGER.debug(f"Version checker : needs update : {must_update}")
         return must_update
 
     def lizmap_version(self):

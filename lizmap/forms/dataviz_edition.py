@@ -167,18 +167,18 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 if item is None:
                     # Safeguard
                     # Do not put if not item, it might be False
-                    raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+                    raise Exception(f'Cell is not initialized ({row}, {i})')
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Safeguard
                     # Do not put if not cell, it might be False
-                    raise Exception('Cell has no data ({}, {})'.format(row, i))
+                    raise Exception(f'Cell has no data ({row}, {i})')
 
                 if input_type == InputType.Field or input_type == InputType.Color:
                     trace_data[sub_key] = cell
                 else:
-                    raise Exception('InputType "{}" not implemented'.format(input_type))
+                    raise Exception(f'InputType "{input_type}" not implemented')
 
             value.append(trace_data)
 
@@ -243,7 +243,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                     cell.setData(Qt.ItemDataRole.DecorationRole, QColor(value))
 
             else:
-                raise Exception('InputType "{}" not implemented'.format(input_type))
+                raise Exception(f'InputType "{input_type}" not implemented')
 
             self.traces.setItem(row, i, cell)
         self.traces.clearSelection()
@@ -330,7 +330,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def add_current_trace_html(self):
         """ Add the current trace from the combobox in the HTML template. """
-        self.html_template.insert_text("{{$y{}}}".format(self.trace_combo.currentData()))
+        self.html_template.insert_text(f"{{$y{self.trace_combo.currentData()}}}")
 
     def validate(self) -> Optional[str]:
         upstream = super().validate()

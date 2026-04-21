@@ -92,7 +92,7 @@ class TableManagerLayouts(TableManager):
         for layout_name in ordered_names:
             layout = qgis_layouts_by_name[layout_name]
             # TODO check for report ?
-            LOGGER.debug("  * reading layout {}".format(layout.name()))
+            LOGGER.debug(f"  * reading layout {layout.name()}")
             row = self.table.rowCount()
             self.table.setRowCount(row + 1)
 
@@ -171,7 +171,7 @@ class TableManagerLayouts(TableManager):
 
             value = cell.data(Qt.ItemDataRole.UserRole)
             if value == old_name:
-                LOGGER.info("Renaming layout from '{}' to '{}'".format(old_name, new_name))
+                LOGGER.info(f"Renaming layout from '{old_name}' to '{new_name}'")
                 cell.setData(Qt.ItemDataRole.UserRole, new_name)
                 cell.setText(new_name)
                 break

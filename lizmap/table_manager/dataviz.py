@@ -292,8 +292,8 @@ class TableManagerDataviz(TableManager):
 
         if len(relations) >= 2:
             LOGGER.warning(
-                "Many relations has been found for the dataviz preview with the layer ID '{}'. "
-                "Only the first one is used.".format(layer_id)
+                f"Many relations has been found for the dataviz preview with the layer ID '{layer_id}'. "
+                "Only the first one is used."
             )
 
         parent_layer = relations[0].referencingLayer()
@@ -314,5 +314,5 @@ class TableManagerDataviz(TableManager):
         feature = self.parent.dataviz_feature_picker.feature()
         if feature.isValid():
             # The current feature can be set to NULL because of "only_show_child"
-            return "\"{}\" IN ('{}')".format(field.name(), feature.id())
+            return f"\"{field.name()}\" IN ('{feature.id()}')"
         return None

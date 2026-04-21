@@ -1371,7 +1371,7 @@ class ServerManager:
 
             known_auth_config.append(auth_id)
 
-            if '@{}'.format(url) in conf.name():
+            if f'@{url}' in conf.name():
                 # Old format
                 LOGGER.warning(f"Migrating the URL {url} in the QGIS authentication database")
                 user = conf.config('username')

@@ -692,7 +692,7 @@ class CreateNewFolderDavPage(QWizardPage):
         dav_url = parent_wizard.dav_url
         auth_id = parent_wizard.auth_id
 
-        LOGGER.debug("Creating a folder called '{}' on {}".format(self.custom_name.text(), dav_url))
+        LOGGER.debug(f"Creating a folder called '{self.custom_name.text()}' on {dav_url}")
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             server_dav = WebDav(dav_url, auth_id)
             if parent_wizard._user:
@@ -755,7 +755,7 @@ class LizmapNewRepositoryPage(QWizardPage):
     def open_browser(self):
         """ Open the web browser. """
         # noinspection PyArgumentList
-        url = QUrl('{}/admin.php/admin/maps/createSection'.format(self.wizard().current_url()))
+        url = QUrl(f'{self.wizard().current_url()}/admin.php/admin/maps/createSection')
         QDesktopServices.openUrl(url)
 
     def refresh_list(self):
@@ -835,7 +835,7 @@ class BaseWizard(QWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        return '{}index.php/view/app/metadata'.format(base_url)
+        return f'{base_url}index.php/view/app/metadata'
 
 
 class ServerWizard(BaseWizard):
@@ -976,7 +976,7 @@ class ServerWizard(BaseWizard):
         # noinspection PyArgumentList,PyUnresolvedReferences
         config.setConfig('realm', QUrl(url).host())
         if self.auth_id:
-            LOGGER.debug("Edit current information authentication ID : {}".format(self.auth_id))
+            LOGGER.debug(f"Edit current information authentication ID : {self.auth_id}")
             # Edit
             config.setId(self.auth_id)
             result = auth_manager.storeAuthenticationConfig(config, True)
@@ -984,10 +984,10 @@ class ServerWizard(BaseWizard):
         else:
             # Creation
             self.auth_id = auth_manager.uniqueConfigId()
-            LOGGER.debug("New authentication ID : {} is going to be created".format(self.auth_id))
+            LOGGER.debug(f"New authentication ID : {self.auth_id} is going to be created")
             config.setId(self.auth_id)
             result = auth_manager.storeAuthenticationConfig(config)
-            LOGGER.debug("New auth ID {} created".format(self.auth_id))
+            LOGGER.debug(f"New auth ID {self.auth_id} created")
             if result[0]:
                 # Only for creation of the server, we save in the JSON
                 self.save_json_server()
@@ -996,11 +996,11 @@ class ServerWizard(BaseWizard):
             LOGGER.debug("Set thumbs")
             self.currentPage().result_master_password.setText(THUMBS)
             LOGGER.info(
-                "Saving configuration with login/password ID {} = OK".format(self.auth_id))
+                f"Saving configuration with login/password ID {self.auth_id} = OK")
             return True
 
         LOGGER.warning(
-            "Saving configuration with login/password ID {} = NOK".format(self.auth_id))
+            f"Saving configuration with login/password ID {self.auth_id} = NOK")
         self.currentPage().result_master_password.setText(
             tr("We couldn't save the login/password into the QGIS authentication database : NOK")
         )
@@ -1047,7 +1047,7 @@ class ServerWizard(BaseWizard):
         if base_url not in config.sections() and base_url[0:-1] not in config.sections():
             return None
 
-        LOGGER.info("Found a server override for server <a href='{0}'>{0}</a>".format(base_url))
+        LOGGER.info(f"Found a server override for server <a href='{base_url}'>{base_url}</a>")
 
         key = 'metadata' if metadata else 'dataviz'
         try:
@@ -1063,13 +1063,13 @@ class ServerWizard(BaseWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        return '{}index.php/dataviz/service/'.format(base_url)
+        return f'{base_url}index.php/dataviz/service/'
 
     @staticmethod
     def url_server_info(base_url: str) -> str:
         """ Return the URL to the server information panel. """
         base_url = ServerWizard.trailing_slash(base_url)
-        return '{}admin.php/admin/server_information'.format(base_url)
+        return f'{base_url}admin.php/admin/server_information'
 
     def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
         """ Check the URL and given login.
@@ -1210,8 +1210,7 @@ class ServerWizard(BaseWizard):
     def _save_pg(name: str, uri: QgsDataSourceUri) -> bool:
         """ Save a PG connection from a URI. """
         LOGGER.info(
-            "Create PG connection '{}' : host {}, database {}, user {}, pass XXXXX, port {}".format(
-                name, uri.host(), uri.database(), uri.username(), uri.port())
+            f"Create PG connection '{name}' : host {uri.host()}, database {uri.database()}, user {uri.username()}, pass XXXXX, port {uri.port()}"
         )
         config = {
             "saveUsername": True,

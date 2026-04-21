@@ -328,22 +328,18 @@ class BaseEditionDialog(QDialog):
     def load_collection(self, value):
         """Load a collection to JSON."""
         # This function is implemented in child class.
-        pass
 
     def save_collection(self) -> dict:
         """Save a collection into JSON."""
         # This function is implemented in child class.
-        pass
 
     def primary_keys_collection(self) -> list:
         """List of unique keys in the collection."""
         # This function is implemented in child class.
-        pass
 
     def post_load_form(self):
         """Function executed after the form with data has been loaded."""
         # This function is implemented in child class.
-        pass
 
     def load_form(self, data: OrderedDict) -> None:
         """A dictionary to load in the UI.
@@ -488,7 +484,7 @@ class BaseEditionDialog(QDialog):
 
         tooltip = self.primary_key.toolTip()
         extra_tooltip = tr('The primary key is defined by the dataprovider only for layer stored in a database.')
-        self.primary_key.setToolTip('{} {}'.format(tooltip, extra_tooltip))
+        self.primary_key.setToolTip(f'{tooltip} {extra_tooltip}')
 
         layer = self.layer.currentLayer()
         if not is_database_layer(layer):

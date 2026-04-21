@@ -103,7 +103,6 @@ class TableManagerDxfExport:
 
     def set_lwc_version(self, version):
         """ Set LWC version - no-op for DXF export as we don't have version-specific features. """
-        pass
 
     def use_single_row(self):
         """ Return False since we use multiple rows for WFS layers. """

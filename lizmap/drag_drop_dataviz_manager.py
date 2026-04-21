@@ -115,7 +115,7 @@ class DragDropDatavizManager:
         # noinspection PyUnresolvedReferences
         item.setFlags(item.flags() & ~ Qt.ItemFlag.ItemIsDropEnabled)
         # noinspection PyUnresolvedReferences
-        item.setData(0, Qt.ItemDataRole.ToolTipRole, "Plot <b>{}</b><br>UUID {}".format(text, uuid))
+        item.setData(0, Qt.ItemDataRole.ToolTipRole, f"Plot <b>{text}</b><br>UUID {uuid}")
         if name_parent:
             self.tree.addTopLevelItem(item)
             parent_item.setExpanded(True)

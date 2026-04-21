@@ -296,7 +296,7 @@ class LayerTreeManager(LizmapProtocol):
         # OVERRIDE DEFAULT FROM CONFIGURATION FILE
         if myDic[item_key]["name"] in json_layers:
             json_key = myDic[item_key]["name"]
-            logger.info("Reading configuration from dictionary for layer {}".format(json_key))
+            logger.info(f"Reading configuration from dictionary for layer {json_key}")
             # loop through layer options to override
             for key, item in self.layer_options_list.items():
                 # override only for ui widgets
@@ -698,7 +698,7 @@ class LayerTreeManager(LizmapProtocol):
 
         layers = [layer for layer in self.project.mapLayers().values() if layer.id() == lid]
         if not layers:
-            logger.warning("Layers not found with searched text from the tree : {}".format(lid))
+            logger.warning(f"Layers not found with searched text from the tree : {lid}")
             return None
 
         return layers[0]

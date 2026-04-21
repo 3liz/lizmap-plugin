@@ -193,7 +193,7 @@ class Lizmap(
         setup_logger(plugin_name())
 
         locale, file_path = setup_translation("lizmap_qgis_plugin_{}.qm", plugin_path("i18n"))
-        LOGGER.info("Language in QGIS : {}".format(locale))
+        LOGGER.info(f"Language in QGIS : {locale}")
 
         if file_path:
             self.translator = QTranslator()
@@ -352,8 +352,8 @@ class Lizmap(
         # self.server_manager.clean_cache(True)
 
         current = qgis_version_info(Qgis.versionInt())
-        current = "{}.{}".format(current[0], current[1])
-        self.dlg.label_current_qgis.setText("<b>{}</b>".format(current))
+        current = f"{current[0]}.{current[1]}"
+        self.dlg.label_current_qgis.setText(f"<b>{current}</b>")
         text = self.dlg.qgis_and_lwc_versions_issue.text()
         self.dlg.qgis_and_lwc_versions_issue.setText(text.format(version=current))
         self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
@@ -557,12 +557,12 @@ class Lizmap(
             """Write all tabs from QGIS to files."""
             temp_dir_log = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
             with open(temp_dir_log.joinpath("all.log"), "a") as log_file:
-                log_file.write("{tag}({level}): {message}".format(tag=tag, level=level, message=message))
+                log_file.write(f"{tag}({level}): {message}")
 
         QgsApplication.messageLog().messageReceived.connect(write_log_message)
 
         self.dlg.setWindowTitle(
-            "Lizmap branch {}, commit {}, next {}".format(self.version, current_git_hash(), next_git_tag())
+            f"Lizmap branch {self.version}, commit {current_git_hash()}, next {next_git_tag()}"
         )
 
     def target_server_changed(self):
@@ -1101,7 +1101,7 @@ class Lizmap(
         """
         tw = self.layers_table[key]["tableWidget"]
         tw.removeRow(tw.currentRow())
-        LOGGER.info('Removing one row in table "{}"'.format(key))
+        LOGGER.info(f'Removing one row in table "{key}"')
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
@@ -1135,7 +1135,7 @@ class Lizmap(
                     if item_layer_id in layer_ids:
                         tw.removeRow(row)
 
-        LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
+        LOGGER.info(f'Layer ID "{layer_ids}" has been removed from the project')
 
     def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
         """When a layout has been renamed in the project."""
@@ -1459,7 +1459,7 @@ class Lizmap(
             # noinspection PyUnresolvedReferences
             self.dlg.display_message_bar(
                 "Lizmap",
-                tr('Project <a href="{}">published !</a>'.format(url)),
+                tr(f'Project <a href="{url}">published !</a>'),
                 level=Qgis.MessageLevel.Success,
                 duration=DURATION_SUCCESS_BAR,
             )

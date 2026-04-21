@@ -66,7 +66,7 @@ class LwcVersionManager(LizmapProtocol):
             self.dlg.refresh_helper_target_version(None)
             return
 
-        logger.debug("Saving new value about the LWC target version : {}".format(current_version.value))
+        logger.debug(f"Saving new value about the LWC target version : {current_version.value}")
         QgsSettings().setValue("lizmap/lizmap_web_client_version", str(current_version.value))
 
         self.dlg.refresh_helper_target_version(current_version)

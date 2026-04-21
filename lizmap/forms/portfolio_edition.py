@@ -97,7 +97,7 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
 
                 if item is None:
                     if saved:
-                        raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+                        raise Exception(f'Cell is not initialized ({row}, {i})')
                     continue
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
@@ -106,7 +106,7 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
                     # Do not put if not item, it might be False or 0
                     if saved and sub_key in ['layout', 'theme', 'zoom_method']:
                         # raise exception for required cell
-                        raise Exception('Cell has no data ({}, {})'.format(row, i))
+                        raise Exception(f'Cell has no data ({row}, {i})')
                     continue
 
                 folio_data[sub_key] = cell
@@ -184,7 +184,7 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             else:
-                raise Exception('InputType "{}" not implemented'.format(input_type))
+                raise Exception(f'InputType "{input_type}" not implemented')
 
             self.folios.setItem(row, i, cell)
         self.folios.clearSelection()

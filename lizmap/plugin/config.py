@@ -109,7 +109,7 @@ class ConfigFileManager(LizmapProtocol):
                 if self.is_dev_version:
                     raise
                 logger.critical(e)
-                copyfile(json_file, "{}.back".format(json_file))
+                copyfile(json_file, f"{json_file}.back")
                 message = tr(
                     "Errors encountered while reading the last layer tree state. "
                     "Please re-configure the options in the Layers tab completely. "
@@ -309,7 +309,7 @@ class ConfigFileManager(LizmapProtocol):
 
         defined_env_target = os.getenv("LIZMAP_TARGET_VERSION")
         if defined_env_target:
-            msg = "Version defined by environment variable : {}".format(defined_env_target)
+            msg = f"Version defined by environment variable : {defined_env_target}"
             logger.warning(msg)
             self.dlg.log_panel.append(msg)
             lwc_version = LwcVersions.find(defined_env_target)
@@ -382,7 +382,7 @@ class ConfigFileManager(LizmapProtocol):
             QMessageBox.critical(
                 self.dlg,
                 tr("Lizmap Error"),
-                "{}\n\n{}".format(message, stop_process),
+                f"{message}\n\n{stop_process}",
                 QMessageBox.StandardButton.Ok,
             )
             return False
