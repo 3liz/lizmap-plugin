@@ -149,7 +149,16 @@ class HtmlPreview(QDockWidget):
 
     def current_layer_changed(self):
         """ When the layer has changed. """
-        self.feature.setLayer(self.layer.currentLayer())
+        layer = self.layer.currentLayer()
+        # Passing an invalid layer to QgsFeaturePickerWidget triggers a
+        # QgsFeaturePickerModel reload via QTimer.  When the timer fires
+        # QGIS creates a QgsVectorLayerFeatureSource on the broken
+        # provider and crashes (access violation).  Skip invalid layers
+        # (e.g. PostGIS with unreachable server) — issue #642.
+        if layer is not None and layer.isValid():
+            self.feature.setLayer(layer)
+        else:
+            self.feature.setLayer(None)
 
     # noinspection PyArgumentList
     def update_html(self):
