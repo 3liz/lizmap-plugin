@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 5.0.0-beta.2 - 2026-04-22
+
+* Simplify the module plugin.py https://github.com/3liz/lizmap-plugin/pull/716
+* Fix: Tooltip validate for display layer style https://github.com/3liz/lizmap-plugin/pull/725
+* Feature: configure Portfolio https://github.com/3liz/lizmap-plugin/pull/691
+* Fix blocking I/O on unavailable network drives during project checks https://github.com/3liz/lizmap-plugin/pull/727
+* Fix/popup tab switching bootstrap5 https://github.com/3liz/lizmap-plugin/pull/726
+* Fix security scan https://github.com/3liz/lizmap-plugin/pull/729
+
 ## 5.0.0-beta.1 - 2026-03-25
 
 * Fix: A vector layer can be spatial but having symbology disabled
@@ -16,7 +25,7 @@
 * Fix: Remember layer group collapsed/expanded state per project
 * Fix: missing type annotations on parent_item parameters
 * Change hash function from MD5 to SHA256
-* Feature: add snap_on_start checkbox for edition layers 
+* Feature: add snap_on_start checkbox for edition layers
 
 ## 5.0.0-alpha.2 - 2026-02-11
 
