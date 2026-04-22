@@ -5,6 +5,7 @@ import contextlib
 import os
 import re
 
+from math import isnan
 from pathlib import Path
 from shutil import copyfile
 from typing import (
@@ -620,7 +621,7 @@ class ProjectManager(LizmapProtocol):
                     extent.xMaximum(),
                     extent.yMaximum(),
                 ]
-                if any(x != x for x in layer_options["extent"]):
+                if any(isnan(x) for x in layer_options["extent"]):
                     if layer.isSpatial():
                         # https://github.com/3liz/lizmap-plugin/issues/571
                         if 33600 <= Qgis.versionInt() < 33603:
