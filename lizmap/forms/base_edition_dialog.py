@@ -19,7 +19,7 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
-from lizmap.definitions.base import InputType
+from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.definitions.online_help import online_lwc_help
 from lizmap.dialogs.wizard_group import WizardGroupDialog
@@ -286,7 +286,7 @@ class BaseEditionDialog(QDialog):
                                     'A duplicated "{}"="{}" is already in the table.'.format(
                                         key, layer_config['widget'].currentLayer().name()))
                         else:
-                            raise TypeError(f"InputType \"{layer_config['type']}\" not implemented")
+                            raise InputTypeError(f"InputType \"{layer_config['type']}\" not implemented")
 
         if self.primary_key_valid is not None and not self.primary_key_valid:
             return tr(
@@ -407,7 +407,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Collection:
                 self.load_collection(value)
             else:
-                raise TypeError(f"InputType \"{definition['type']}\" not implemented")
+                raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")
 
         self.post_load_form()
         self.enable_primary_key_field()
@@ -470,7 +470,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Collection:
                 value = self.save_collection()
             else:
-                raise TypeError(f"InputType \"{definition['type']}\" not implemented")
+                raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")
 
             data[key] = value
         return data

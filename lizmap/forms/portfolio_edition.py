@@ -15,7 +15,7 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap.definitions.base import InputType
+from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.portfolio import GeometryType, PortfolioDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.folio_portfolio_edition import FolioPortfolioEditionDialog
@@ -186,7 +186,7 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             else:
-                raise Exception(f'InputType "{input_type}" not implemented')
+                raise InputTypeError(f'InputType "{input_type}" not implemented')
 
             self.folios.setItem(row, i, cell)
         self.folios.clearSelection()

@@ -14,7 +14,7 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap.definitions.base import InputType
+from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
@@ -180,7 +180,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 if input_type == InputType.Field or input_type == InputType.Color:
                     trace_data[sub_key] = cell
                 else:
-                    raise Exception(f'InputType "{input_type}" not implemented')
+                    raise InputTypeError(f'InputType "{input_type}" not implemented')
 
             value.append(trace_data)
 
@@ -245,7 +245,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                     cell.setData(Qt.ItemDataRole.DecorationRole, QColor(value))
 
             else:
-                raise Exception(f'InputType "{input_type}" not implemented')
+                raise InputTypeError(f'InputType "{input_type}" not implemented')
 
             self.traces.setItem(row, i, cell)
         self.traces.clearSelection()

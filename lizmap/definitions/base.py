@@ -29,6 +29,10 @@ class InputType(Enum):
     Scale = 'Scale'  # QgsScaleWidget
 
 
+class InputTypeError(Exception):
+    pass
+
+
 class BaseDefinitions:
 
     def __init__(self):

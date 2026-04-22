@@ -4,7 +4,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
-from lizmap.definitions.base import InputType
+from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
@@ -114,7 +114,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
                 else:
                     value = widget.color().name()
             else:
-                raise Exception('InputType "{}" not implemented'.format(definition['type']))
+                raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")
 
             data[key] = value
         return data
@@ -134,4 +134,4 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
                 else:
                     definition['widget'].setToNull()
             else:
-                raise Exception('InputType "{}" not implemented'.format(definition['type']))
+                raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")

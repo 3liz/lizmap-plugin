@@ -21,7 +21,7 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
-from lizmap.definitions.base import BaseDefinitions, InputType
+from lizmap.definitions.base import BaseDefinitions, InputType, InputTypeError
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
@@ -464,7 +464,7 @@ class TableManager:
                 cell.setData(Qt.ItemDataRole.ToolTipRole, function(value))
 
             else:
-                raise Exception(f'InputType "{input_type}" not implemented')
+                raise InputTypeError(f'InputType "{input_type}" not implemented')
 
             self.table.setItem(row, i, cell)
         self._layer = None
@@ -567,7 +567,7 @@ class TableManager:
                 elif input_type == InputType.CheckBoxAsDropdown:
                     data['config'][config_key] = widget.currentData()
                 else:
-                    raise Exception(f'InputType global "{input_type}" not implemented')
+                    raise InputTypeError(f'InputType global "{input_type}" not implemented')
 
         data[self.label_dictionary_list()] = []
 
@@ -621,7 +621,7 @@ class TableManager:
                 elif input_type == InputType.MultiLine or input_type == InputType.HtmlWysiwyg:
                     layer_data[key] = cell
                 else:
-                    raise Exception(f'InputType "{input_type}" not implemented')
+                    raise InputTypeError(f'InputType "{input_type}" not implemented')
 
                 if layer_data[key] == '':
                     layer_data.pop(key)
@@ -951,7 +951,7 @@ class TableManager:
                 elif widget_type in (InputType.Field, InputType.PrimaryKeyField) or widget_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     settings.append(Setting(widget, widget_type, value))
                 else:
-                    raise Exception(f'InputType global "{widget_type}" not implemented')
+                    raise InputTypeError(f'InputType global "{widget_type}" not implemented')
 
             # Now in correct order, because the field depends on the layer
             for setting in settings:
@@ -965,7 +965,7 @@ class TableManager:
                     index = setting.widget.findData(setting.value)
                     setting.widget.setCurrentIndex(index)
                 else:
-                    raise Exception(f'InputType global "{widget_type}" not implemented')
+                    raise InputTypeError(f'InputType global "{widget_type}" not implemented')
 
         layers = data.get(self.label_dictionary_list())
 
@@ -1035,7 +1035,7 @@ class TableManager:
                     elif definition['type'] == InputType.SpinBox or definition['type'] == InputType.Text or definition['type'] == InputType.MultiLine or definition['type'] == InputType.HtmlWysiwyg or definition['type'] == InputType.Collection:
                         layer_data[key] = value
                     else:
-                        raise Exception('InputType "{}" not implemented'.format(definition['type']))
+                        raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")
                 else:
                     default_value = definition.get('default')
                     if default_value is not None and not callable(default_value):
