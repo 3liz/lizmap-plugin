@@ -1,11 +1,11 @@
 """Configure dialog depending on the LWC version"""
+from __future__ import annotations
 
 import json
 
 from collections import OrderedDict
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Protocol,
 )
 
@@ -33,8 +33,8 @@ from .. import logger
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
-    layers_table: Dict
+    dlg: LizmapDialog
+    layers_table: dict
 
 
 class LwcVersionManager(LizmapProtocol):
@@ -136,7 +136,7 @@ class LwcVersionManager(LizmapProtocol):
                 self.dlg.qgis_and_lwc_versions_issue.setVisible(True)
 
 
-def configure_lwc_versions(dlg: "LizmapDialog") -> OrderedDict:
+def configure_lwc_versions(dlg: LizmapDialog) -> OrderedDict:
     # Manage LWC versions combo
     lwc_versions = OrderedDict()
     lwc_versions[LwcVersions.Lizmap_3_1] = []

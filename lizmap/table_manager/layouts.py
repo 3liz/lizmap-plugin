@@ -1,18 +1,22 @@
 """ Table manager for layouts. """
+from __future__ import annotations
 
 import logging
 
 from enum import Enum
-from typing import Optional
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QWidget
 
-from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.table_manager.base import TableManager
 from lizmap.toolbelt.resources import plugin_name
+
+if TYPE_CHECKING:
+    from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QWidget
+
+    from lizmap.definitions.base import BaseDefinitions
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -23,9 +27,9 @@ class TableManagerLayouts(TableManager):
 
     def __init__(
         self,
-        parent: Optional[QWidget],
+        parent: QWidget | None,
         definitions: BaseDefinitions,
-        edition: Optional[QDialog],
+        edition: QDialog | None,
         table: QWidget,
         edit_button: QAbstractButton,
         up_button: QAbstractButton,
@@ -147,8 +151,8 @@ class TableManagerLayouts(TableManager):
             lizmap_layouts.append(cell.data(Qt.ItemDataRole.UserRole))
 
         qgis_layouts = []
-        for layout in QgsProject.instance().layoutManager().printLayouts():
-            qgis_layouts.append(layout.name())
+        for qgis_layout in QgsProject.instance().layoutManager().printLayouts():
+            qgis_layouts.append(qgis_layout.name())
 
         # Make the diff
         diff = [x for x in lizmap_layouts if x not in qgis_layouts]

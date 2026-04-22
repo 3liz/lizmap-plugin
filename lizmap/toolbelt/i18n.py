@@ -1,10 +1,7 @@
 """I18N tools."""
+from __future__ import annotations
 
-from pathlib import Path
-from typing import (
-    Optional,
-    Tuple,
-)
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QLocale
@@ -12,11 +9,14 @@ from qgis.PyQt.QtWidgets import QApplication
 
 from lizmap.toolbelt.resources import resources_path
 
+if TYPE_CHECKING:
+    from pathlib import Path
+
 
 def setup_translation(
     file_pattern: str = "{}.qm",
-    folder: Optional[Path] = None,
-) -> Tuple[str, Optional[Path]]:
+    folder: Path | None = None,
+) -> tuple[str, Path | None]:
     """Find the translation file according to locale.
 
     :param file_pattern: Custom file pattern to use to find QM files.

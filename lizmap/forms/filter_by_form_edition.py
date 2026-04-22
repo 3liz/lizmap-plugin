@@ -1,5 +1,7 @@
 """Dialog for filter by form."""
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsFields, QgsMapLayerProxyModel, QgsProject
 from qgis.PyQt.QtGui import QIcon
@@ -21,9 +23,9 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None):
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByFormDefinitions()
@@ -184,7 +186,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         # Let's repaint colors on widgets because of the numeric versus date type
         self.version_lwc()
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

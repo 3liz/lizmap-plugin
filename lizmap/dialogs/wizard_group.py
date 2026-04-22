@@ -1,6 +1,5 @@
 """ Wizard for ACL group. """
-
-from typing import Optional
+from __future__ import annotations
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
@@ -18,7 +17,7 @@ FORM_CLASS = load_ui('ui_wizard_group.ui')
 
 class WizardGroupDialog(QDialog, FORM_CLASS):
 
-    def __init__(self, helper: str, current_acl: str, server_groups: Optional[dict] = None):
+    def __init__(self, helper: str, current_acl: str, server_groups: dict | None = None):
         """ Constructor. """
         QDialog.__init__(self)
         self.setupUi(self)

@@ -62,20 +62,20 @@ class BaseDefinitions:
 
     def add_layer_widget(self, key, widget):
         if key not in self._layer_config:
-            raise Exception('Key does not exist in layer config')
+            raise KeyError('Key does not exist in layer config')
         self._layer_config[key]['widget'] = widget
 
     def add_layer_label(self, key, widget):
         if key not in self._layer_config:
-            raise Exception('Key does not exist in layer config')
+            raise KeyError('Key does not exist in layer config')
         self._layer_config[key]['label'] = widget
 
     def add_general_widget(self, key, widget):
         if key not in self._general_config:
-            raise Exception('Key does not exist in general config')
+            raise KeyError('Key does not exist in general config')
         self._general_config[key]['widget'] = widget
 
     def add_general_label(self, key, widget):
         if key not in self._general_config:
-            raise Exception('Key does not exist in general config')
+            raise KeyError('Key does not exist in general config')
         self._general_config[key]['label'] = widget

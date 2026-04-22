@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 import json
 import os
 
-from collections.abc import Mapping, Sequence
 from typing import (
+    TYPE_CHECKING,
     Any,
-    Dict,
-    Optional,
 )
 
 from qgis.core import QgsMapLayer, QgsProject
@@ -13,6 +13,9 @@ from qgis.core import QgsMapLayer, QgsProject
 from .global_options import globalOptionDefinitions
 from .layer_options import layerOptionDefinitions
 from .models import MappingQgisGeometryType
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
 
 
 class LizmapConfigError(Exception):
@@ -33,9 +36,9 @@ class LizmapConfig:
 
         self._WFSLayers = self.project.readListEntry("WFSLayers", "")[0]
 
-        self._layer_attributes: Dict = {}
-        self._global_options: Dict = {}
-        self._layer_options: Dict = {}
+        self._layer_attributes: dict = {}
+        self._global_options: dict = {}
+        self._layer_options: dict = {}
 
     @staticmethod
     def _load_project(path):
@@ -47,7 +50,7 @@ class LizmapConfig:
             raise LizmapConfigError("Error reading qgis project")
         return project
 
-    def get_layer_by_name(self, name: str) -> Optional[QgsMapLayer]:
+    def get_layer_by_name(self, name: str) -> QgsMapLayer | None:
         """Return a unique layer by its name"""
         matches = self.project.mapLayersByName(name)
         if len(matches) > 0:
@@ -56,9 +59,9 @@ class LizmapConfig:
 
     def to_json(
         self,
-        p_global_options: Optional[Mapping[str, Any]] = None,
-        p_layer_options: Optional[Mapping[str, Any]] = None,
-        p_attributes_options: Optional[Mapping[str, Any]] = None,
+        p_global_options: Mapping[str, Any] | None = None,
+        p_layer_options: Mapping[str, Any] | None = None,
+        p_attributes_options: Mapping[str, Any] | None = None,
         sort_keys: bool = False,
         indent: int = 4,
         **kwargs,
@@ -85,7 +88,7 @@ class LizmapConfig:
         # Write json to the cfg file
         return json.dumps(config, sort_keys=sort_keys, indent=indent, **kwargs)
 
-    def set_global_options(self, options: Optional[Mapping[str, Any]] = None):
+    def set_global_options(self, options: Mapping[str, Any] | None = None):
         """Set the global lizmap configuration options"""
         # set defaults
         self._global_options = {
@@ -170,7 +173,7 @@ class LizmapConfig:
         self._layer_options[lid] = lo
         return lo
 
-    def set_layer_options(self, p_layer_options: Optional[Mapping[str, Any]] = None):
+    def set_layer_options(self, p_layer_options: Mapping[str, Any] | None = None):
         """Set the configuration options for the the project layers
 
         :param p_layer_options: dict of options for each layers
@@ -206,7 +209,7 @@ class LizmapConfig:
 
         # Check that the layer has WFS enabled
         if not self.hasWFSCapabilities(layer):
-            raise LizmapConfigError("WFS Required for layer %s" % layer.name())
+            raise LizmapConfigError(f"WFS Required for layer {layer.name()}")
 
         lyr_name = layer.name()
         lyr_attrs = self._layer_attributes.get(lyr_name)
@@ -248,10 +251,10 @@ class LizmapConfig:
     # noinspection PyPep8Naming
     def configure_server_options(
         self,
-        WMSTitle: Optional[str] = None,
-        WMSDescription: Optional[str] = None,
+        WMSTitle: str | None = None,
+        WMSDescription: str | None = None,
         WFSLayersPrecision: int = 6,
-        WMSExtent: Optional[Sequence[int]] = None,
+        WMSExtent: Sequence[int] | None = None,
     ):
         """Configure server options for layers in the qgis project
 

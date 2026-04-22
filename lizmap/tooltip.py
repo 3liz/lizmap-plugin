@@ -5,11 +5,12 @@
 # Desktop lizmap/tooltip.py
 # Server lizmap_server/tooltip.py
 
+from __future__ import annotations
+
 import logging
 import re
 
 from textwrap import dedent
-from typing import Union
 
 from qgis.core import (
     QgsAttributeEditorContainer,
@@ -293,7 +294,7 @@ class Tooltip:
             %]'''
 
     @staticmethod
-    def _generate_value_map(widget_config: Union[list, dict], name: str) -> str:
+    def _generate_value_map(widget_config: list | dict, name: str) -> str:
         def escape_value(value: str) -> str:
             """Change ' to ’ for the HStore function. """
             return value.replace("'", "’")
@@ -370,7 +371,7 @@ class Tooltip:
                     )'''
 
         else:
-            raise Exception('Unknown external resource widget')
+            raise TypeError('Unknown external resource widget')
 
         return field_view
 

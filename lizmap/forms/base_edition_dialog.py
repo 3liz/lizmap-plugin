@@ -1,10 +1,12 @@
 """Base class for the edition dialog."""
 
+from __future__ import annotations
+
 import json
 import re
 
 from collections import OrderedDict
-from typing import Dict, Optional
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
@@ -20,12 +22,14 @@ from qgis.utils import iface
 from lizmap.definitions.base import InputType
 from lizmap.definitions.definitions import LwcVersions, ServerComboData
 from lizmap.definitions.online_help import online_lwc_help
-from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.wizard_group import WizardGroupDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.widgets.project_tools import is_layer_published_wfs
+
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 
 class BaseEditionDialog(QDialog):
@@ -35,8 +39,8 @@ class BaseEditionDialog(QDialog):
     def __init__(
         self,
         parent: LizmapDialog,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         """ Constructor. """
         # parent is the main UI of the plugin
@@ -113,7 +117,7 @@ class BaseEditionDialog(QDialog):
 
             if layer_config['type'] == InputType.CheckBox:
                 default_value = layer_config['default']
-                if widget is not None and not hasattr(default_value, '__call__'):
+                if widget is not None and not callable(default_value):
                     widget.setChecked(default_value)
 
             if widget is not None and layer_config['type'] == InputType.SpinBox:
@@ -258,7 +262,7 @@ class BaseEditionDialog(QDialog):
                 found = True
 
     @staticmethod
-    def is_layer_in_wfs(layer: QgsVectorLayer) -> Optional[str]:
+    def is_layer_in_wfs(layer: QgsVectorLayer) -> str | None:
         """ Check if the layer in the WFS capabilities. """
         if is_layer_published_wfs(QgsProject.instance(), layer.id()):
             return None
@@ -282,7 +286,7 @@ class BaseEditionDialog(QDialog):
                                     'A duplicated "{}"="{}" is already in the table.'.format(
                                         key, layer_config['widget'].currentLayer().name()))
                         else:
-                            raise Exception('InputType "{}" not implemented'.format(layer_config['type']))
+                            raise TypeError(f"InputType \"{layer_config['type']}\" not implemented")
 
         if self.primary_key_valid is not None and not self.primary_key_valid:
             return tr(
@@ -403,7 +407,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Collection:
                 self.load_collection(value)
             else:
-                raise Exception('InputType "{}" not implemented'.format(definition['type']))
+                raise TypeError(f"InputType \"{definition['type']}\" not implemented")
 
         self.post_load_form()
         self.enable_primary_key_field()
@@ -466,7 +470,7 @@ class BaseEditionDialog(QDialog):
             elif definition['type'] == InputType.Collection:
                 value = self.save_collection()
             else:
-                raise Exception('InputType "{}" not implemented'.format(definition['type']))
+                raise TypeError(f"InputType \"{definition['type']}\" not implemented")
 
             data[key] = value
         return data

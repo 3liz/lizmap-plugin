@@ -1,8 +1,5 @@
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Tuple,
-)
+from typing import TYPE_CHECKING
 
 from qgis.core import (
     Qgis,
@@ -214,7 +211,7 @@ class WebDavManager(LizmapProtocol):
         dialog.exec()
         self.dlg.refresh_versions_button.click()
 
-    def send_webdav(self) -> Tuple[bool, str, str]:
+    def send_webdav(self) -> tuple[bool, str, str]:
         """Sync the QGS and CFG file over the webdav."""
         folder = self.dlg.current_repository(RepositoryComboData.Path)
         if not folder:
@@ -591,7 +588,7 @@ class WebDavManager(LizmapProtocol):
             self.dlg.set_tooltip_webdav(self.dlg.button_upload_thumbnail, file_stats.last_modified_pretty)
             self.dlg.line_thumbnail_date.setText(file_stats.last_modified_pretty)
 
-    def send_files(self) -> Tuple[bool, str]:
+    def send_files(self) -> tuple[bool, str]:
         """Send both files to the server, designed for UI interaction.
 
         With a waiting cursor and sending messages to the message bar.

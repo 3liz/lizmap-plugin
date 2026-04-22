@@ -3,12 +3,12 @@
 This module provides the ScalesManager class which handles map scale
 operations using the delegate pattern.
 """
+from __future__ import annotations
 
 import contextlib
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
     Protocol,
 )
 
@@ -16,19 +16,18 @@ from qgis.core import QgsCoordinateReferenceSystem
 from qgis.PyQt.QtGui import QPixmap
 from qgis.PyQt.QtWidgets import QMessageBox
 
+from .. import logger
 from ..definitions.definitions import LwcVersions
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import window_icon
 
 if TYPE_CHECKING:
+    from ..config import GlobalOptionsDefinitions
     from ..dialogs.main import LizmapDialog
-
-from .. import logger
-from ..config import GlobalOptionsDefinitions
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
+    dlg: LizmapDialog
     is_dev_version: bool
     global_options: GlobalOptionsDefinitions
 
@@ -98,7 +97,7 @@ class ScalesManager(LizmapProtocol):
         map_scales: list,
         min_scale: int,
         max_scale: int,
-        use_native: Optional[bool],
+        use_native: bool | None,
         project_crs: str,
     ):
         """From CFG or default values into the user interface."""
@@ -108,9 +107,8 @@ class ScalesManager(LizmapProtocol):
         )
         max_value = 2000000000
 
-        if max_scale > max_value:
-            # Avoid an OverflowError Python error
-            max_scale = max_value
+        # Avoid an OverflowError Python error
+        max_scale = min(max_scale, max_value)
 
         for widget in scales_widget:
             widget.setMinimum(1)

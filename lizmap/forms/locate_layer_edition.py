@@ -1,10 +1,11 @@
 """Dialog for locate by layer edition."""
 
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerProxyModel
 
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.locate_by_layer import LocateByLayerDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
@@ -12,6 +13,7 @@ from lizmap.toolbelt.layer import is_vector_pg
 from lizmap.toolbelt.resources import load_ui
 
 if TYPE_CHECKING:
+    from lizmap.definitions.definitions import LwcVersions
     from lizmap.dialog.main import LizmapDialog
 
 CLASS = load_ui('ui_form_locate_layer.ui')
@@ -20,9 +22,9 @@ CLASS = load_ui('ui_form_locate_layer.ui')
 class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -67,7 +69,7 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

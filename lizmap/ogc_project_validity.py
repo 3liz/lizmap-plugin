@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
@@ -5,8 +7,6 @@ __email__ = 'info@3liz.org'
 import collections
 import logging
 import re
-
-from typing import List, Tuple
 
 from qgis.core import (
     Qgis,
@@ -41,7 +41,7 @@ class OgcProjectValidity:
         self._add_all_shortnames(layer_tree, existing, duplicated)
         LOGGER.info(f"New shortnames added : {len(self.new_shortnames_added)}")
 
-    def _add_all_shortnames(self, layer_tree: QgsLayerTreeNode, existing_shortnames: List, duplicated: List):
+    def _add_all_shortnames(self, layer_tree: QgsLayerTreeNode, existing_shortnames: list, duplicated: list):
         """ Recursive function to add shortnames. """
         for child in layer_tree.children():
             # noinspection PyArgumentList
@@ -76,7 +76,7 @@ class OgcProjectValidity:
                     self.new_shortnames_added.append(new_shortname)
                 self._add_all_shortnames(child, existing_shortnames, duplicated)
 
-    def existing_shortnames(self) -> Tuple[List[str], List[str]]:
+    def existing_shortnames(self) -> tuple[list[str], list[str]]:
         """ Fetch all existing shortnames in the project. """
         layer_tree = self.project.layerTreeRoot()
         existing = self._read_all_shortnames(layer_tree, [])
@@ -85,7 +85,7 @@ class OgcProjectValidity:
         duplicated = [item for item, count in collections.Counter(existing).items() if count > 1]
         return existing, duplicated
 
-    def _read_all_shortnames(self, group: QgsLayerTreeNode, existing_shortnames: List[str]) -> List[str]:
+    def _read_all_shortnames(self, group: QgsLayerTreeNode, existing_shortnames: list[str]) -> list[str]:
         """ Recursive function to fetch all shortnames. """
 
         for child in group.children():
@@ -128,7 +128,7 @@ class OgcProjectValidity:
         self.project.writeEntry("WMSRootName", "/", project_short_name)
 
     @classmethod
-    def short_name(cls, layer_name: str, existing: List[str], prefix: str = 'l') -> str:
+    def short_name(cls, layer_name: str, existing: list[str], prefix: str = 'l') -> str:
         """ Generate a layer short name.
 
         The default prefix is 'l' for layer.

@@ -1,4 +1,5 @@
 """Project management"""
+from __future__ import annotations
 
 import contextlib
 import os
@@ -8,10 +9,7 @@ from pathlib import Path
 from shutil import copyfile
 from typing import (
     TYPE_CHECKING,
-    Dict,
-    Optional,
     Protocol,
-    Tuple,
 )
 
 from pyplugin_installer.version_compare import compareVersions
@@ -116,19 +114,19 @@ from .layer_tree import LayerTreeManager
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
+    dlg: LizmapDialog
     project: QgsProject
-    layers_table: Dict
-    current_path: Optional[str]
+    layers_table: dict
+    current_path: str | None
 
-    iface: "QgisInterface"
+    iface: QgisInterface
 
     @property
-    def layerList(self) -> Dict: ...
+    def layerList(self) -> dict: ...
 
 
 class ProjectManager(LizmapProtocol):
-    _current_path: Optional[Path]
+    _current_path: Path | None
 
     def initialize_project_management(self):
         self._current_path = None
@@ -213,7 +211,7 @@ class ProjectManager(LizmapProtocol):
         with_gui: bool = True,
         check_server: bool = True,
         ignore_error: bool = False,
-    ) -> Optional[Dict]:
+    ) -> dict | None:
         """Get the JSON CFG content."""
 
         if lwc_version >= LwcVersions.Lizmap_3_6:
@@ -434,10 +432,9 @@ class ProjectManager(LizmapProtocol):
                         input_value = [a.strip() for a in input_value.split(",") if a.strip()]
 
                 elif item["type"] == "integer":
-                    # noinspection PyBroadException
                     try:
                         input_value = int(input_value)
-                    except Exception:
+                    except (TypeError, ValueError):
                         input_value = int(item["default"])
 
                 elif item["type"] == "boolean":
@@ -675,10 +672,9 @@ class ProjectManager(LizmapProtocol):
                     else:
                         property_value = str(property_value)
                 elif val["type"] == "integer":
-                    # noinspection PyBroadException
                     try:
                         property_value = int(property_value)
-                    except Exception:
+                    except (TypeError, ValueError):
                         property_value = 1
                 elif val["type"] in ("boolean", "radio") and not val.get("use_proper_boolean"):
                     property_value = str(property_value)
@@ -1378,7 +1374,7 @@ class ProjectManager(LizmapProtocol):
                 "Lizmap", message, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR
             )
 
-    def check_global_project_options(self) -> Tuple[bool, str]:
+    def check_global_project_options(self) -> tuple[bool, str]:
         """Checks that the needed options are correctly set : relative path, project saved, etc.
 
         :return: Flag if the project is valid and an error message.

@@ -1,7 +1,6 @@
+from __future__ import annotations
 
 import sys
-
-from typing import Optional
 
 from qgis.core import Qgis
 from qgis.PyQt.QtCore import QDateTime, QLocale
@@ -35,7 +34,7 @@ class LogPanel:
     def append(
             self,
             msg: str,
-            style: Optional[Html] = None,
+            style: Html | None = None,
             abort: bool = False,
             time: bool = False,
             level: Qgis.MessageLevel = Qgis.MessageLevel.Info,

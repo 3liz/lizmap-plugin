@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 import json
 import os
 
 from shutil import copyfile
 from typing import (
     TYPE_CHECKING,
-    Dict,
-    Optional,
     Protocol,
 )
 
@@ -44,17 +44,17 @@ from .layer_tree import LayerTreeManager
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
-    iface: "QgisInterface"
+    dlg: LizmapDialog
+    iface: QgisInterface
     project: QgsProject
-    layers_table: Dict
-    global_options: Dict
+    layers_table: dict
+    global_options: dict
     is_dev_version: bool
 
 
 # MixIn classe
 class ConfigFileManager(LizmapProtocol):
-    def read_cfg_file(self, skip_tables: bool = False) -> Dict:
+    def read_cfg_file(self, skip_tables: bool = False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
 
         Populate the gui fields accordingly
@@ -286,9 +286,9 @@ class ConfigFileManager(LizmapProtocol):
 
     def save_cfg_file(
         self,
-        lwc_version: Optional[LwcVersions] = None,
+        lwc_version: LwcVersions | None = None,
         # TODO find better semantic
-        save_project: Optional[bool] = None,
+        save_project: bool | None = None,
         # FIXME seems to be redondant with save_project == None
         with_gui: bool = True,
     ) -> bool:

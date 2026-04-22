@@ -1,7 +1,5 @@
 """Tools about version."""
 
-from typing import Tuple
-
 from lizmap.toolbelt.resources import metadata_config
 
 PACKAGE_NAME = "lizmap"
@@ -18,7 +16,7 @@ def version(remove_prefix: bool = True) -> str:
 def qgis_version_info(
     version_int: int,
     increase_odd_number: bool = True,
-) -> Tuple[int, int, int]:
+) -> tuple[int, int, int]:
     """Split a QGIS int version number into major, minor, bugfix.
 
     If increase_odd_number is True and if the minor version is a dev version,

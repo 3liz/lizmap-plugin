@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __copyright__ = 'Copyright 2022, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
@@ -5,7 +7,6 @@ __email__ = 'info@3liz.org'
 import logging
 
 from collections import namedtuple
-from typing import Optional
 
 from pyplugin_installer import instance
 from qgis.PyQt.QtCore import QDate, QDateTime, QLocale, Qt
@@ -55,7 +56,7 @@ class QgisPluginManager:
                 date_string = latest_stable_date.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
 
                 template = (
-                    '{name} <a href="{url}">'
+                    '{name} <a href="{url}">'  # noqa: RUF027
                     '{tag}   -    {date}'
                     '</a>'
                 )
@@ -74,7 +75,7 @@ class QgisPluginManager:
                     template=f'{plugin} - Unknown'
                 )
 
-    def current_plugin_needs_update(self) -> Optional[bool]:
+    def current_plugin_needs_update(self) -> bool | None:
         """ Return if the plugin is less than a few days late. """
         current_version = version()
         if current_version in DEV_VERSION_PREFIX:

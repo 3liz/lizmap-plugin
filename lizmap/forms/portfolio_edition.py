@@ -1,6 +1,8 @@
 """Dialog for portfolio edition."""
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import Qt
@@ -14,7 +16,6 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from lizmap.definitions.base import InputType
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.portfolio import GeometryType, PortfolioDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.folio_portfolio_edition import FolioPortfolioEditionDialog
@@ -22,6 +23,7 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
 if TYPE_CHECKING:
+    from lizmap.definitions.definitions import LwcVersions
     from lizmap.dialogs.main import LizmapDialog
 
 
@@ -32,9 +34,9 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -230,7 +232,7 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
 
         self._drawing_geometry = current_geometry
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

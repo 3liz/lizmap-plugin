@@ -1,25 +1,25 @@
 """Tools to work with resource files."""
+from __future__ import annotations
 
 import configparser
 import functools
 
 from importlib import resources
-from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Type,
-    Union,
     cast,
 )
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from qgis.PyQt.QtGui import QIcon
 
 
 PACKAGE_NAME = "lizmap"
 
 
-def plugin_path(*args: Union[str, Path]) -> Path:
+def plugin_path(*args: str | Path) -> Path:
     """Get the path to plugin root folder.
 
     :param args List of path elements e.g. ['img', 'logos', 'image.png']
@@ -54,23 +54,23 @@ def metadata_config() -> configparser.ConfigParser:
     return config
 
 
-def resources_path(*args: Union[str, Path]) -> str:
+def resources_path(*args: str | Path) -> str:
     """Get the path to our resources folder."""
     return str(plugin_path("resources", *args))
 
 
-def load_icon(*args: Union[str, Path]) -> "QIcon":
+def load_icon(*args: str | Path) -> QIcon:
     from qgis.PyQt.QtGui import QIcon
 
     return QIcon(resources_path("icons", *args))
 
 
 @functools.cache
-def window_icon() -> "QIcon":
+def window_icon() -> QIcon:
     return load_icon("icon.png")
 
 
-def load_ui(*args) -> Type:
+def load_ui(*args) -> type:
     """Get compiled UI file.
 
     :param args List of path elements e.g. ['img', 'logos', 'image.png']

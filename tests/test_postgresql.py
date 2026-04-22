@@ -98,7 +98,7 @@ class TestSql(TestCase):
         self,
         table_name: str,
         prefix: str = "",
-        pk: Optional[str] = None,
+        pk: str | None = None,
     ) -> QgsVectorLayer:
         """Helper to have the QgsVectorLayer."""
         uri = QgsDataSourceUri(self.uri())

@@ -1,11 +1,13 @@
 """Table manager."""
+from __future__ import annotations
+
 import inspect
 import json
 import logging
 import os
 
 from collections import namedtuple
-from typing import Dict, List, Optional, Union
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -22,11 +24,13 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.definitions.dataviz import AggregationType, GraphType
 from lizmap.definitions.definitions import LwcVersions
-from lizmap.dialogs.main import LizmapDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.toolbelt.convert import as_boolean
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import plugin_name
+
+if TYPE_CHECKING:
+    from lizmap.dialogs.main import LizmapDialog
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -39,7 +43,7 @@ class TableManager:
         self,
         parent: LizmapDialog,
         definitions: BaseDefinitions,
-        edition: Optional[QDialog],
+        edition: QDialog | None,
         table: QWidget,
         remove_button: QAbstractButton,
         edit_button: QAbstractButton,
@@ -264,7 +268,7 @@ class TableManager:
 
             input_type = self.definitions.layer_config[key]['type']
 
-            if self._layer and hasattr(value, '__call__'):
+            if self._layer and callable(value):
                 # Value is a for now a function, we need to evaluate it
                 sig = inspect.signature(value)
                 if 'plot_type' in sig.parameters:
@@ -634,7 +638,7 @@ class TableManager:
                     # Only the first time if the value wasn't set, we compute the value anyway
                     update = True
 
-                if default_value is not None and hasattr(default_value, '__call__') and is_read_only and update:
+                if default_value is not None and callable(default_value) and is_read_only and update:
                     # Value is a for now a function, we need to evaluate it
                     vector_layer = self.project.mapLayer(layer_data['layerId'])
                     # TODO to make it future-proof by inspecting parameters etc
@@ -685,9 +689,8 @@ class TableManager:
                         definition = self.definitions.layer_config[key]
                         if j == 0:
                             json_key = definition['plural'].format('')
-                            if json_key.endswith('_'):
-                                # If the plural is at the end
-                                json_key = json_key[:-1]
+                            # If the plural is at the end
+                            json_key.removesuffix('_')
                         else:
                             json_key = definition['plural'].format(j + 1)
 
@@ -770,26 +773,26 @@ class TableManager:
 
         return data
 
-    def _from_json_legacy(self, data: Dict) -> list:
+    def _from_json_legacy(self, data: dict) -> list:
         """Reformat the JSON data from 3.3 to 3.4 format.
 
         Used for atlas when all keys are stored in the main config scope.
         """
         layer = {}
-        for key in data:
+        for key, value in data.items():
             if not key.startswith(self.definitions.key()):
                 continue
             key_def = key[len(self.definitions.key()):]
             key_def = key_def[0].lower() + key_def[1:]
             definition = self.definitions.layer_config.get(key_def)
             if definition:
-                layer[key_def] = data[key]
+                layer[key_def] = value
 
         return [layer]
 
     # TODO: type me !
     @staticmethod
-    def _from_json_legacy_order(data: Dict) -> Dict:
+    def _from_json_legacy_order(data: dict) -> dict:
         """Used when there is a dictionary with the row number as a key.
 
         No keys will be removed.
@@ -922,7 +925,7 @@ class TableManager:
             data = self._from_json_legacy_form_filter(data)
 
         config = data.get('config')
-        config: Union[dict, None]
+        config: dict | None
         if config:
             settings = []
             widget_type = None
@@ -1035,7 +1038,7 @@ class TableManager:
                         raise Exception('InputType "{}" not implemented'.format(definition['type']))
                 else:
                     default_value = definition.get('default')
-                    if default_value is not None and not hasattr(default_value, '__call__'):
+                    if default_value is not None and not callable(default_value):
                         if self.definitions.key() == 'datavizLayers' and layer_data['type'] == 'box'\
                                 and key == 'aggregation':
                             layer_data[key] = AggregationType.No.value['data']
@@ -1043,7 +1046,7 @@ class TableManager:
                             layer_data[key] = default_value.value['data']
                         else:
                             layer_data[key] = default_value
-                    elif default_value is not None and hasattr(default_value, '__call__'):
+                    elif default_value is not None and callable(default_value):
                         # The function will evaluate the value, with the layer context
                         layer_data[key] = default_value
                     else:
@@ -1081,7 +1084,7 @@ class TableManager:
                 self.table.setRowCount(row + 1)
                 self._edit_row(row, layer_data)
 
-    def wfs_fields_used(self) -> Dict[str, List[str]]:
+    def wfs_fields_used(self) -> dict[str, list[str]]:
         """ List of layers and fields used in the table, needed in WFS. """
         # Loop over the table definitions to fetch layers and fields columns
         index_layer = None

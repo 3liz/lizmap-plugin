@@ -1,4 +1,5 @@
 """Layer tree panel configuration"""
+from __future__ import annotations
 
 import contextlib
 import hashlib
@@ -8,11 +9,7 @@ import os
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
-    Optional,
     Protocol,
-    Union,
 )
 
 from qgis.core import (
@@ -36,6 +33,7 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItem,
 )
 
+from .. import logger
 from ..definitions.definitions import (
     DURATION_WARNING_BAR,
     GroupNames,
@@ -56,22 +54,20 @@ from ..toolbelt.layer import (
 from ..widgets.project_tools import (
     is_layer_wms_excluded,
 )
+from .helpers import display_error, string_to_list
 
 if TYPE_CHECKING:
     from qgis.gui import QgisInterface
 
+    from ..config import GlobalOptionsDefinitions, LayerOptionDefinitions
     from ..dialogs.main import LizmapDialog
-
-from .. import logger
-from ..config import GlobalOptionsDefinitions, LayerOptionDefinitions
-from .helpers import display_error, string_to_list
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
-    iface: "QgisInterface"
+    dlg: LizmapDialog
+    iface: QgisInterface
     project: QgsProject
-    layers_table: Dict
+    layers_table: dict
     is_dev_version: bool
 
     global_options: GlobalOptionsDefinitions
@@ -82,9 +78,9 @@ class LizmapProtocol(Protocol):
 
 
 class LayerTreeManager(LizmapProtocol):
-    _layerList: Dict
+    _layerList: dict
 
-    def layers_config_file(self) -> Dict:
+    def layers_config_file(self) -> dict:
         """Read the CFG file and returns the JSON content about 'layers'."""
         if not self.dlg.check_cfg_file_exists():
             return {}
@@ -153,7 +149,7 @@ class LayerTreeManager(LizmapProtocol):
         self.project.layersAdded.connect(self.new_added_layers)
         self.project.layerTreeRoot().nameChanged.connect(self.layer_renamed)
 
-    def new_added_layers(self, layers: List[QgsMapLayer]):
+    def new_added_layers(self, layers: list[QgsMapLayer]):
         """Reminder to open the plugin to update the CFG file."""
         if not self.dlg.check_cfg_file_exists():
             # Not a Lizmap project
@@ -205,7 +201,7 @@ class LayerTreeManager(LizmapProtocol):
             duration=DURATION_WARNING_BAR,
         )
 
-    def populate_layer_tree(self) -> Dict:
+    def populate_layer_tree(self) -> dict:
         """Populate the layer tree of the Layers tab from QGIS legend interface.
 
         Needs to be refactored.
@@ -234,7 +230,7 @@ class LayerTreeManager(LizmapProtocol):
         # The return is used in tests
         return json_layers
 
-    def set_tree_item_data(self, myDic: Dict, item_type: str, item_key: str, json_layers: Dict):
+    def set_tree_item_data(self, myDic: dict, item_type: str, item_key: str, json_layers: dict):
         """Define default data or data from previous configuration for one item (layer or group)
         Used in the method populateLayerTree
         """
@@ -349,10 +345,10 @@ class LayerTreeManager(LizmapProtocol):
 
     def process_node(
         self,
-        myDic: Dict,
+        myDic: dict,
         node: QgsLayerTreeNode,
-        parent_node: Optional[QTreeWidgetItem],
-        json_layers: Dict,
+        parent_node: QTreeWidgetItem | None,
+        json_layers: dict,
     ):
         """
         Process a single node of the QGIS layer tree and adds it to Lizmap layer tree.
@@ -373,7 +369,7 @@ class LayerTreeManager(LizmapProtocol):
                 # noinspection PyArgumentList
                 child_icon = QgsMapLayerModel.iconForLayer(child.layer())
             else:
-                raise Exception("Unknown child type")
+                raise TypeError("Unknown child type")
 
             # Select an existing item, select the header item or create the item
             if child_id in myDic:
@@ -652,7 +648,7 @@ class LayerTreeManager(LizmapProtocol):
         else:
             self.dlg.widget_deprecated_lizmap_popup.setVisible(False)
 
-    def get_item_wms_capability(self, selected_item: Dict) -> bool:
+    def get_item_wms_capability(self, selected_item: dict) -> bool:
         """
         Check if an item in the tree is a layer
         and if it is a WMS layer
@@ -665,7 +661,7 @@ class LayerTreeManager(LizmapProtocol):
                 wms_enabled = True
         return wms_enabled
 
-    def _current_item_predefined_group(self) -> Optional[PredefinedGroup]:
+    def _current_item_predefined_group(self) -> PredefinedGroup | None:
         """Get the current group type."""
         item = self.dlg.layer_tree.currentItem()
         if not item:
@@ -677,7 +673,7 @@ class LayerTreeManager(LizmapProtocol):
 
         return item.data(0, Qt.ItemDataRole.UserRole + 1)
 
-    def _current_selected_item_in_config(self) -> Optional[str]:
+    def _current_selected_item_in_config(self) -> str | None:
         """Either a group or a layer name."""
         item = self.dlg.layer_tree.currentItem()
         if not item:
@@ -689,7 +685,7 @@ class LayerTreeManager(LizmapProtocol):
 
         return text
 
-    def _current_selected_layer(self) -> Optional[QgsMapLayer]:
+    def _current_selected_layer(self) -> QgsMapLayer | None:
         """Current selected map layer in the tree."""
         lid = self._current_selected_item_in_config()
         if not lid:
@@ -717,11 +713,11 @@ class LayerTreeManager(LizmapProtocol):
         """Persist expanded/collapsed state of group items to QgsSettings."""
         if not self._layer_tree_state_key():
             return
-        states: Dict = {}
+        states: dict = {}
         self._collect_group_states(self.dlg.layer_tree.invisibleRootItem(), states)
         QgsSettings().setValue(self._layer_tree_state_key(), json.dumps(states))
 
-    def _collect_group_states(self, parent_item: QTreeWidgetItem, states: Dict):
+    def _collect_group_states(self, parent_item: QTreeWidgetItem, states: dict):
         """Recursively collect expanded state for group items."""
         for i in range(parent_item.childCount()):
             item = parent_item.child(i)
@@ -743,7 +739,7 @@ class LayerTreeManager(LizmapProtocol):
             return
         self._apply_group_states(self.dlg.layer_tree.invisibleRootItem(), states)
 
-    def _apply_group_states(self, parent_item: QTreeWidgetItem, states: Dict):
+    def _apply_group_states(self, parent_item: QTreeWidgetItem, states: dict):
         """Recursively apply expanded state to group items."""
         for i in range(parent_item.childCount()):
             item = parent_item.child(i)
@@ -765,7 +761,7 @@ class LayerTreeManager(LizmapProtocol):
             self._restore_layer_tree_group_states()
             self.dlg._ignore_layer_tree_state = False
 
-    def get_qgis_layer_by_id(self, my_id: str) -> Optional[QgsMapLayer]:
+    def get_qgis_layer_by_id(self, my_id: str) -> QgsMapLayer | None:
         """Get a QgsMapLayer by its ID."""
         return self.project.mapLayers().get(my_id, None)
 
@@ -900,7 +896,7 @@ class LayerTreeManager(LizmapProtocol):
         root_group: QgsLayerTree,
         label: str,
         index: bool = False,
-    ) -> Optional[Union[QgsLayerTreeGroup, int]]:
+    ) -> QgsLayerTreeGroup | int | None:
         """Return the existing group in the legend if existing.
 
         It will either return the group itself if found, or its index.
@@ -933,8 +929,8 @@ class LayerTreeManager(LizmapProtocol):
         self,
         source: str,
         name: str,
-        attribution_url: Optional[str] = None,
-        attribution_name: Optional[str] = None,
+        attribution_url: str | None = None,
+        attribution_name: str | None = None,
     ):
         """Add a base layer to the "baselayers" group."""
         self.add_group_baselayers()

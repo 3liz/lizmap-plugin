@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import json
 import logging
@@ -7,10 +9,7 @@ import tempfile
 from functools import partial
 from os.path import relpath
 from pathlib import Path
-from typing import (
-    Dict,
-    Optional,
-)
+from typing import TYPE_CHECKING
 
 from qgis.core import (
     Qgis,
@@ -24,7 +23,6 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     Qt,
@@ -148,6 +146,9 @@ from .settings import configure_qgis_settings
 from .training import TrainingManager
 from .webdav import WebDavManager
 
+if TYPE_CHECKING:
+    from qgis.gui import QgisInterface
+
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = "https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json"
 # To try a local file
@@ -171,7 +172,7 @@ class Lizmap(
         return self.current_lwc_version()
 
     @property
-    def layerList(self) -> Dict:
+    def layerList(self) -> dict:
         # From LayerTreeManager
         return self._layerList
 
@@ -783,17 +784,17 @@ class Lizmap(
                             item[button_key].setVisible(False)
 
                     # Connect global checkbox to enable/disable table and populate if needed
-                    def on_dxf_export_toggled(checked):
+                    def on_dxf_export_toggled(checked, tbl_manager):
                         if checked:
                             # Enable table
-                            manager.table.setEnabled(True)
+                            tbl_manager.table.setEnabled(True)
                             # Only populate if table is currently empty
                             # (avoid overwriting loaded config values)
-                            if manager.table.rowCount() == 0:
-                                manager.populate_from_project()
+                            if tbl_manager.table.rowCount() == 0:
+                                tbl_manager.populate_from_project()
                         else:
                             # Disable table but keep the data (preserve user settings)
-                            manager.table.setEnabled(False)
+                            tbl_manager.table.setEnabled(False)
 
                     # Disconnect any existing connections to avoid multiple connections
                     # when dialog is reused between sessions
@@ -801,7 +802,9 @@ class Lizmap(
                         # No connections exist yet
                         self.dlg.checkbox_dxf_export_enabled.toggled.disconnect()
 
-                    self.dlg.checkbox_dxf_export_enabled.toggled.connect(on_dxf_export_toggled)
+                    self.dlg.checkbox_dxf_export_enabled.toggled.connect(
+                        partial(on_dxf_export_toggled, tbl_manager=manager),
+                    )
                     continue
 
                 item["tableWidget"].horizontalHeader().setStretchLastSection(True)
@@ -862,7 +865,7 @@ class Lizmap(
                         definition = FilterByPolygonDefinitions()
                         dialog = FilterByPolygonEditionDialog
                     else:
-                        raise Exception(f"Unknown panel: '{key}'")
+                        raise KeyError(f"Unknown panel: '{key}'")
 
                     item["manager"] = TableManager(
                         self.dlg,
@@ -1047,7 +1050,7 @@ class Lizmap(
         helper = tr("Setting groups allowed to export DXF files.")
         self._open_wizard_group(self.dlg.text_dxf_allowed_groups, helper)
 
-    def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
+    def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> str | None:
         """Open the group wizard and set the output in the line edit."""
         # Duplicated in base_edition_dialog.py, open_wizard_dialog()
         json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
@@ -1110,7 +1113,7 @@ class Lizmap(
         if not self.dlg.check_cfg_file_exists():
             return
 
-        for key, item in self.layers_table.items():
+        for key in self.layers_table:
             manager = self.layers_table[key].get("manager")
             if manager:
                 manager.layers_has_been_deleted(layer_ids)

@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 import re
 
-from pathlib import Path
-from typing import List, Tuple
+from typing import TYPE_CHECKING
 
-from qgis.core import QgsVectorLayer
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from qgis.core import QgsVectorLayer
 
 
-def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List[str]]:
+def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> tuple[str, list[str]]:
     """Convert an HTML Lizmap popup to QGIS HTML Maptip.
 
     If one or more field couldn't be found in the layer fields/alias, returned in errors.
@@ -34,7 +38,7 @@ def convert_lizmap_popup(content: str, layer: QgsVectorLayer) -> Tuple[str, List
     return content, errors
 
 
-def sidecar_media_dirs(file_path: Path) -> List[Path]:
+def sidecar_media_dirs(file_path: Path) -> list[Path]:
     """Look for all side-car dirs in "media" directory.
 
     Like a Lizmap theme or a JavaScript.

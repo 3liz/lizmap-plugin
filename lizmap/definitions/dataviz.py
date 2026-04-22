@@ -1,9 +1,6 @@
 """Definitions for dataviz."""
 
 from enum import Enum, unique
-from typing import (
-    Dict,
-)
 
 from qgis.core import QgsVectorLayer
 
@@ -126,7 +123,7 @@ class AggregationType(Enum):
     }
 
 
-def represent_traces(data: Dict) -> str:
+def represent_traces(data: dict) -> str:
     """Generate HTMl string for the tooltip instead of JSON representation."""
     # Nice to have : color in a small square
     html = '<ul>'

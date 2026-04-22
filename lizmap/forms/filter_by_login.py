@@ -1,9 +1,10 @@
 """Dialog for filter by login."""
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerProxyModel
 
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.filter_by_login import (
     FilterByLoginDefinitions,
     SingleOrMultipleValues,
@@ -13,6 +14,7 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
 if TYPE_CHECKING:
+    from lizmap.definitions.definitions import LwcVersions
     from lizmap.dialogs import LizmapDialog
 
 
@@ -23,9 +25,9 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -67,7 +69,7 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
             # Only enable it if the layer is stored in PostgreSQL
             self.allow_multiple.setEnabled(True)
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

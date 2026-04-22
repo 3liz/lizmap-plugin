@@ -1,6 +1,8 @@
 """Dialog for dataviz edition."""
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication, QgsMapLayerProxyModel
 from qgis.PyQt.QtCore import Qt
@@ -32,9 +34,9 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -332,7 +334,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         """ Add the current trace from the combobox in the HTML template. """
         self.html_template.insert_text(f"{{$y{self.trace_combo.currentData()}}}")
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

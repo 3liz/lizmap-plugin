@@ -1,7 +1,4 @@
-from typing import (
-    Optional,
-    Type,
-)
+from __future__ import annotations
 
 from qgis.core import (
     QgsMapLayerModel,
@@ -164,8 +161,8 @@ class Check:
             level: Level,
             severity: Severity,
             icon: QIcon,
-            alt_description_lizmap_cloud: Optional[str] = None,
-            alt_help_lizmap_cloud: Optional[str] = None,
+            alt_description_lizmap_cloud: str | None = None,
+            alt_help_lizmap_cloud: str | None = None,
             export_in_json: bool = True,
     ):
         self.data = data
@@ -838,16 +835,12 @@ class Checks:
             ),
             (
                 '<ul>'
-                '<li>{help}</li>'
-                '<li>{other}</li>'
-                '<li>{doc}</li>'
-                '<li>{global_connection}</li>'
-                '</ul>'.format(
-                    help=other_auth,
-                    other=safeguard,
-                    doc=pg_service_help().toString(),  # Sorry, the link is not easily clickable in a QTextEdit
-                    global_connection=global_connection,
-                )
+                f'<li>{other_auth}</li>'
+                f'<li>{safeguard}</li>'
+                # Sorry, the link is not easily clickable in a QTextEdit
+                f'<li>{pg_service_help().toString()}</li>'
+                f'<li>{global_connection}</li>'
+                '</ul>'
             ),
             Levels.Layer,
             Severities().unknown,
@@ -991,7 +984,7 @@ class SourceType:
 class Error:
 
     """ An error is defined by a check and a source. """
-    def __init__(self, source: str, check: Check, source_type: Optional[Type[Source]] = None):
+    def __init__(self, source: str, check: Check, source_type: type[Source] | None = None):
         self.source = source
         self.check = check
         self.source_type = source_type
@@ -1101,8 +1094,8 @@ class TableCheck(QTableWidget):
         self,
         error: Error,
         lizmap_cloud: bool = False,
-        severity: Optional[Severity] = None,
-        icon: Optional[QIcon] = None,
+        severity: Severity | None = None,
+        icon: QIcon | None = None,
     ):
         """ Add an error in the table. """
         # By default, let's take the one in the error

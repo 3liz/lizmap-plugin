@@ -1,5 +1,7 @@
 """Dialog for attribute table edition."""
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.PyQt.QtGui import QIcon
@@ -8,12 +10,12 @@ from lizmap.definitions.attribute_table import (
     AttributeTableDefinitions,
     layer_has_custom_attribute_table,
 )
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
 if TYPE_CHECKING:
+    from lizmap.definitions.definitions import LwcVersions
     from lizmap.dialogs.main import LizmapDialog
 
 
@@ -24,9 +26,9 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -101,7 +103,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.has_custom_config.setChecked(layer_has_custom_attribute_table(layer))
         self.enable_primary_key_field()
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

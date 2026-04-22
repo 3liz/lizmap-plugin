@@ -1,5 +1,7 @@
 """Dialog for layout edition."""
-from typing import Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.gui import QgsFileWidget
@@ -13,6 +15,11 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
+if TYPE_CHECKING:
+    from qgis.PyQt.QtWidgets import QWidget
+
+    from lizmap.definitions.definitions import LwcVersions
+
 CLASS = load_ui('ui_form_layout.ui')
 
 
@@ -20,9 +27,9 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional[QWidget] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: QWidget | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -122,7 +129,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         else:
             self.icon.setFilePath("")
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream
