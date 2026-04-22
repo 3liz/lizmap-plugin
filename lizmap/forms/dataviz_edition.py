@@ -17,7 +17,7 @@ from qgis.PyQt.QtWidgets import (
 from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
+from lizmap.forms.base_edition_dialog import BaseEditionDialog, UnknownError
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.table_manager.base import CellError
@@ -200,7 +200,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 graph = item_enum
                 break
         else:
-            raise Exception('Error with list')
+            raise UnknownError('Error with list')
 
         dialog = TraceDatavizEditionDialog(
             self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection())
@@ -270,7 +270,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 graph = item_enum
                 break
         else:
-            raise Exception('Error with list')
+            raise UnknownError('Error with list')
 
         if self.traces.rowCount() > 0 and graph in [GraphType.Pie, GraphType.Histogram2D]:
             self.add_trace.setEnabled(False)
@@ -301,7 +301,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 graph = item_enum
                 break
         else:
-            raise Exception('Error with list')
+            raise UnknownError('Error with list')
 
         # Field X
         if graph in [
@@ -312,7 +312,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         elif graph in [GraphType.Box]:
             self.x_field.setAllowEmptyFieldName(True)
         else:
-            raise Exception('Unknown graph type for X')
+            raise UnknownError('Unknown graph type for X')
 
         # Bar chart
         is_bar_chart = graph == GraphType.Bar

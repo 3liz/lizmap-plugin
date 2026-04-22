@@ -8,7 +8,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
+from lizmap.forms.base_edition_dialog import BaseEditionDialog, UnknownError
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.resources import load_ui
@@ -181,7 +181,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             self.filter_format.setCurrentIndex(index)
             self.splitter.setText('')
         else:
-            raise Exception('Unknown type')
+            raise UnknownError('Unknown type')
 
         # Let's repaint colors on widgets because of the numeric versus date type
         self.version_lwc()
@@ -210,7 +210,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             if not self.field.currentField():
                 return field_required
         else:
-            raise Exception('Unknown option')
+            raise UnknownError('Unknown option')
 
         # Check for join, or virtual fields
         field_origin = tr(

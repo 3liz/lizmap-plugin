@@ -32,6 +32,10 @@ if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
 
 
+class UnknownError(Exception):
+    pass
+
+
 class BaseEditionDialog(QDialog):
 
     """ Class managing the edition form, either creation or editing. """

@@ -393,7 +393,7 @@ class TableManager:
                         else:
                             msg = f'Error with value = "{value}" in list "{key}"'
                             LOGGER.critical(msg)
-                            raise Exception(msg)
+                            raise InputTypeError(msg)
                         cell.setText(text)
                         if icon:
                             cell.setIcon(QIcon(icon))
