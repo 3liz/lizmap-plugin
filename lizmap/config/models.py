@@ -25,7 +25,7 @@ MappingQgisGeometryType = MappingProxyType(
 )
 
 
-class _Item(TypedDict):
+class ModelItem(TypedDict):
     wType: str
     type: str
     default: Any
