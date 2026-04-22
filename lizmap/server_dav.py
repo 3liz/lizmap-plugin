@@ -695,15 +695,25 @@ class WebDav:
                 "Unknown error from the webdav server. No content has been returned."
             ) + " ; Error from the HTTP request " + reply.errorString()
 
-        # noinspection PyBroadException
-        try:
-            dom_doc = QDomDocument('dav')
-            dom_doc.setContent(content)
-            doc_elem = dom_doc.documentElement()
-            nodes = doc_elem.elementsByTagName("s:message")
-            return nodes.item(0).toElement().text()
-        except Exception:
+        dom_doc = QDomDocument('dav')
+        content_result = dom_doc.setContent(content)
+        if not content_result[0]:
+            # Error in the xml content
+            return f'{content_result[1]} - {content}'
+
+        # Get the message or the exception of the error
+        doc_elem = dom_doc.documentElement()
+        messages = doc_elem.elementsByTagName("s:message")
+        exceptions = doc_elem.elementsByTagName("s:exception")
+
+        if messages.count() == 0 and exceptions.count() == 0:
+            # No message or exception found
             return f'{content} - {reply.errorString()}'
+        if messages.count() == 0:
+            # No message found, return the exception
+            return exceptions.item(0).toElement().text()
+        # Return the message
+        return messages.item(0).toElement().text()
 
     @classmethod
     def parse_propfind_response(cls, xml_data: str) -> PropFindFileResponse | PropFindDirResponse:
