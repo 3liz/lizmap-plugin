@@ -154,7 +154,8 @@ class WebDav:
         if dialog:
             self.parent = dialog
 
-        assert self.parent
+        if not self.parent:
+            raise AssertionError("No parent dialog set")
 
         self.config_project()
 
