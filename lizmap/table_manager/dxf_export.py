@@ -1,4 +1,5 @@
 """ Table manager for DXF export. """
+from __future__ import annotations
 
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
@@ -40,7 +41,7 @@ class TableManagerDxfExport:
         # Extract layer-specific DXF settings from layers configuration
         layers_config = data.get('layers', {})
         enabled_layers = {}
-        for layer_name, layer_data in layers_config.items():
+        for layer_data in layers_config.values():
             layer_id = layer_data.get('id')
             enabled = ambiguous_to_bool(layer_data.get('dxfExportEnabled', True))  # Default to enabled, convert to bool
             if layer_id:
@@ -103,7 +104,6 @@ class TableManagerDxfExport:
 
     def set_lwc_version(self, version):
         """ Set LWC version - no-op for DXF export as we don't have version-specific features. """
-        pass
 
     def use_single_row(self):
         """ Return False since we use multiple rows for WFS layers. """

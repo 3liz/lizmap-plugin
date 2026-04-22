@@ -1,12 +1,11 @@
+from __future__ import annotations
+
 import json
 import traceback
 
 from functools import partial
 from typing import (
     TYPE_CHECKING,
-    Dict,
-    List,
-    Optional,
     Protocol,
 )
 
@@ -19,30 +18,30 @@ from lizmap.definitions.definitions import (
 from ..dialogs.main import LizmapDialog
 
 if TYPE_CHECKING:
+    from ..config import GlobalOptionsDefinitions
     from ..dialogs.main import LizmapDialog
 
 from .. import logger
-from ..config import GlobalOptionsDefinitions
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import load_icon
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
+    dlg: LizmapDialog
     global_options: GlobalOptionsDefinitions
 
     @property
     def lwc_version(self) -> LwcVersions: ...
 
     @property
-    def layerList(self) -> Dict: ...
+    def layerList(self) -> dict: ...
 
     def _add_base_layer(
         self,
         source: str,
         name: str,
-        attribution_url: Optional[str] = None,
-        attribution_name: Optional[str] = None,
+        attribution_url: str | None = None,
+        attribution_name: str | None = None,
     ): ...
 
 
@@ -79,7 +78,9 @@ class BaseLayersManager(LizmapProtocol):
 
     def check_visibility_crs_3857(self):
         version = self.current_lwc_version()
-        assert version is not None
+        if version is None:
+            raise AssertionError('Current Lizmap Web Client is unknown')
+
         check_visibility_crs_3857(
             self.dlg,
             self.crs_3857_base_layers_list,
@@ -140,7 +141,7 @@ def add_french_ign_layer(layer: IgnLayer, proto: LizmapProtocol):
         "url": "https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities",
     }
     # Do not use urlencode
-    source = "&".join(["{}={}".format(k, v) for k, v in params.items()])
+    source = "&".join([f"{k}={v}" for k, v in params.items()])
     proto._add_base_layer(source, layer.title, "https://www.ign.fr/", "IGN France")
 
 
@@ -150,10 +151,10 @@ def add_french_ign_layer(layer: IgnLayer, proto: LizmapProtocol):
 
 
 def on_baselayer_checkbox_change(
-    dlg: "LizmapDialog",
-    layerList: Dict,
-    base_layer_widget_list: Dict,
-) -> List:
+    dlg: LizmapDialog,
+    layerList: dict,
+    base_layer_widget_list: dict,
+) -> list:
     """
     Add or remove a base-layer in cbStartupBaselayer combobox
     when user change state of any base-layer related checkbox
@@ -198,7 +199,7 @@ def on_baselayer_checkbox_change(
     return blist
 
 
-def set_startup_baselayer_from_config(dlg: "LizmapDialog"):
+def set_startup_baselayer_from_config(dlg: LizmapDialog):
     """
     Read lizmap current cfg configuration
     and set the startup base-layer if found
@@ -222,13 +223,13 @@ def set_startup_baselayer_from_config(dlg: "LizmapDialog"):
             return
 
         dlg.cbStartupBaselayer.setCurrentIndex(i)
-    except Exception:
+    except (json.JSONDecodeError, UnicodeDecodeError):
         logger.error(traceback.format_exc())
 
 
 def check_visibility_crs_3857(
-    dlg: "LizmapDialog",
-    crs_3857_base_layers_list: Dict,
+    dlg: LizmapDialog,
+    crs_3857_base_layers_list: dict,
     current_version: LwcVersions,
 ):
     """Check if we display the warning about scales.

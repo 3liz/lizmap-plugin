@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import logging
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from qgis.core import (
     Qgis,
@@ -103,9 +105,9 @@ LOGGER = logging.getLogger("Lizmap")
 class LizmapDialog(QDialog, FORM_CLASS):
     def __init__(
         self,
-        parent: Optional["QWidget"] = None,
+        parent: QWidget | None = None,
         is_dev_version: bool = True,
-        lwc_version: Optional[LwcVersions] = None,
+        lwc_version: LwcVersions | None = None,
     ):
         """Constructor."""
         super().__init__(parent)
@@ -524,7 +526,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         QDesktopServices.openUrl(QUrl("https://docs.3liz.org/workshop/workshop/"))
 
     @staticmethod
-    def set_tooltip_webdav(button: QPushButton, date: Optional[str] = None):
+    def set_tooltip_webdav(button: QPushButton, date: str | None = None):
         """ Set tooltip about the upload on the WebDAV server. """
         msg = tr('Upload on the server')
         if date:
@@ -736,15 +738,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         description = tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
 
-        qgis_server = '{}.{}'.format(qgis_server[0], qgis_server[1])
-        qgis_desktop = '{}.{}'.format(qgis_desktop[0], qgis_desktop[1])
+        qgis_server = f'{qgis_server[0]}.{qgis_server[1]}'
+        qgis_desktop = f'{qgis_desktop[0]}.{qgis_desktop[1]}'
 
         if message_bar:
             more = tr('Current QGIS server selected : ')
-            more += '<b>{}</b>'.format(qgis_server)
+            more += f'<b>{qgis_server}</b>'
             more += "<br>"
             more += tr('Current QGIS desktop : ')
-            more += '<b>{}</b>'.format(qgis_desktop)
+            more += f'<b>{qgis_desktop}</b>'
             more += "<br><br>"
             more += tr('Your QGIS desktop is writing QGS project in the future compare to QGIS server.')
             more += "<br>"
@@ -769,7 +771,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Return the current LWC server information from the server combobox. """
         return self.server_combo.currentData(info)
 
-    def current_lwc_version(self, default_value: bool = True) -> Optional[LwcVersions]:
+    def current_lwc_version(self, default_value: bool = True) -> LwcVersions | None:
         """ Return the current LWC version from the server combobox. """
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         # In tests, we might not have metadata in the combobox
@@ -895,10 +897,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def display_message_bar(
             self,
             title: str,
-            message: Optional[str] = None,
+            message: str | None = None,
             level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
-            duration: Optional[int] = None,
-            more_details: Optional[str] = None,
+            duration: int | None = None,
+            more_details: str | None = None,
             open_logs: bool = False):
         """Display a message.
 
@@ -1152,7 +1154,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.label_project_thumbnail.setOpenExternalLinks(True)
 
         folder = Path(self.project.fileName()).parent
-        text = "<a href=\"file://{}\">".format(folder) + tr("No thumbnail detected.") + "</a>" + " "
+        text = f"<a href=\"file://{folder}\">" + tr("No thumbnail detected.") + "</a>" + " "
         text += tr(
             "You can add one by reading the <a href='{}'>online documentation</a>."
         ).format(online_lwc_help("publish/configuration/project_thumbnail.html").toString())
@@ -1175,7 +1177,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                         human_size(thumbnail.stat().st_size))
                 )
 
-    def thumbnail_file(self) -> Optional[Path]:
+    def thumbnail_file(self) -> Path | None:
         """ Get filepath to the thumbnail if found. """
         # Check the project image
         # https://github.com/3liz/lizmap-web-client/blob/master/lizmap/modules/view/controllers/media.classic.php
@@ -1203,7 +1205,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def check_action_file_exists(self) -> bool:
         """ Return boolean if an action file exists for the given project and update UI. """
         self.label_file_action.setText(
-            tr("Configuration file") + " : <a href=\"file://{}\">".format(self.action_file().parent)
+            tr("Configuration file") + f" : <a href=\"file://{self.action_file().parent}\">"
             + self.action_file().name + "</a>"
         )
 
@@ -1286,7 +1288,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         text += '* Mode : {}<br/>\n'.format('normal' if self.radio_normal.isChecked() else 'safe')
         text += '* Allow parent folder : {}<br/>\n'.format('yes' if self.radio_allow_parent_folder.isChecked() else 'no')
         if self.radio_allow_parent_folder.isChecked():
-            text += '* Number of parent : {} folder(s)<br/>\n'.format(self.safe_number_parent.value())
+            text += f'* Number of parent : {self.safe_number_parent.value()} folder(s)<br/>\n'
         text += '* Prevent other drive : {}<br/>\n'.format('yes' if self.safe_other_drive.isChecked() else 'no')
         text += '* Prevent PG service : {}<br/>\n'.format('yes' if self.safe_pg_service.isChecked() else 'no')
         text += '* Prevent PG Auth DB : {}<br/>\n'.format('yes' if self.safe_pg_auth_db.isChecked() else 'no')
@@ -1308,7 +1310,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
     def allow_navigation(self, allow_navigation: bool, message: str = ''):
         """ Allow the navigation or not in the UI. """
-        for i in range(0, self.mOptionsListWidget.count()):
+        for i in range(self.mOptionsListWidget.count()):
 
             item = self.mOptionsListWidget.item(i)
 
@@ -1332,7 +1334,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         if not allow_navigation:
             self.refresh_helper_target_version(None)
 
-    def refresh_helper_target_version(self, version=Optional[LwcVersions]):
+    def refresh_helper_target_version(self, version=LwcVersions | None):
         """ Refresh the helper about target version. """
         if not version:
             msg = tr('Unknown')
@@ -1361,15 +1363,15 @@ class LizmapDialog(QDialog, FORM_CLASS):
         if not field:
             return
 
-        groups = ','.join(["'{}'".format(f) for f in groups.split(',')])
+        groups = ','.join([f"'{f}'" for f in groups.split(',')])
         expression = (
             "not("
             "  array_all("
-            "    array({groups}),"
-            "    string_to_array(\"{field}\")"
+            f"    array({groups}),"
+            f"    string_to_array(\"{field}\")"
             "  )"
             ")"
-        ).format(field=field, groups=groups)
+        )
         layer.removeSelection()
         LOGGER.debug("Expression used for checking groups not on the server :\n" + expression)
         layer.selectByExpression(expression)

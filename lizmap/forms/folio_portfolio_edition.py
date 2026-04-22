@@ -5,7 +5,7 @@ from functools import reduce
 from qgis.core import QgsProject
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
-from lizmap.definitions.base import InputType
+from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.portfolio import (
     GeometryType,
     PortfolioDefinitions,
@@ -141,7 +141,7 @@ class FolioPortfolioEditionDialog(QDialog, CLASS):
             elif definition['type'] == InputType.SpinBox:
                 value = int(definition['widget'].value())
             else:
-                raise Exception('InputType "{}" not implemented'.format(definition['type']))
+                raise InputTypeError('InputType "{}" not implemented'.format(definition['type']))
 
             data[key] = value
 

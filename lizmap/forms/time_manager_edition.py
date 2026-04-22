@@ -1,6 +1,8 @@
 """Dialog for time manager."""
 
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import (
     QgsExpression,
@@ -10,7 +12,6 @@ from qgis.core import (
     QgsProject,
 )
 
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.time_manager import TimeManagerDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
@@ -22,13 +23,15 @@ CLASS = load_ui('ui_form_time_manager.ui')
 if TYPE_CHECKING:
     from qgis.PyQt.QtWidgets import QWidget
 
+    from lizmap.definitions.definitions import LwcVersions
+
 
 class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(self,
-        parent: Optional["QWidget"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        version: Optional[LwcVersions] = None,
+        parent: QWidget | None = None,
+        unicity: dict[str, str] | None = None,
+        version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, version)
         self.setupUi(self)
@@ -93,19 +96,19 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         end_field = self.end_field.currentField()
 
         if is_min:
-            expression = 'minimum("{}")'.format(start_field)
+            expression = f'minimum("{start_field}")'
         else:
             if end_field:
-                expression = 'maximum("{}")'.format(end_field)
+                expression = f'maximum("{end_field}")'
             else:
-                expression = 'maximum("{}")'.format(start_field)
+                expression = f'maximum("{start_field}")'
 
         exp_context = QgsExpressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.globalScope())
         exp_context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
         exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
 
-        exp = QgsExpression('to_string({})'.format(expression))
+        exp = QgsExpression(f'to_string({expression})')
         exp.prepare(exp_context)
         return exp.evaluate(exp_context)
 
@@ -133,7 +136,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
     def end_field_changed(self):
         self.edit_max_value.setText('')
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

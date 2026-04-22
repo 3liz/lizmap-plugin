@@ -140,7 +140,7 @@ def layer_options(
 
         if not item_info:
             # This should not happen
-            raise Exception("Unknown type for item_info")
+            raise KeyError("Unknown type for item_info")
 
         for option in item_info["list"]:
             data, label, tooltip, icon = option

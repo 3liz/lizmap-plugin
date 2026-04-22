@@ -1,12 +1,14 @@
 """Dialog for filter by form."""
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsFields, QgsMapLayerProxyModel, QgsProject
 from qgis.PyQt.QtGui import QIcon
 
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.filter_by_form import FilterByFormDefinitions
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
+from lizmap.forms.base_edition_dialog import BaseEditionDialog, UnknownError
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.resources import load_ui
@@ -21,9 +23,9 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None):
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByFormDefinitions()
@@ -179,12 +181,12 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             self.filter_format.setCurrentIndex(index)
             self.splitter.setText('')
         else:
-            raise Exception('Unknown type')
+            raise UnknownError('Unknown type')
 
         # Let's repaint colors on widgets because of the numeric versus date type
         self.version_lwc()
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream
@@ -208,7 +210,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
             if not self.field.currentField():
                 return field_required
         else:
-            raise Exception('Unknown option')
+            raise UnknownError('Unknown option')
 
         # Check for join, or virtual fields
         field_origin = tr(

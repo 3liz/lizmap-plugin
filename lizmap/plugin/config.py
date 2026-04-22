@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 import json
 import os
 
 from shutil import copyfile
 from typing import (
     TYPE_CHECKING,
-    Dict,
-    Optional,
     Protocol,
 )
 
@@ -44,17 +44,17 @@ from .layer_tree import LayerTreeManager
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
-    iface: "QgisInterface"
+    dlg: LizmapDialog
+    iface: QgisInterface
     project: QgsProject
-    layers_table: Dict
-    global_options: Dict
+    layers_table: dict
+    global_options: dict
     is_dev_version: bool
 
 
 # MixIn classe
 class ConfigFileManager(LizmapProtocol):
-    def read_cfg_file(self, skip_tables: bool = False) -> Dict:
+    def read_cfg_file(self, skip_tables: bool = False) -> dict:
         """Get the saved configuration from the project.qgs.cfg config file.
 
         Populate the gui fields accordingly
@@ -109,7 +109,7 @@ class ConfigFileManager(LizmapProtocol):
                 if self.is_dev_version:
                     raise
                 logger.critical(e)
-                copyfile(json_file, "{}.back".format(json_file))
+                copyfile(json_file, f"{json_file}.back")
                 message = tr(
                     "Errors encountered while reading the last layer tree state. "
                     "Please re-configure the options in the Layers tab completely. "
@@ -286,9 +286,9 @@ class ConfigFileManager(LizmapProtocol):
 
     def save_cfg_file(
         self,
-        lwc_version: Optional[LwcVersions] = None,
+        lwc_version: LwcVersions | None = None,
         # TODO find better semantic
-        save_project: Optional[bool] = None,
+        save_project: bool | None = None,
         # FIXME seems to be redondant with save_project == None
         with_gui: bool = True,
     ) -> bool:
@@ -309,7 +309,7 @@ class ConfigFileManager(LizmapProtocol):
 
         defined_env_target = os.getenv("LIZMAP_TARGET_VERSION")
         if defined_env_target:
-            msg = "Version defined by environment variable : {}".format(defined_env_target)
+            msg = f"Version defined by environment variable : {defined_env_target}"
             logger.warning(msg)
             self.dlg.log_panel.append(msg)
             lwc_version = LwcVersions.find(defined_env_target)
@@ -382,7 +382,7 @@ class ConfigFileManager(LizmapProtocol):
             QMessageBox.critical(
                 self.dlg,
                 tr("Lizmap Error"),
-                "{}\n\n{}".format(message, stop_process),
+                f"{message}\n\n{stop_process}",
                 QMessageBox.StandardButton.Ok,
             )
             return False

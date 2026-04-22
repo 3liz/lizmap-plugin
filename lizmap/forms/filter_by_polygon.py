@@ -1,9 +1,10 @@
 """Dialog for filter by polygon."""
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerProxyModel
 
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.filter_by_polygon import (
     FilterByPolygonDefinitions,
     FilterMode,
@@ -13,6 +14,7 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
 if TYPE_CHECKING:
+    from lizmap.definitions.definitions import LwcVersions
     from lizmap.dialogs.main import LizmapDialog
 
 CLASS = load_ui('ui_form_filter_by_polygon.ui')
@@ -22,9 +24,9 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -50,7 +52,7 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
         self.enable_primary_key_field()
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         layer = self.layer.currentLayer()
         if not layer:
             return tr('A layer is mandatory.')

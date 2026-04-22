@@ -1,6 +1,8 @@
 """Dialog for dataviz edition."""
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication, QgsMapLayerProxyModel
 from qgis.PyQt.QtCore import Qt
@@ -12,12 +14,13 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
 )
 
-from lizmap.definitions.base import InputType
+from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.definitions.definitions import LwcVersions
-from lizmap.forms.base_edition_dialog import BaseEditionDialog
+from lizmap.forms.base_edition_dialog import BaseEditionDialog, UnknownError
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
+from lizmap.table_manager.base import CellError
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
@@ -32,9 +35,9 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def __init__(
         self,
-        parent: Optional["LizmapDialog"] = None,
-        unicity: Optional[Dict[str, str]] = None,
-        lwc_version: Optional[LwcVersions] = None,
+        parent: LizmapDialog | None = None,
+        unicity: dict[str, str] | None = None,
+        lwc_version: LwcVersions | None = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -167,18 +170,18 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 if item is None:
                     # Safeguard
                     # Do not put if not item, it might be False
-                    raise Exception('Cell is not initialized ({}, {})'.format(row, i))
+                    raise CellError(f'Cell is not initialized ({row}, {i})')
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Safeguard
                     # Do not put if not cell, it might be False
-                    raise Exception('Cell has no data ({}, {})'.format(row, i))
+                    raise CellError(f'Cell has no data ({row}, {i})')
 
                 if input_type == InputType.Field or input_type == InputType.Color:
                     trace_data[sub_key] = cell
                 else:
-                    raise Exception('InputType "{}" not implemented'.format(input_type))
+                    raise InputTypeError(f'InputType "{input_type}" not implemented')
 
             value.append(trace_data)
 
@@ -197,7 +200,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 graph = item_enum
                 break
         else:
-            raise Exception('Error with list')
+            raise UnknownError('Error with list')
 
         dialog = TraceDatavizEditionDialog(
             self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection())
@@ -243,7 +246,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                     cell.setData(Qt.ItemDataRole.DecorationRole, QColor(value))
 
             else:
-                raise Exception('InputType "{}" not implemented'.format(input_type))
+                raise InputTypeError(f'InputType "{input_type}" not implemented')
 
             self.traces.setItem(row, i, cell)
         self.traces.clearSelection()
@@ -267,7 +270,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 graph = item_enum
                 break
         else:
-            raise Exception('Error with list')
+            raise UnknownError('Error with list')
 
         if self.traces.rowCount() > 0 and graph in [GraphType.Pie, GraphType.Histogram2D]:
             self.add_trace.setEnabled(False)
@@ -298,7 +301,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 graph = item_enum
                 break
         else:
-            raise Exception('Error with list')
+            raise UnknownError('Error with list')
 
         # Field X
         if graph in [
@@ -309,7 +312,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         elif graph in [GraphType.Box]:
             self.x_field.setAllowEmptyFieldName(True)
         else:
-            raise Exception('Unknown graph type for X')
+            raise UnknownError('Unknown graph type for X')
 
         # Bar chart
         is_bar_chart = graph == GraphType.Bar
@@ -330,9 +333,9 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def add_current_trace_html(self):
         """ Add the current trace from the combobox in the HTML template. """
-        self.html_template.insert_text("{{$y{}}}".format(self.trace_combo.currentData()))
+        self.html_template.insert_text(f"{{$y{self.trace_combo.currentData()}}}")
 
-    def validate(self) -> Optional[str]:
+    def validate(self) -> str | None:
         upstream = super().validate()
         if upstream:
             return upstream

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import logging
 import os
@@ -7,11 +9,8 @@ from enum import Enum
 from functools import partial
 from pathlib import Path
 from typing import (
+    TYPE_CHECKING,
     Callable,
-    List,
-    Optional,
-    Tuple,
-    Union,
 )
 
 from qgis.core import (
@@ -51,7 +50,6 @@ from lizmap.definitions.definitions import (
     ServerComboData,
 )
 from lizmap.definitions.lizmap_cloud import CLOUD_QGIS_MIN_RECOMMENDED
-from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import (
     CreateFolderWizard,
     NamePage,
@@ -62,6 +60,11 @@ from lizmap.toolbelt.convert import ambiguous_to_bool
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder, user_settings
 from lizmap.toolbelt.version import qgis_version_info, version
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from lizmap.dialogs.main import LizmapDialog
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -88,7 +91,7 @@ class Color(Enum):
 MAX_DAYS = 7
 
 
-def is_numeric(v: Union[str, int]) -> bool:
+def is_numeric(v: str | int) -> bool:
     try:
         int(v)
         return True
@@ -230,7 +233,7 @@ class ServerManager:
         self.add_first_server.setVisible(self.table.rowCount() == 0)
 
     @staticmethod
-    def config_for_id(auth_id: str) -> Optional[QgsAuthMethodConfig]:
+    def config_for_id(auth_id: str) -> QgsAuthMethodConfig | None:
         """ Fetch the authentication settings for a given token. """
         auth_manager = QgsApplication.authManager()
         if not auth_manager.masterPasswordIsSet():
@@ -348,7 +351,7 @@ class ServerManager:
         try:
             # When we are reloading the plugin
             # I'm not sure why ...
-            self.table
+            _ = self.table
         except AttributeError:
             return None, None, None
 
@@ -528,7 +531,7 @@ class ServerManager:
         try:
             # When we are reloading the plugin
             # I'm not sure why ...
-            self.table
+            _ = self.table
         except AttributeError:
             return
 
@@ -789,7 +792,7 @@ class ServerManager:
         return text
 
     @classmethod
-    def existing_json_server_list(cls) -> List:
+    def existing_json_server_list(cls) -> list:
         """ Read the JSON file and return its content. """
         user_file = user_settings()
         if not user_file.exists():
@@ -897,8 +900,8 @@ class ServerManager:
         lizmap_version: str,
         qgis_server_version: str,
         row: int,
-        login: Optional[str] = None,
-        error: Optional[str] = None,
+        login: str | None = None,
+        error: str | None = None,
         lizmap_cloud: bool = False,
     ):
         """ When we know the version, we can check the latest release from LWC with the file in cache. """
@@ -928,11 +931,11 @@ class ServerManager:
             server_version: str,
             login: str,
             json_path: Path,
-            qgis_desktop: Tuple[int, int],
+            qgis_desktop: tuple[int, int],
             error: str = '',
             lizmap_cloud: bool = False,
             is_dev: bool = False,
-    ) -> Tuple[Qgis.MessageLevel, List[str], bool]:
+    ) -> tuple[Qgis.MessageLevel, list[str], bool]:
         """Returns the list of messages and the color to use.
 
         The last returned value is a boolean if the QGIS server is valid or not. It's blocker to continue with this
@@ -1371,7 +1374,7 @@ class ServerManager:
 
             known_auth_config.append(auth_id)
 
-            if '@{}'.format(url) in conf.name():
+            if f'@{url}' in conf.name():
                 # Old format
                 LOGGER.warning(f"Migrating the URL {url} in the QGIS authentication database")
                 user = conf.config('username')

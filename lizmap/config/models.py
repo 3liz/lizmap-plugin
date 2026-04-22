@@ -1,7 +1,7 @@
+from collections.abc import Sequence
 from types import MappingProxyType
 from typing import (
     Any,
-    Sequence,
     TypedDict,
 )
 
@@ -25,7 +25,7 @@ MappingQgisGeometryType = MappingProxyType(
 )
 
 
-class _Item(TypedDict):
+class ModelItem(TypedDict):
     wType: str
     type: str
     default: Any

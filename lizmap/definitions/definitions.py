@@ -1,12 +1,11 @@
 """Definitions used in Lizmap"""
+from __future__ import annotations
 
 from enum import Enum, unique
 from functools import cached_property, total_ordering
 from types import SimpleNamespace
 from typing import (
     NamedTuple,
-    Optional,
-    Tuple,
 )
 
 from qgis.PyQt.QtCore import Qt
@@ -39,17 +38,17 @@ class LwcVersions(Enum):
         return NotImplemented
 
     @staticmethod
-    def latest() -> "LwcVersions":
+    def latest() -> LwcVersions:
         """ Latest version definition in the Python files, like LWC 3.X """
         return next(reversed(LwcVersions))
 
     @staticmethod
-    def oldest() -> "LwcVersions":
+    def oldest() -> LwcVersions:
         """ Oldest version definition in the Python file, like LWC 3.1 """
         return next(iter(LwcVersions))
 
     @classmethod
-    def find(cls, version_string: str) -> Optional["LwcVersions"]:
+    def find(cls, version_string: str) -> LwcVersions | None:
         """Return the LWC version for the given string."""
         major, minor = version_string.split('.', maxsplit=2)[:2]
         branch = f"{major}.{minor}"
@@ -59,13 +58,13 @@ class LwcVersions(Enum):
             return None
 
     @classmethod
-    def find_from_metadata(cls, metadata: dict) -> Optional["LwcVersions"]:
+    def find_from_metadata(cls, metadata: dict) -> LwcVersions | None:
         """ Return the release status from metadata. """
         version = metadata.get("info").get("version")
         return LwcVersions.find(version)
 
     @cached_property
-    def version_info(self) -> Tuple[int, int]:
+    def version_info(self) -> tuple[int, int]:
         """ List from a version string. """
 
         return tuple(int(v) for v in self.value.split("."))
@@ -108,7 +107,7 @@ class ReleaseStatus(Enum):
         return NotImplemented
 
     @classmethod
-    def find(cls, status_string: str) -> "ReleaseStatus":
+    def find(cls, status_string: str) -> ReleaseStatus:
         """Return the release status from the string."""
         if status_string == 'feature_freeze':
             status_string = 'ReleaseCandidate'

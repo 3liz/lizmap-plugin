@@ -1,8 +1,9 @@
+from __future__ import annotations
 
 import logging
 
 from enum import Enum, unique
-from typing import List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QBrush, QIcon
@@ -18,9 +19,11 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItemIterator,
 )
 
-from lizmap.definitions.dataviz import DatavizDefinitions
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import resources_path
+
+if TYPE_CHECKING:
+    from lizmap.definitions.dataviz import DatavizDefinitions
 
 LOGGER = logging.getLogger('Lizmap')
 
@@ -39,7 +42,7 @@ class DragDropDatavizManager:
 
     def __init__(
             self,
-            parent: Optional[QDialog],
+            parent: QDialog | None,
             definitions: DatavizDefinitions,
             table_widget: QTableWidget,
             tree_widget: QTreeWidget,
@@ -72,7 +75,7 @@ class DragDropDatavizManager:
         uuid = self.combo_plots.itemData(index, Qt.ItemDataRole.UserRole)
         self._add_plot_in_tree(text, icon, uuid)
 
-    def metadata_from_uuid(self, uuid: str) -> Union[Tuple[None, None], Tuple[str, QIcon]]:
+    def metadata_from_uuid(self, uuid: str) -> tuple[None, None] | tuple[str, QIcon]:
         """ Fetch title and icon from the plot UUID in the combobox.
 
         Because this information is not stored in the CFG in the D&D section.
@@ -90,7 +93,7 @@ class DragDropDatavizManager:
         icon = self.combo_plots.itemIcon(index)
         return text, icon
 
-    def _add_plot_in_tree(self, text: str, icon: QIcon, uuid: str, name_parent: Optional[str] = None):
+    def _add_plot_in_tree(self, text: str, icon: QIcon, uuid: str, name_parent: str | None = None):
         """ Internal function to add a plot in the tree. """
         if name_parent:
             # noinspection PyUnresolvedReferences
@@ -115,7 +118,7 @@ class DragDropDatavizManager:
         # noinspection PyUnresolvedReferences
         item.setFlags(item.flags() & ~ Qt.ItemFlag.ItemIsDropEnabled)
         # noinspection PyUnresolvedReferences
-        item.setData(0, Qt.ItemDataRole.ToolTipRole, "Plot <b>{}</b><br>UUID {}".format(text, uuid))
+        item.setData(0, Qt.ItemDataRole.ToolTipRole, f"Plot <b>{text}</b><br>UUID {uuid}")
         if name_parent:
             self.tree.addTopLevelItem(item)
             parent_item.setExpanded(True)
@@ -148,7 +151,7 @@ class DragDropDatavizManager:
                 uuid_index = i
                 break
         else:
-            raise Exception('UUID must exist in dataviz definitions.')
+            raise KeyError('UUID must exist in dataviz definitions.')
 
         # Icon column
         icon_index = 0
@@ -252,7 +255,7 @@ class DragDropDatavizManager:
         current_parent = self.tree.invisibleRootItem()
         return self._to_json(current_parent)
 
-    def _to_json(self, parent_item: QTreeWidgetItem) -> List:
+    def _to_json(self, parent_item: QTreeWidgetItem) -> list:
         """ Recursive function to transform the tree into JSON. """
         data = []
         child_count = parent_item.childCount()
@@ -287,7 +290,7 @@ class DragDropDatavizManager:
         self._container_from_cfg(data)
         return True
 
-    def _container_from_cfg(self, data: list, parent: Optional[str] = None) -> bool:
+    def _container_from_cfg(self, data: list, parent: str | None = None) -> bool:
         """ Recursive function to read the container data. """
         for line in data:
             line: dict
@@ -311,11 +314,11 @@ class DragDropDatavizManager:
                 self._add_plot_in_tree(text, icon, line["uuid"], parent)
 
             else:
-                raise Exception(f'Unknown type : {line["type"]}')
+                raise TypeError(f'Unknown type : {line["type"]}')
 
         return True
 
-    def _add_container(self, name: str, name_parent: Optional[str] = None):
+    def _add_container(self, name: str, name_parent: str | None = None):
         """ Add a new container in the tree. """
         parent_item = None
         if name_parent:

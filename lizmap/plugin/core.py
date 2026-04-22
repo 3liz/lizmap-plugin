@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import json
 import logging
@@ -7,10 +9,7 @@ import tempfile
 from functools import partial
 from os.path import relpath
 from pathlib import Path
-from typing import (
-    Dict,
-    Optional,
-)
+from typing import TYPE_CHECKING
 
 from qgis.core import (
     Qgis,
@@ -24,7 +23,6 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     Qt,
@@ -148,6 +146,9 @@ from .settings import configure_qgis_settings
 from .training import TrainingManager
 from .webdav import WebDavManager
 
+if TYPE_CHECKING:
+    from qgis.gui import QgisInterface
+
 LOGGER = logging.getLogger(plugin_name())
 VERSION_URL = "https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json"
 # To try a local file
@@ -171,7 +172,7 @@ class Lizmap(
         return self.current_lwc_version()
 
     @property
-    def layerList(self) -> Dict:
+    def layerList(self) -> dict:
         # From LayerTreeManager
         return self._layerList
 
@@ -193,7 +194,7 @@ class Lizmap(
         setup_logger(plugin_name())
 
         locale, file_path = setup_translation("lizmap_qgis_plugin_{}.qm", plugin_path("i18n"))
-        LOGGER.info("Language in QGIS : {}".format(locale))
+        LOGGER.info(f"Language in QGIS : {locale}")
 
         if file_path:
             self.translator = QTranslator()
@@ -352,8 +353,8 @@ class Lizmap(
         # self.server_manager.clean_cache(True)
 
         current = qgis_version_info(Qgis.versionInt())
-        current = "{}.{}".format(current[0], current[1])
-        self.dlg.label_current_qgis.setText("<b>{}</b>".format(current))
+        current = f"{current[0]}.{current[1]}"
+        self.dlg.label_current_qgis.setText(f"<b>{current}</b>")
         text = self.dlg.qgis_and_lwc_versions_issue.text()
         self.dlg.qgis_and_lwc_versions_issue.setText(text.format(version=current))
         self.dlg.qgis_and_lwc_versions_issue.setVisible(False)
@@ -557,12 +558,12 @@ class Lizmap(
             """Write all tabs from QGIS to files."""
             temp_dir_log = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
             with open(temp_dir_log.joinpath("all.log"), "a") as log_file:
-                log_file.write("{tag}({level}): {message}".format(tag=tag, level=level, message=message))
+                log_file.write(f"{tag}({level}): {message}")
 
         QgsApplication.messageLog().messageReceived.connect(write_log_message)
 
         self.dlg.setWindowTitle(
-            "Lizmap branch {}, commit {}, next {}".format(self.version, current_git_hash(), next_git_tag())
+            f"Lizmap branch {self.version}, commit {current_git_hash()}, next {next_git_tag()}"
         )
 
     def target_server_changed(self):
@@ -783,17 +784,17 @@ class Lizmap(
                             item[button_key].setVisible(False)
 
                     # Connect global checkbox to enable/disable table and populate if needed
-                    def on_dxf_export_toggled(checked):
+                    def on_dxf_export_toggled(checked, tbl_manager):
                         if checked:
                             # Enable table
-                            manager.table.setEnabled(True)
+                            tbl_manager.table.setEnabled(True)
                             # Only populate if table is currently empty
                             # (avoid overwriting loaded config values)
-                            if manager.table.rowCount() == 0:
-                                manager.populate_from_project()
+                            if tbl_manager.table.rowCount() == 0:
+                                tbl_manager.populate_from_project()
                         else:
                             # Disable table but keep the data (preserve user settings)
-                            manager.table.setEnabled(False)
+                            tbl_manager.table.setEnabled(False)
 
                     # Disconnect any existing connections to avoid multiple connections
                     # when dialog is reused between sessions
@@ -801,7 +802,9 @@ class Lizmap(
                         # No connections exist yet
                         self.dlg.checkbox_dxf_export_enabled.toggled.disconnect()
 
-                    self.dlg.checkbox_dxf_export_enabled.toggled.connect(on_dxf_export_toggled)
+                    self.dlg.checkbox_dxf_export_enabled.toggled.connect(
+                        partial(on_dxf_export_toggled, tbl_manager=manager),
+                    )
                     continue
 
                 item["tableWidget"].horizontalHeader().setStretchLastSection(True)
@@ -862,7 +865,7 @@ class Lizmap(
                         definition = FilterByPolygonDefinitions()
                         dialog = FilterByPolygonEditionDialog
                     else:
-                        raise Exception(f"Unknown panel: '{key}'")
+                        raise KeyError(f"Unknown panel: '{key}'")
 
                     item["manager"] = TableManager(
                         self.dlg,
@@ -1047,7 +1050,7 @@ class Lizmap(
         helper = tr("Setting groups allowed to export DXF files.")
         self._open_wizard_group(self.dlg.text_dxf_allowed_groups, helper)
 
-    def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
+    def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> str | None:
         """Open the group wizard and set the output in the line edit."""
         # Duplicated in base_edition_dialog.py, open_wizard_dialog()
         json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
@@ -1101,7 +1104,7 @@ class Lizmap(
         """
         tw = self.layers_table[key]["tableWidget"]
         tw.removeRow(tw.currentRow())
-        LOGGER.info('Removing one row in table "{}"'.format(key))
+        LOGGER.info(f'Removing one row in table "{key}"')
 
     def remove_layer_from_table_by_layer_ids(self, layer_ids: list):
         """
@@ -1110,7 +1113,7 @@ class Lizmap(
         if not self.dlg.check_cfg_file_exists():
             return
 
-        for key, item in self.layers_table.items():
+        for key in self.layers_table:
             manager = self.layers_table[key].get("manager")
             if manager:
                 manager.layers_has_been_deleted(layer_ids)
@@ -1135,7 +1138,7 @@ class Lizmap(
                     if item_layer_id in layer_ids:
                         tw.removeRow(row)
 
-        LOGGER.info('Layer ID "{}" has been removed from the project'.format(layer_ids))
+        LOGGER.info(f'Layer ID "{layer_ids}" has been removed from the project')
 
     def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
         """When a layout has been renamed in the project."""
@@ -1459,7 +1462,7 @@ class Lizmap(
             # noinspection PyUnresolvedReferences
             self.dlg.display_message_bar(
                 "Lizmap",
-                tr('Project <a href="{}">published !</a>'.format(url)),
+                tr(f'Project <a href="{url}">published !</a>'),
                 level=Qgis.MessageLevel.Success,
                 duration=DURATION_SUCCESS_BAR,
             )

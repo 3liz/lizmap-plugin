@@ -1,10 +1,10 @@
-import re
+from __future__ import annotations
 
 __copyright__ = 'Copyright 2023, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
-from typing import List, Optional, Tuple
+import re
 
 from qgis.core import QgsDataSourceUri, QgsProject
 
@@ -41,7 +41,7 @@ def webdav_properties(metadata: dict) -> dict:
     return metadata.get('webdav', {})
 
 
-def webdav_url(metadata: dict) -> Optional[str]:
+def webdav_url(metadata: dict) -> str | None:
     """ Return the WebDAV URL according to metadata. """
     webdav = webdav_properties(metadata)
     if not webdav:
@@ -49,9 +49,9 @@ def webdav_url(metadata: dict) -> Optional[str]:
     return f"{webdav['url']}/{webdav['projects_path']}"
 
 
-def check_project_ssl_postgis(project: QgsProject) -> Tuple[List[SourceLayer], str]:
+def check_project_ssl_postgis(project: QgsProject) -> tuple[list[SourceLayer], str]:
     """ Check if the project is not using SSL on some PostGIS layers which are on a Lizmap Cloud database. """
-    layer_error: List[SourceLayer] = []
+    layer_error: list[SourceLayer] = []
     for layer in project.mapLayers().values():
         if not is_vector_pg(layer):
             continue
@@ -111,11 +111,11 @@ def _update_ssl(
     """ Update SSL connection for a given URI. """
     current_ssl = QgsDataSourceUri.encodeSslMode(uri.sslMode())
     replaced = re.sub(
-        r"sslmode=({})".format(current_ssl),
-        "sslmode={}".format(QgsDataSourceUri.encodeSslMode(mode)),
+        rf"sslmode=({current_ssl})",
+        f"sslmode={QgsDataSourceUri.encodeSslMode(mode)}",
         uri.uri(True))
 
     if force and "sslmode" not in replaced:
-        replaced = 'sslmode={} {}'.format(QgsDataSourceUri.encodeSslMode(mode), replaced)
+        replaced = f'sslmode={QgsDataSourceUri.encodeSslMode(mode)} {replaced}'
 
     return QgsDataSourceUri(replaced)

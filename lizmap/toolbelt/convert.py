@@ -1,4 +1,4 @@
-from typing import Union
+from __future__ import annotations
 
 from qgis.core import QgsLayerTreeGroup, QgsLayerTreeLayer, QgsLayerTreeNode
 from qgis.PyQt import sip
@@ -19,12 +19,12 @@ def cast_to_group(node: QgsLayerTreeNode) -> QgsLayerTreeGroup:
     return node if isinstance(node, QgsLayerTreeGroup) else sip.cast(node, QgsLayerTreeGroup)
 
 
-def as_boolean(val: Union[str, int, float, bool, None]) -> bool:
+def as_boolean(val: str | float | bool | None) -> bool:
     return val.lower() in ("yes", "true", "t", "1") if isinstance(val, str) else bool(val)
 
 
 # Preserve legacy compatibility
-def ambiguous_to_bool(val: Union[str, int, float, bool, None], default_value: bool = True) -> bool:
+def ambiguous_to_bool(val: str | float | bool | None, default_value: bool = True) -> bool:
     """Convert lizmap config value to boolean"""
 
     # XXX WTF ?

@@ -5,40 +5,40 @@ from typing import (
 from lizmap.definitions.definitions import LwcVersions
 from lizmap.toolbelt.i18n import tr
 
-from .models import _Item
+from .models import ModelItem
 
 
 class LayerOptionDefinitions(TypedDict):
-    title: _Item
-    abstract: _Item
-    link: _Item
-    minScale: _Item
-    maxScale: _Item
-    toggled: _Item
-    popup: _Item
-    popupFrame: _Item
-    popupSource: _Item
-    popupTemplate: _Item
-    popupMaxFeatures: _Item
-    children_lizmap_features_table: _Item
-    popupDisplayChildren: _Item
-    popup_allow_download: _Item
-    noLegendImage: _Item
-    legend_image_option: _Item
-    groupAsLayer: _Item
-    baseLayer: _Item
-    displayInLegend: _Item
-    group_visibility: _Item
-    singleTile: _Item
-    imageFormat: _Item
-    cached: _Item
-    serverFrame: _Item
-    cacheExpiration: _Item
-    metatileSize: _Item
-    clientCacheExpiration: _Item
-    externalWmsToggle: _Item
-    sourceRepository: _Item
-    sourceProject: _Item
+    title: ModelItem
+    abstract: ModelItem
+    link: ModelItem
+    minScale: ModelItem
+    maxScale: ModelItem
+    toggled: ModelItem
+    popup: ModelItem
+    popupFrame: ModelItem
+    popupSource: ModelItem
+    popupTemplate: ModelItem
+    popupMaxFeatures: ModelItem
+    children_lizmap_features_table: ModelItem
+    popupDisplayChildren: ModelItem
+    popup_allow_download: ModelItem
+    noLegendImage: ModelItem
+    legend_image_option: ModelItem
+    groupAsLayer: ModelItem
+    baseLayer: ModelItem
+    displayInLegend: ModelItem
+    group_visibility: ModelItem
+    singleTile: ModelItem
+    imageFormat: ModelItem
+    cached: ModelItem
+    serverFrame: ModelItem
+    cacheExpiration: ModelItem
+    metatileSize: ModelItem
+    clientCacheExpiration: ModelItem
+    externalWmsToggle: ModelItem
+    sourceRepository: ModelItem
+    sourceProject: ModelItem
 
 
 layerOptionDefinitions = {

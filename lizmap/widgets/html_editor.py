@@ -150,13 +150,13 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
 
     def _insert_qgis_expression(self, text: str):
         """ Insert text at the current cursor position. """
-        LOGGER.debug("Adding expression '{}' in the HTML".format(text))
-        self.insert_text('[% {} %]'.format(text))
+        LOGGER.debug(f"Adding expression '{text}' in the HTML")
+        self.insert_text(f'[% {text} %]')
 
     def insert_text(self, text: str):
         """ Insert text at the current cursor position. """
         if WEBKIT_AVAILABLE:
-            self._js('tEditor.insertText(`{}`);'.format(text))
+            self._js(f'tEditor.insertText(`{text}`);')
         else:
             self.web_view.insertText(text)
 

@@ -81,7 +81,7 @@ class CheckableFieldComboBox(CheckableComboBox):
         for i, field in enumerate(self.layer.fields()):
             alias = field.alias()
             if alias:
-                name = "{} ({})".format(field.name(), alias)
+                name = f"{field.name()} ({alias})"
             else:
                 name = field.name()
             item = QStandardItem(name)

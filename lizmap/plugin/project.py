@@ -1,17 +1,16 @@
 """Project management"""
+from __future__ import annotations
 
 import contextlib
 import os
 import re
 
+from math import isnan
 from pathlib import Path
 from shutil import copyfile
 from typing import (
     TYPE_CHECKING,
-    Dict,
-    Optional,
     Protocol,
-    Tuple,
 )
 
 from pyplugin_installer.version_compare import compareVersions
@@ -116,19 +115,19 @@ from .layer_tree import LayerTreeManager
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
+    dlg: LizmapDialog
     project: QgsProject
-    layers_table: Dict
-    current_path: Optional[str]
+    layers_table: dict
+    current_path: str | None
 
-    iface: "QgisInterface"
+    iface: QgisInterface
 
     @property
-    def layerList(self) -> Dict: ...
+    def layerList(self) -> dict: ...
 
 
 class ProjectManager(LizmapProtocol):
-    _current_path: Optional[Path]
+    _current_path: Path | None
 
     def initialize_project_management(self):
         self._current_path = None
@@ -213,7 +212,7 @@ class ProjectManager(LizmapProtocol):
         with_gui: bool = True,
         check_server: bool = True,
         ignore_error: bool = False,
-    ) -> Optional[Dict]:
+    ) -> dict | None:
         """Get the JSON CFG content."""
 
         if lwc_version >= LwcVersions.Lizmap_3_6:
@@ -333,7 +332,7 @@ class ProjectManager(LizmapProtocol):
             "qgis_desktop_version": Qgis.versionInt(),
             "lizmap_plugin_version_str": current_version,
             "lizmap_plugin_version": int(format_version_integer(current_version)),
-            "lizmap_web_client_target_version": int(format_version_integer("{}.0".format(lwc_version.value))),
+            "lizmap_web_client_target_version": int(format_version_integer(f"{lwc_version.value}.0")),
             "lizmap_web_client_target_status": target_status.value,
             "instance_target_url": self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value),
         }
@@ -434,10 +433,9 @@ class ProjectManager(LizmapProtocol):
                         input_value = [a.strip() for a in input_value.split(",") if a.strip()]
 
                 elif item["type"] == "integer":
-                    # noinspection PyBroadException
                     try:
                         input_value = int(input_value)
-                    except Exception:
+                    except (TypeError, ValueError):
                         input_value = int(item["default"])
 
                 elif item["type"] == "boolean":
@@ -473,7 +471,7 @@ class ProjectManager(LizmapProtocol):
             if manager:
                 try:
                     data = manager.to_json()
-                except (AttributeError,) as e:
+                except AttributeError as e:
                     import traceback
 
                     panel_name = self.dlg.mOptionsListWidget.item(
@@ -623,7 +621,7 @@ class ProjectManager(LizmapProtocol):
                     extent.xMaximum(),
                     extent.yMaximum(),
                 ]
-                if any(x != x for x in layer_options["extent"]):
+                if any(isnan(x) for x in layer_options["extent"]):
                     if layer.isSpatial():
                         # https://github.com/3liz/lizmap-plugin/issues/571
                         if 33600 <= Qgis.versionInt() < 33603:
@@ -675,10 +673,9 @@ class ProjectManager(LizmapProtocol):
                     else:
                         property_value = str(property_value)
                 elif val["type"] == "integer":
-                    # noinspection PyBroadException
                     try:
                         property_value = int(property_value)
-                    except Exception:
+                    except (TypeError, ValueError):
                         property_value = 1
                 elif val["type"] in ("boolean", "radio") and not val.get("use_proper_boolean"):
                     property_value = str(property_value)
@@ -873,7 +870,7 @@ class ProjectManager(LizmapProtocol):
         duplicated_in_cfg = duplicated_layer_name_or_group(self.project)
         for name, count in duplicated_in_cfg.items():
             if count >= 2:
-                source = '"{}" → "'.format(name) + tr("count {} layers").format(count)
+                source = f'"{name}" → "' + tr("count {} layers").format(count)
                 self.dlg.check_results.add_error(Error(source, checks.DuplicatedLayerNameOrGroup))
 
         # Layer ID as short name
@@ -985,8 +982,7 @@ class ProjectManager(LizmapProtocol):
                 prevent_auth_id = True
                 force_pg_user_pass = True
                 prevent_other_drive = True
-                if count_parent_folder > CLOUD_MAX_PARENT_FOLDER:
-                    count_parent_folder = CLOUD_MAX_PARENT_FOLDER
+                count_parent_folder = min(count_parent_folder, CLOUD_MAX_PARENT_FOLDER)
                 # prevent_service = False  We encourage service
                 # allow_parent_folder = False Of course we can
 
@@ -1379,7 +1375,7 @@ class ProjectManager(LizmapProtocol):
                 "Lizmap", message, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR
             )
 
-    def check_global_project_options(self) -> Tuple[bool, str]:
+    def check_global_project_options(self) -> tuple[bool, str]:
         """Checks that the needed options are correctly set : relative path, project saved, etc.
 
         :return: Flag if the project is valid and an error message.

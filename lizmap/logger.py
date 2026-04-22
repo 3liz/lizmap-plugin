@@ -34,7 +34,7 @@ def profiling(func):
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
-        LOGGER.info("{} ran in {}s".format(func.__name__, round(end - start, 2)))
+        LOGGER.info(f"{func.__name__} ran in {round(end - start, 2)}s")
         return result
 
     return wrapper
@@ -47,9 +47,9 @@ def log_output_value(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         if DEBUG:
-            LOGGER.info("{} output is {} for parameter {}".format(func.__name__, result, str(args)))
+            LOGGER.info(f"{func.__name__} output is {result} for parameter {args!s}")
         else:
-            LOGGER.info("{} output is {}… for parameter {}".format(func.__name__, result[0:200], str(args)))
+            LOGGER.info(f"{func.__name__} output is {result[0:200]}… for parameter {args!s}")
         return result
 
     return wrapper

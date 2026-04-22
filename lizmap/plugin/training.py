@@ -3,6 +3,7 @@
 This module provides the TrainingManager class which handles training
 operations using the delegate pattern.
 """
+from __future__ import annotations
 
 import tempfile
 import zipfile
@@ -11,7 +12,6 @@ from functools import partial
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Optional,
     Protocol,
 )
 
@@ -60,7 +60,7 @@ from .helpers import current_login
 
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
+    dlg: LizmapDialog
     project: QgsProject
 
 
@@ -211,7 +211,7 @@ class TrainingManager(LizmapProtocol):
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
         return conf.config("username")
 
-    def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Optional[Path]:
+    def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Path | None:
         """Destination folder where to store the data."""
         if workshop_type == WorkshopType.IndividualQgsFile:
             output = Path(self.dlg.path_training_folder_qgs.filePath())

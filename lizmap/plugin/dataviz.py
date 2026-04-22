@@ -1,29 +1,27 @@
+from __future__ import annotations
+
 from typing import (
     TYPE_CHECKING,
-    Dict,
-    Optional,
     Protocol,
 )
 
 from qgis.core import QgsApplication
 from qgis.PyQt.QtGui import QIcon
 
-if TYPE_CHECKING:
-    from ..dialogs.main import LizmapDialog
-
-from ..config import GlobalOptionsDefinitions
 from ..definitions.dataviz import DatavizDefinitions, Theme
-from ..definitions.definitions import (
-    LwcVersions,
-)
 from ..drag_drop_dataviz_manager import DragDropDatavizManager
 from ..forms.dataviz_edition import DatavizEditionDialog
 from ..table_manager.dataviz import TableManagerDataviz
 from ..toolbelt.i18n import tr
 
+if TYPE_CHECKING:
+    from ..config import GlobalOptionsDefinitions
+    from ..definitions.definitions import LwcVersions
+    from ..dialogs.main import LizmapDialog
+
 
 class LizmapProtocol(Protocol):
-    dlg: "LizmapDialog"
+    dlg: LizmapDialog
     is_dev_version: bool
 
     @property
@@ -31,7 +29,7 @@ class LizmapProtocol(Protocol):
 
 
 class DatavizManager(LizmapProtocol):
-    drag_drop_dataviz: Optional[DragDropDatavizManager]
+    drag_drop_dataviz: DragDropDatavizManager | None
 
     def initialize_dataviz(self):
         self.drag_drop_dataviz = None
@@ -43,7 +41,7 @@ class DatavizManager(LizmapProtocol):
         global_options["theme"]["widget"].setCurrentIndex(index)
 
     # Called in `initGui`
-    def dataviz_init_gui(self, item: Dict):
+    def dataviz_init_gui(self, item: dict):
         definition = DatavizDefinitions()
         dialog = DatavizEditionDialog
 
@@ -89,7 +87,7 @@ class DatavizManager(LizmapProtocol):
         self.drag_drop_dataviz = drag_drop_dataviz
 
     # Called by 'read_cfg_file'
-    def read_cfg(self, json: Dict):
+    def read_cfg(self, json: dict):
         # The drag&drop dataviz HTML layout
         # First load plots into the combobox, because the main dataviz table has already been loaded
         self.drag_drop_dataviz.load_dataviz_list_from_main_table()

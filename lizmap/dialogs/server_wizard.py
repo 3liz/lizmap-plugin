@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import configparser
 import json
 import logging
@@ -6,7 +8,7 @@ import sys
 from base64 import b64encode
 from enum import IntEnum, auto
 from functools import partial
-from typing import TYPE_CHECKING, Optional, Tuple
+from typing import TYPE_CHECKING
 
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
@@ -80,7 +82,7 @@ class UrlPage(QWizardPage):
 
     """ Server URL page. """
 
-    def __init__(self, url: str, parent: Optional["QWidget"] = None):
+    def __init__(self, url: str, parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("URL of the instance"))
 
@@ -161,7 +163,7 @@ class LoginPasswordPage(QWizardPage):
 
     """ Login and password for the server. """
 
-    def __init__(self, auth_id: str, parent: Optional["QWidget"] = None):
+    def __init__(self, auth_id: str, parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("Login and password of the instance"))
 
@@ -268,7 +270,7 @@ class NamePage(QWizardPage):
 
     """ Alias for the server. """
 
-    def __init__(self, name: str = '', parent: Optional["QWidget"] = None):
+    def __init__(self, name: str = '', parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("Name of your instance"))
 
@@ -314,7 +316,7 @@ class MasterPasswordPage(QWizardPage):
 
     """ Save credentials in the QGIS password manager. """
 
-    def __init__(self, parent: Optional["QWidget"] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("QGIS Password manager"))
 
@@ -367,7 +369,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
 
     """ Question for PostgreSQL connection. """
 
-    def __init__(self, parent: Optional["QWidget"] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         LOGGER.debug("Page : Add the PostgreSQL connection delivered with Lizmap")
         self.setTitle(tr("PostgreSQL"))
@@ -454,7 +456,7 @@ class PostgresqlPage(QWizardPage):
 
     """ Wizard for the PostgreSQL connection. """
 
-    def __init__(self, parent: Optional["QWidget"] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("Adding a PostgreSQL connection"))
         self.setSubTitle("PostgreSQL database provided with the Lizmap instance")
@@ -574,7 +576,7 @@ class SuggestionNewFolderPage(QWizardPage):
 
     """ Question for the first folder. """
 
-    def __init__(self, parent: Optional["QWidget"] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("Create the first folder"))
         self.setSubTitle(tr("A folder can contain one or many QGIS projects"))
@@ -626,7 +628,7 @@ class CreateNewFolderDavPage(QWizardPage):
 
     """ Wizard for the first folder creation. """
 
-    def __init__(self, parent: Optional["QWidget"] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("New folder"))
 
@@ -692,7 +694,7 @@ class CreateNewFolderDavPage(QWizardPage):
         dav_url = parent_wizard.dav_url
         auth_id = parent_wizard.auth_id
 
-        LOGGER.debug("Creating a folder called '{}' on {}".format(self.custom_name.text(), dav_url))
+        LOGGER.debug(f"Creating a folder called '{self.custom_name.text()}' on {dav_url}")
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             server_dav = WebDav(dav_url, auth_id)
             if parent_wizard._user:
@@ -715,7 +717,7 @@ class LizmapNewRepositoryPage(QWizardPage):
 
     """ Web-browser step for the Lizmap repository creation. """
 
-    def __init__(self, parent: Optional["QWidget"] = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self.setTitle(tr("Create a Lizmap repository"))
 
@@ -755,7 +757,7 @@ class LizmapNewRepositoryPage(QWizardPage):
     def open_browser(self):
         """ Open the web browser. """
         # noinspection PyArgumentList
-        url = QUrl('{}/admin.php/admin/maps/createSection'.format(self.wizard().current_url()))
+        url = QUrl(f'{self.wizard().current_url()}/admin.php/admin/maps/createSection')
         QDesktopServices.openUrl(url)
 
     def refresh_list(self):
@@ -778,7 +780,7 @@ class LizmapNewRepositoryPage(QWizardPage):
             self.result.setText(error)
             return
 
-        for repo_id, data in repositories.items():
+        for data in repositories.values():
             if data['path'] == self.field("folder_name") + '/':
                 self.result.setText(tr("Found it") + " " + THUMBS)
                 break
@@ -790,7 +792,7 @@ class BaseWizard(QWizard):
 
     """ Base wizard class. """
 
-    def __init__(self, parent: Optional["QWidget"] = None):
+    def __init__(self, parent: QWidget | None = None):
         # noinspection PyArgumentList
         super().__init__(parent)
         self.setWindowTitle(tr("Lizmap Web Client instance"))
@@ -804,7 +806,7 @@ class BaseWizard(QWizard):
         self.helpRequested.connect(self.open_online_help)
 
     @classmethod
-    def auth_id_to_login(cls, auth_id: str) -> Optional[Tuple[str, str]]:
+    def auth_id_to_login(cls, auth_id: str) -> tuple[str, str] | None:
         """ Retrieve login and password from an auth ID. """
         conf = QgsAuthMethodConfig()
         # noinspection PyArgumentList
@@ -835,7 +837,7 @@ class BaseWizard(QWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        return '{}index.php/view/app/metadata'.format(base_url)
+        return f'{base_url}index.php/view/app/metadata'
 
 
 class ServerWizard(BaseWizard):
@@ -844,10 +846,10 @@ class ServerWizard(BaseWizard):
 
     def __init__(
         self,
-        parent: Optional["QWidget"] = None,
-        existing: Optional[list] = None,
+        parent: QWidget | None = None,
+        existing: list | None = None,
         url: str = '',
-        auth_id: Optional[str] = None,
+        auth_id: str | None = None,
         name: str = '',
     ):
         # noinspection PyArgumentList
@@ -976,7 +978,7 @@ class ServerWizard(BaseWizard):
         # noinspection PyArgumentList,PyUnresolvedReferences
         config.setConfig('realm', QUrl(url).host())
         if self.auth_id:
-            LOGGER.debug("Edit current information authentication ID : {}".format(self.auth_id))
+            LOGGER.debug(f"Edit current information authentication ID : {self.auth_id}")
             # Edit
             config.setId(self.auth_id)
             result = auth_manager.storeAuthenticationConfig(config, True)
@@ -984,10 +986,10 @@ class ServerWizard(BaseWizard):
         else:
             # Creation
             self.auth_id = auth_manager.uniqueConfigId()
-            LOGGER.debug("New authentication ID : {} is going to be created".format(self.auth_id))
+            LOGGER.debug(f"New authentication ID : {self.auth_id} is going to be created")
             config.setId(self.auth_id)
             result = auth_manager.storeAuthenticationConfig(config)
-            LOGGER.debug("New auth ID {} created".format(self.auth_id))
+            LOGGER.debug(f"New auth ID {self.auth_id} created")
             if result[0]:
                 # Only for creation of the server, we save in the JSON
                 self.save_json_server()
@@ -996,11 +998,11 @@ class ServerWizard(BaseWizard):
             LOGGER.debug("Set thumbs")
             self.currentPage().result_master_password.setText(THUMBS)
             LOGGER.info(
-                "Saving configuration with login/password ID {} = OK".format(self.auth_id))
+                f"Saving configuration with login/password ID {self.auth_id} = OK")
             return True
 
         LOGGER.warning(
-            "Saving configuration with login/password ID {} = NOK".format(self.auth_id))
+            f"Saving configuration with login/password ID {self.auth_id} = NOK")
         self.currentPage().result_master_password.setText(
             tr("We couldn't save the login/password into the QGIS authentication database : NOK")
         )
@@ -1034,7 +1036,7 @@ class ServerWizard(BaseWizard):
         LOGGER.debug("Server saved in the JSON file")
 
     @classmethod
-    def override_url(cls, base_url: str, metadata: bool = True) -> Optional[str]:
+    def override_url(cls, base_url: str, metadata: bool = True) -> str | None:
         """ Override URL if the file is specified. """
         ini = lizmap_user_folder().joinpath('urls.ini')
         if not ini.exists():
@@ -1047,7 +1049,7 @@ class ServerWizard(BaseWizard):
         if base_url not in config.sections() and base_url[0:-1] not in config.sections():
             return None
 
-        LOGGER.info("Found a server override for server <a href='{0}'>{0}</a>".format(base_url))
+        LOGGER.info(f"Found a server override for server <a href='{base_url}'>{base_url}</a>")
 
         key = 'metadata' if metadata else 'dataviz'
         try:
@@ -1063,15 +1065,15 @@ class ServerWizard(BaseWizard):
             return override
 
         base_url = ServerWizard.trailing_slash(base_url)
-        return '{}index.php/dataviz/service/'.format(base_url)
+        return f'{base_url}index.php/dataviz/service/'
 
     @staticmethod
     def url_server_info(base_url: str) -> str:
         """ Return the URL to the server information panel. """
         base_url = ServerWizard.trailing_slash(base_url)
-        return '{}admin.php/admin/server_information'.format(base_url)
+        return f'{base_url}admin.php/admin/server_information'
 
-    def request_check_url(self, url: str, login: str, password: str) -> Tuple[bool, str, bool]:
+    def request_check_url(self, url: str, login: str, password: str) -> tuple[bool, str, bool]:
         """ Check the URL and given login.
 
         The first boolean is about the server status.
@@ -1210,8 +1212,7 @@ class ServerWizard(BaseWizard):
     def _save_pg(name: str, uri: QgsDataSourceUri) -> bool:
         """ Save a PG connection from a URI. """
         LOGGER.info(
-            "Create PG connection '{}' : host {}, database {}, user {}, pass XXXXX, port {}".format(
-                name, uri.host(), uri.database(), uri.username(), uri.port())
+            f"Create PG connection '{name}' : host {uri.host()}, database {uri.database()}, user {uri.username()}, pass XXXXX, port {uri.port()}"
         )
         config = {
             "saveUsername": True,
@@ -1237,12 +1238,12 @@ class CreateFolderWizard(BaseWizard):
 
     def __init__(
         self,
-        parent: Optional["QWidget"] = None,
-        webdav_server: Optional[str] = None,
-        auth_id: Optional[str] = None,
-        url: Optional[str] = None,
-        user: Optional[str] = None,
-        password: Optional[str] = None,
+        parent: QWidget | None = None,
+        webdav_server: str | None = None,
+        auth_id: str | None = None,
+        url: str | None = None,
+        user: str | None = None,
+        password: str | None = None,
     ):
         # noinspection PyArgumentList
         super().__init__(parent)

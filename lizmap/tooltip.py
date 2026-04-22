@@ -5,11 +5,12 @@
 # Desktop lizmap/tooltip.py
 # Server lizmap_server/tooltip.py
 
+from __future__ import annotations
+
 import logging
 import re
 
 from textwrap import dedent
-from typing import Union
 
 from qgis.core import (
     QgsAttributeEditorContainer,
@@ -103,8 +104,7 @@ class Tooltip:
                 if not QgsProject.instance().mapLayer(widget_config['Layer']):
                     # Issue #287
                     LOGGER.warning(
-                        'Layer {} does not have a valid value relation layer for field {}'.format(
-                            layer.id(), fname))
+                        f'Layer {layer.id()} does not have a valid value relation layer for field {fname}')
                     return html
 
                 field_view = Tooltip._generate_represent_value(name)
@@ -116,8 +116,7 @@ class Tooltip:
                 if not referenced_layer:
                     # Issue #287
                     LOGGER.warning(
-                        'Layer {} does not have a valid relation reference layer for field {}'.format(
-                            layer.id(), fname))
+                        f'Layer {layer.id()} does not have a valid relation reference layer for field {fname}')
                     return html
 
                 field_view = Tooltip._generate_represent_value(name)
@@ -252,8 +251,8 @@ class Tooltip:
         result = '\n' + SPACES + f'<p><b>{label}</b></p>'
         result += '\n' + SPACES
         result += (
-            '<div id="popup_relation_{0}" data-relation-id="{0}" data-referencing-layer-id="{1}" '
-            'class="popup_lizmap_dd_relation">'.format(relation_id, referencing_layer_id)
+            f'<div id="popup_relation_{relation_id}" data-relation-id="{relation_id}" data-referencing-layer-id="{referencing_layer_id}" '
+            'class="popup_lizmap_dd_relation">'
         )
         result += '\n' + SPACES + '</div>'
         return result
@@ -266,40 +265,36 @@ class Tooltip:
 
     @staticmethod
     def _generate_field_name(name: str, fname: str, expression: str) -> str:
-        return '''
+        return f'''
             [%
             concat(
                 '<div class="control-group ',
                 CASE
-                    WHEN "{0}" IS NULL OR trim("{0}") = ''
+                    WHEN "{name}" IS NULL OR trim("{name}") = ''
                         THEN ' control-has-empty-value '
                     ELSE ''
                 END,
                 '">',
                 '    <label ',
-                '       id="dd_jforms_view_edition_{0}_label" ',
+                '       id="dd_jforms_view_edition_{name}_label" ',
                 '       class="control-label jforms-label" ',
-                '       for="dd_jforms_view_edition_{0}" >',
-                '    {1}',
+                '       for="dd_jforms_view_edition_{name}" >',
+                '    {fname}',
                 '    </label>',
                 '    <div class="controls">',
                 '        <span ',
-                '            id="dd_jforms_view_edition_{0}" ',
+                '            id="dd_jforms_view_edition_{name}" ',
                 '            class="jforms-control-input" ',
                 '        >',
-                            {2},
+                            {expression},
                 '        </span>',
                 '    </div>',
                 '</div>'
             )
-            %]'''.format(
-                name,
-                fname,
-                expression,
-            )
+            %]'''
 
     @staticmethod
-    def _generate_value_map(widget_config: Union[list, dict], name: str) -> str:
+    def _generate_value_map(widget_config: list | dict, name: str) -> str:
         def escape_value(value: str) -> str:
             """Change ' to ’ for the HStore function. """
             return value.replace("'", "’")
@@ -336,47 +331,47 @@ class Tooltip:
         dview = widget_config['DocumentViewer']
 
         if dview == QgsExternalResourceWidget.DocumentViewerContent.Image:
-            field_view = '''
+            field_view = f'''
                     concat(
                        '<a href="',
-                       "{0}",
+                       "{name}",
                        '" target="_blank">',
                        '
                        <img src="',
-                       "{0}",
-                       '" width="100%" title="{1}">',
+                       "{name}",
+                       '" width="100%" title="{fname}">',
                        '
                        </a>'
-                    )'''.format(name, fname)
+                    )'''
 
         elif dview == QgsExternalResourceWidget.DocumentViewerContent.Web:
             # web view
-            field_view = '''
+            field_view = f'''
                     concat(
                        '<a href="',
-                       "{0}",
+                       "{name}",
                        '" target="_blank">
                        ',
                        '
                        <iframe src="',
-                       "{0}",
-                       '" width="100%" height="300" title="{1}"/>',
+                       "{name}",
+                       '" width="100%" height="300" title="{fname}"/>',
                        '
                        </a>'
-                    )'''.format(name, fname)
+                    )'''
 
         elif dview == QgsExternalResourceWidget.DocumentViewerContent.NoContent:
-            field_view = '''
+            field_view = f'''
                     concat(
                         '<a href="',
-                        "{0}",
+                        "{name}",
                         '" target="_blank">',
-                        base_file_name({0}),
+                        base_file_name({name}),
                         '</a>'
-                    )'''.format(name)
+                    )'''
 
         else:
-            raise Exception('Unknown external resource widget')
+            raise TypeError('Unknown external resource widget')
 
         return field_view
 

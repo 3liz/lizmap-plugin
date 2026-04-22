@@ -6,79 +6,79 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.version import format_version_integer, version
 
-from .models import _Item
+from .models import ModelItem
 
 
 class Metadata(TypedDict):
-    lizmap_plugin_version: _Item
-    lizmap_web_client_target_version: _Item
+    lizmap_plugin_version: ModelItem
+    lizmap_web_client_target_version: ModelItem
 
 
 class GlobalOptionsDefinitions(TypedDict):
     metadata: Metadata
-    mapScales: _Item
-    minScale: _Item
-    max_scale_points: _Item
-    max_scale_lines_polygons: _Item
-    use_native_zoom_levels: _Item
-    hide_numeric_scale_value: _Item
-    acl: _Item
-    initialExtent: _Item
-    googleKey: _Item
-    googleHybrid: _Item
-    googleSatellite: _Item
-    googleTerrain: _Item
-    googleStreets: _Item
-    osmMapnik: _Item
-    openTopoMap: _Item
-    bingKey: _Item
-    bingStreets: _Item
-    bingSatellite: _Item
-    bingHybrid: _Item
-    ignKey: _Item
-    ignSatellite: _Item
-    ignTerrain: _Item
-    ignCadastral: _Item
-    hideGroupCheckbox: _Item
-    activateFirstMapTheme: _Item
-    popupLocation: _Item
-    draw: _Item
+    mapScales: ModelItem
+    minScale: ModelItem
+    max_scale_points: ModelItem
+    max_scale_lines_polygons: ModelItem
+    use_native_zoom_levels: ModelItem
+    hide_numeric_scale_value: ModelItem
+    acl: ModelItem
+    initialExtent: ModelItem
+    googleKey: ModelItem
+    googleHybrid: ModelItem
+    googleSatellite: ModelItem
+    googleTerrain: ModelItem
+    googleStreets: ModelItem
+    osmMapnik: ModelItem
+    openTopoMap: ModelItem
+    bingKey: ModelItem
+    bingStreets: ModelItem
+    bingSatellite: ModelItem
+    bingHybrid: ModelItem
+    ignKey: ModelItem
+    ignSatellite: ModelItem
+    ignTerrain: ModelItem
+    ignCadastral: ModelItem
+    hideGroupCheckbox: ModelItem
+    activateFirstMapTheme: ModelItem
+    popupLocation: ModelItem
+    draw: ModelItem
     # Deprecated since LWC 3.7.0
     # There is a new "print" panel
-    print: _Item
-    measure: _Item
-    externalSearch: _Item
+    print: ModelItem
+    measure: ModelItem
+    externalSearch: ModelItem
     # Deprecated, it has been removed in LWC 3.8
-    zoomHistory: _Item
-    geolocation: _Item
-    geolocationPrecision: _Item
-    geolocationDirection: _Item
-    pointTolerance: _Item
-    lineTolerance: _Item
-    polygonTolerance: _Item
-    hideHeader: _Item
-    hideMenu: _Item
-    hideLegend: _Item
-    hideOverview: _Item
-    hideNavbar: _Item
-    hideProject: _Item
-    automatic_permalink: _Item
-    wms_single_request_for_all_layers: _Item
-    exclude_basemaps_from_single_wms: _Item
-    tmTimeFrameSize: _Item
-    tmTimeFrameType: _Item
-    tmAnimationFrameLength: _Item
-    emptyBaselayer: _Item
-    startupBaselayer: _Item
-    limitDataToBbox: _Item
-    datavizLocation: _Item
-    datavizTemplate: _Item
-    theme: _Item
-    atlasShowAtStartup: _Item
-    atlasAutoPlay: _Item
-    fixed_scale_overview_map: _Item
-    dxfExportEnabled: _Item
-    allowedGroups: _Item
+    zoomHistory: ModelItem
+    geolocation: ModelItem
+    geolocationPrecision: ModelItem
+    geolocationDirection: ModelItem
+    pointTolerance: ModelItem
+    lineTolerance: ModelItem
+    polygonTolerance: ModelItem
+    hideHeader: ModelItem
+    hideMenu: ModelItem
+    hideLegend: ModelItem
+    hideOverview: ModelItem
+    hideNavbar: ModelItem
+    hideProject: ModelItem
+    automatic_permalink: ModelItem
+    wms_single_request_for_all_layers: ModelItem
+    exclude_basemaps_from_single_wms: ModelItem
+    tmTimeFrameSize: ModelItem
+    tmTimeFrameType: ModelItem
+    tmAnimationFrameLength: ModelItem
+    emptyBaselayer: ModelItem
+    startupBaselayer: ModelItem
+    limitDataToBbox: ModelItem
+    datavizLocation: ModelItem
+    datavizTemplate: ModelItem
+    theme: ModelItem
+    atlasShowAtStartup: ModelItem
+    atlasAutoPlay: ModelItem
+    fixed_scale_overview_map: ModelItem
+    dxfExportEnabled: ModelItem
+    allowedGroups: ModelItem
 
 
 globalOptionDefinitions = {
@@ -91,7 +91,7 @@ globalOptionDefinitions = {
         "lizmap_web_client_target_version": {
             "wType": "spinbox",
             "type": "integer",
-            "default": format_version_integer("{}.0".format(LwcVersions.latest().value)),
+            "default": format_version_integer(f"{LwcVersions.latest().value}.0"),
         },
     },
     "mapScales": {

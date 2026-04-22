@@ -1,7 +1,6 @@
+from __future__ import annotations
 
 import sys
-
-from typing import Optional
 
 from qgis.core import Qgis
 from qgis.PyQt.QtCore import QDateTime, QLocale
@@ -35,7 +34,7 @@ class LogPanel:
     def append(
             self,
             msg: str,
-            style: Optional[Html] = None,
+            style: Html | None = None,
             abort: bool = False,
             time: bool = False,
             level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
@@ -64,11 +63,11 @@ class LogPanel:
             if style in (Html.H1, Html.H2, Html.H3):
                 output += '<br>'
             if level == Qgis.MessageLevel.Warning:
-                output += '<{0} style="color: orange">{1}</{0}>'.format(style.value, msg)
+                output += f'<{style.value} style="color: orange">{msg}</{style.value}>'
             elif level == Qgis.MessageLevel.Critical:
-                output += '<{0} style="color: red">{1}</{0}>'.format(style.value, msg)
+                output += f'<{style.value} style="color: red">{msg}</{style.value}>'
             else:
-                output += '<{0}>{1}</{0}>'.format(style.value, msg)
+                output += f'<{style.value}>{msg}</{style.value}>'
             msg = output
 
         self.append_html(msg)
@@ -83,7 +82,7 @@ class LogPanel:
         row_class = ''
         if index % 2:
             row_class = "class=\"odd-row\""
-        self.append_html("<tr {}>".format(row_class))
+        self.append_html(f"<tr {row_class}>")
 
     def end_row(self):
         self.append_html("</tr>")

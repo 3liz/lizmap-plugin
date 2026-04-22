@@ -1,15 +1,12 @@
 """Definitions for portfolio."""
 
 from enum import Enum, unique
-from typing import (
-    Dict,
-)
 
 from lizmap.definitions.base import BaseDefinitions, InputType
 from lizmap.toolbelt.i18n import tr
 
 
-def represent_folios(data: Dict) -> str:
+def represent_folios(data: dict) -> str:
     """Generate HTMl string for the tooltip instead of JSON representation."""
     html = '<ul>'
 

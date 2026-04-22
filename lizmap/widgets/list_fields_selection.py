@@ -28,7 +28,7 @@ class ListFieldsSelection(QListWidget):
             if not alias:
                 cell.setText(field.name())
             else:
-                cell.setText("{} ({})".format(field.name(), alias))
+                cell.setText(f"{field.name()} ({alias})")
             cell.setData(Qt.ItemDataRole.UserRole, field.name())
             index = layer.fields().indexFromName(field.name())
             if index >= 0:

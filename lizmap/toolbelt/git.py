@@ -74,7 +74,7 @@ def next_git_tag():
         return "next"
     versions = tag.split(".")
     try:
-        return "{}.{}.{}-alpha".format(versions[0], versions[1], int(versions[2]) + 1)
+        return f"{versions[0]}.{versions[1]}.{int(versions[2]) + 1}-alpha"
     except ValueError:
         # 4.0.0-beta.1 can not be cast to int
         return "next"

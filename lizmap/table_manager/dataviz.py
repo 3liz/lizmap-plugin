@@ -1,8 +1,10 @@
 """ Table manager for dataviz. """
+from __future__ import annotations
+
 import json
 import logging
 
-from typing import Optional
+from typing import TYPE_CHECKING
 
 from qgis.core import (
     QgsApplication,
@@ -25,16 +27,18 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QLabel, QWidget
 from qgis.utils import OverrideCursor
 
-from lizmap.definitions.base import BaseDefinitions
 from lizmap.definitions.dataviz import GraphType
 from lizmap.definitions.definitions import ServerComboData
-from lizmap.dialogs.main import LizmapDialog
 from lizmap.dialogs.server_wizard import ServerWizard
 from lizmap.table_manager.base import TableManager
 from lizmap.toolbelt.convert import as_boolean
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import plugin_name, resources_path
 from lizmap.toolbelt.strings import merge_strings
+
+if TYPE_CHECKING:
+    from lizmap.definitions.base import BaseDefinitions
+    from lizmap.dialogs.main import LizmapDialog
 
 LOGGER = logging.getLogger(plugin_name())
 
@@ -50,7 +54,7 @@ class TableManagerDataviz(TableManager):
     def __init__(
         self, parent: LizmapDialog,
         definitions: BaseDefinitions,
-        edition: Optional[QDialog],
+        edition: QDialog | None,
         table: QWidget,
         edit_button: QAbstractButton,
         up_button: QAbstractButton,
@@ -279,7 +283,7 @@ class TableManagerDataviz(TableManager):
         # Only when we are all good, we display the final tab
         self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
 
-    def dataviz_expression_filter(self, layer_id: str) -> Optional[str]:
+    def dataviz_expression_filter(self, layer_id: str) -> str | None:
         """ Return the expression filter if possible. """
         project = QgsProject.instance()
         layer = project.mapLayer(layer_id)
@@ -292,8 +296,8 @@ class TableManagerDataviz(TableManager):
 
         if len(relations) >= 2:
             LOGGER.warning(
-                "Many relations has been found for the dataviz preview with the layer ID '{}'. "
-                "Only the first one is used.".format(layer_id)
+                f"Many relations has been found for the dataviz preview with the layer ID '{layer_id}'. "
+                "Only the first one is used."
             )
 
         parent_layer = relations[0].referencingLayer()
@@ -314,5 +318,5 @@ class TableManagerDataviz(TableManager):
         feature = self.parent.dataviz_feature_picker.feature()
         if feature.isValid():
             # The current feature can be set to NULL because of "only_show_child"
-            return "\"{}\" IN ('{}')".format(field.name(), feature.id())
+            return f"\"{field.name()}\" IN ('{feature.id()}')"
         return None
