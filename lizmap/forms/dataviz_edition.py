@@ -20,6 +20,7 @@ from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
+from lizmap.table_manager.base import CellError
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
@@ -169,13 +170,13 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 if item is None:
                     # Safeguard
                     # Do not put if not item, it might be False
-                    raise Exception(f'Cell is not initialized ({row}, {i})')
+                    raise CellError(f'Cell is not initialized ({row}, {i})')
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Safeguard
                     # Do not put if not cell, it might be False
-                    raise Exception(f'Cell has no data ({row}, {i})')
+                    raise CellError(f'Cell has no data ({row}, {i})')
 
                 if input_type == InputType.Field or input_type == InputType.Color:
                     trace_data[sub_key] = cell

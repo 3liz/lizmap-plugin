@@ -19,6 +19,7 @@ from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.portfolio import GeometryType, PortfolioDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.forms.folio_portfolio_edition import FolioPortfolioEditionDialog
+from lizmap.table_manager.base import CellError
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
@@ -99,7 +100,7 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
 
                 if item is None:
                     if saved:
-                        raise Exception(f'Cell is not initialized ({row}, {i})')
+                        raise CellError(f'Cell is not initialized ({row}, {i})')
                     continue
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
@@ -108,7 +109,7 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
                     # Do not put if not item, it might be False or 0
                     if saved and sub_key in ['layout', 'theme', 'zoom_method']:
                         # raise exception for required cell
-                        raise Exception(f'Cell has no data ({row}, {i})')
+                        raise CellError(f'Cell has no data ({row}, {i})')
                     continue
 
                 folio_data[sub_key] = cell

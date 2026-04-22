@@ -35,6 +35,10 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(plugin_name())
 
 
+class CellError(Exception):
+    pass
+
+
 class TableManager:
 
     """ Class to manage a table with add, edit, remove, reorder rows. """
@@ -198,7 +202,7 @@ class TableManager:
                         item: QTableWidgetItem
                         if item is None:
                             # Do not put if not item, it might be False
-                            raise Exception(f'Cell is not initialized ({row}, {i})')
+                            raise CellError(f'Cell is not initialized ({row}, {i})')
 
                         if item.isSelected():
                             # We do not want to add selected values in the list.
@@ -208,7 +212,7 @@ class TableManager:
                         cell = item.data(Qt.ItemDataRole.UserRole)
                         if cell is None:
                             # Do not put if not cell, it might be False
-                            raise Exception(f'Cell has no data ({row}, {i})')
+                            raise CellError(f'Cell has no data ({row}, {i})')
 
                         unicity_dict[key].append(cell)
 
@@ -587,12 +591,12 @@ class TableManager:
 
                 if item is None:
                     # Do not put if not item, it might be False
-                    raise Exception(f'Cell is not initialized ({row}, {i})')
+                    raise CellError(f'Cell is not initialized ({row}, {i})')
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Do not put if not cell, it might be False
-                    raise Exception(f'Cell has no data ({row}, {i})')
+                    raise CellError(f'Cell has no data ({row}, {i})')
 
                 if input_type == InputType.Layer \
                         or input_type == InputType.Collection \
