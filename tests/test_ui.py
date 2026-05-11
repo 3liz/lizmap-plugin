@@ -830,3 +830,24 @@ class TestUiLizmapDialog(TestCase):
         # Disable single WMS - exclude basemaps checkbox should become disabled
         lizmap.dlg.checkbox_wms_single_request_all_layers.setChecked(False)
         self.assertFalse(lizmap.dlg.checkbox_exclude_basemaps_from_single_wms.isEnabled())
+
+    def test_group_popup_by_layer(self, data: Path):
+        """Test group popup by layer UI settings."""
+        lizmap = self._setup_empty_project(data)
+
+        # Default checkbox states
+        self.assertFalse(lizmap.dlg.checkbox_group_popup_by_layer.isChecked())
+
+        # Enable group popup by layer
+        lizmap.dlg.checkbox_group_popup_by_layer.setChecked(True)
+        self.assertTrue(lizmap.dlg.checkbox_group_popup_by_layer.isEnabled())
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # Group popup by layers option should be checked in output config file
+        self.assertTrue(output["options"].get("group_popup_by_layer"))
+
+        # Disable group popup by layer
+        lizmap.dlg.checkbox_group_popup_by_layer.setChecked(False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # Group popup by layers option should be unchecked in output config file
+        self.assertFalse(output["options"].get("group_popup_by_layer"))
