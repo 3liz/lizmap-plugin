@@ -222,6 +222,7 @@ def configure_lwc_versions(dlg: LizmapDialog) -> OrderedDict:
         dlg.text_dxf_allowed_groups,
         dlg.button_dxf_wizard_group,
         dlg.label_dxf_layers_info,
+        dlg.checkbox_group_popup_by_layer
     ]
     lwc_versions[LwcVersions.Lizmap_3_11] = []
 

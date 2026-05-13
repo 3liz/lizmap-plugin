@@ -1448,6 +1448,16 @@ This is different to the map maximum extent (defined in QGIS project properties,
                      </widget>
                     </item>
                     <item>
+                     <widget class="QCheckBox" name="checkbox_group_popup_by_layer">
+                      <property name="toolTip">
+                       <string>Group popup results by layer</string>
+                      </property>
+                      <property name="text">
+                       <string>Group popup by layer</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <spacer name="horizontalSpacer">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
@@ -5948,6 +5958,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>cbHideOverview</tabstop>
   <tabstop>cbHideNavbar</tabstop>
   <tabstop>liPopupContainer</tabstop>
+  <tabstop>checkbox_group_popup_by_layer</tabstop>
   <tabstop>checkbox_scale_overview_map</tabstop>
   <tabstop>repository_combo</tabstop>
   <tabstop>scrollArea_7</tabstop>
