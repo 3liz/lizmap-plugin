@@ -851,3 +851,24 @@ class TestUiLizmapDialog(TestCase):
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         # Group popup by layers option should be unchecked in output config file
         self.assertFalse(output["options"].get("group_popup_by_layer"))
+
+    def test_short_link_permalink(self, data: Path):
+        """Test short link permalink UI settings."""
+        lizmap = self._setup_empty_project(data)
+
+        # Default checkbox states
+        self.assertFalse(lizmap.dlg.checkbox_short_link_permalink.isChecked())
+
+        # Enable short link permalink
+        lizmap.dlg.checkbox_short_link_permalink.setChecked(True)
+        self.assertTrue(lizmap.dlg.checkbox_short_link_permalink.isEnabled())
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # Short link permalink option should be checked in output config file
+        self.assertTrue(output["options"].get("short_link_permalink"))
+
+        # Disable short link permalink
+        lizmap.dlg.checkbox_short_link_permalink.setChecked(False)
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        # Short link permalink option should be unchecked in output config file
+        self.assertFalse(output["options"].get("short_link_permalink"))
