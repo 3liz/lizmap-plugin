@@ -331,7 +331,7 @@ QListWidget::item::selected {
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>7</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_information">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -773,8 +773,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>797</width>
-                <height>1433</height>
+                <width>835</width>
+                <height>1542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -793,7 +793,7 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="0">
+                    <item row="2" column="0">
                      <widget class="QCheckBox" name="checkbox_wms_single_request_all_layers">
                       <property name="toolTip">
                        <string>All the map layers will be loaded as a single WMS image</string>
@@ -803,7 +803,17 @@ QListWidget::item::selected {
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="1">
+                    <item row="2" column="1">
+                     <widget class="QCheckBox" name="checkbox_exclude_basemaps_from_single_wms">
+                      <property name="toolTip">
+                       <string>When single WMS is enabled, exclude basemaps from the single WMS request. This improves performance for Cloud-Optimized GeoTIFF (COG) basemaps by preserving their native format instead of converting to PNG.</string>
+                      </property>
+                      <property name="text">
+                       <string>Exclude basemaps from single WMS</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
                      <widget class="QCheckBox" name="automatic_permalink">
                       <property name="text">
                        <string>Enable automatic permalink</string>
@@ -811,12 +821,12 @@ QListWidget::item::selected {
                      </widget>
                     </item>
                     <item row="1" column="1">
-                     <widget class="QCheckBox" name="checkbox_exclude_basemaps_from_single_wms">
+                     <widget class="QCheckBox" name="checkbox_short_link_permalink">
                       <property name="toolTip">
-                       <string>When single WMS is enabled, exclude basemaps from the single WMS request. This improves performance for Cloud-Optimized GeoTIFF (COG) basemaps by preserving their native format instead of converting to PNG.</string>
+                       <string>Handle the permalink with an encoded short hash rather than a full hash containing all the information in plain text</string>
                       </property>
                       <property name="text">
-                       <string>Exclude basemaps from single WMS</string>
+                       <string>Enable short link permalink</string>
                       </property>
                      </widget>
                     </item>
@@ -1518,8 +1528,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>585</width>
-                <height>209</height>
+                <width>856</width>
+                <height>820</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1649,8 +1659,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>478</width>
-                       <height>1194</height>
+                       <width>448</width>
+                       <height>1248</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2393,8 +2403,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>780</width>
-                <height>726</height>
+                <width>856</width>
+                <height>820</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -2808,8 +2818,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>497</width>
-                <height>396</height>
+                <width>856</width>
+                <height>820</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2940,8 +2950,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>450</width>
-                <height>283</height>
+                <width>856</width>
+                <height>820</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3296,8 +3306,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>450</width>
-                <height>300</height>
+                <width>464</width>
+                <height>306</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_46">
@@ -3397,8 +3407,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>618</width>
-                <height>546</height>
+                <width>559</width>
+                <height>558</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -3775,8 +3785,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>386</width>
-                <height>867</height>
+                <width>392</width>
+                <height>876</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -4160,8 +4170,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>450</width>
-                <height>439</height>
+                <width>464</width>
+                <height>444</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4343,8 +4353,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>488</height>
+                <width>534</width>
+                <height>494</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_41">
@@ -4499,8 +4509,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>450</width>
-                <height>340</height>
+                <width>464</width>
+                <height>330</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -4615,8 +4625,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>450</width>
-                <height>317</height>
+                <width>464</width>
+                <height>324</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -4837,8 +4847,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>415</width>
-                <height>882</height>
+                <width>372</width>
+                <height>918</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_73">
@@ -4976,8 +4986,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>434</width>
-                <height>611</height>
+                <width>389</width>
+                <height>612</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_72">
@@ -5200,8 +5210,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>584</width>
-                <height>592</height>
+                <width>542</width>
+                <height>677</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_80">
@@ -5504,8 +5514,8 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>749</width>
-                <height>453</height>
+                <width>670</width>
+                <height>504</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_83">
@@ -5928,6 +5938,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>scrollArea</tabstop>
   <tabstop>cbHideProject</tabstop>
   <tabstop>automatic_permalink</tabstop>
+  <tabstop>checkbox_short_link_permalink</tabstop>
   <tabstop>checkbox_wms_single_request_all_layers</tabstop>
   <tabstop>checkbox_exclude_basemaps_from_single_wms</tabstop>
   <tabstop>inAcl</tabstop>

@@ -66,6 +66,7 @@ class GlobalOptionsDefinitions(TypedDict):
     wms_single_request_for_all_layers: ModelItem
     exclude_basemaps_from_single_wms: ModelItem
     group_popup_by_layer: ModelItem
+    short_link_permalink: ModelItem
     tmTimeFrameSize: ModelItem
     tmTimeFrameType: ModelItem
     tmAnimationFrameLength: ModelItem
@@ -236,6 +237,16 @@ globalOptionDefinitions = {
         'use_proper_boolean': True,
         'tooltip': tr(
             "When enabled, results will be displayed grouped by layer, and can be viewed individually."
+        ),
+    },
+    'short_link_permalink': {
+        'wType': 'checkbox',
+        'type': 'boolean',
+        'default': False,
+        'use_proper_boolean': True,
+        'tooltip': tr(
+            "Handle the permalink with an encoded short hash rather "
+            "than a full hash containing all the information in plain text"
         ),
     },
     "tmTimeFrameSize": {"wType": "spinbox", "type": "integer", "default": 10},

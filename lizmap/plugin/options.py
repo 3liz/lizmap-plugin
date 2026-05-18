@@ -80,6 +80,9 @@ def global_options(dlg: "LizmapDialog", lizmap_config: LizmapConfig) -> GlobalOp
     global_options["group_popup_by_layer"]["widget"] = (
         dlg.checkbox_group_popup_by_layer
     )
+    global_options["short_link_permalink"]["widget"] = (
+        dlg.checkbox_short_link_permalink
+    )
 
     global_options["tmTimeFrameSize"]["widget"] = dlg.inTimeFrameSize
     global_options["tmTimeFrameType"]["widget"] = dlg.liTimeFrameType
