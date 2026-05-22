@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Feature: per-layer option to exclude a layer from the single WMS request stack ([#6631](https://github.com/3liz/lizmap-web-client/issues/6631))
+
 ## 5.0.0-beta.2 - 2026-04-22
 
 * Simplify the module plugin.py https://github.com/3liz/lizmap-plugin/pull/716
