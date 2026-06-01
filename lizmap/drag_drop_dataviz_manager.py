@@ -1,9 +1,4 @@
-from __future__ import annotations
-
-import logging
-
 from enum import Enum, unique
-from typing import TYPE_CHECKING
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QBrush, QIcon
@@ -19,13 +14,10 @@ from qgis.PyQt.QtWidgets import (
     QTreeWidgetItemIterator,
 )
 
-from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import resources_path
-
-if TYPE_CHECKING:
-    from lizmap.definitions.dataviz import DatavizDefinitions
-
-LOGGER = logging.getLogger('Lizmap')
+from . import logger
+from .definitions.dataviz import DatavizDefinitions
+from .toolbelt.i18n import tr
+from .toolbelt.resources import resources_path
 
 
 @unique
@@ -302,7 +294,7 @@ class DragDropDatavizManager:
             elif line['type'] == Container.Plot.value:
                 text, icon = self.metadata_from_uuid(line["uuid"])
                 if not icon:
-                    LOGGER.warning(
+                    logger.warning(
                         "Plot having UUID '{}' was not found in the plot combobox, D&D panel, skipping this plot for "
                         "the drag&drop layout, only : {}.".format(
                             line["uuid"],

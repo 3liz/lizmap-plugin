@@ -1,15 +1,14 @@
 """Layer tree panel configuration"""
-from __future__ import annotations
-
 import contextlib
 import hashlib
 import json
 import os
 
 from typing import (
-    TYPE_CHECKING,
     Any,
+    Optional,
     Protocol,
+    Tuple,
 )
 
 from qgis.core import (
@@ -26,6 +25,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (
@@ -34,6 +34,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from .. import logger
+from ..config import GlobalOptionsDefinitions, LayerOptionDefinitions
 from ..definitions.definitions import (
     DURATION_WARNING_BAR,
     GroupNames,
@@ -55,12 +56,6 @@ from ..widgets.project_tools import (
     is_layer_wms_excluded,
 )
 from .helpers import display_error, string_to_list
-
-if TYPE_CHECKING:
-    from qgis.gui import QgisInterface
-
-    from ..config import GlobalOptionsDefinitions, LayerOptionDefinitions
-    from ..dialogs.main import LizmapDialog
 
 
 class LizmapProtocol(Protocol):
@@ -883,7 +878,7 @@ class LayerTreeManager(LizmapProtocol):
             root_group = project.layerTreeRoot()
 
         qgis_group = self.existing_group(root_group, label)
-        if qgis_group:
+        if qgis_group is not None:
             return qgis_group
 
         new_group = root_group.addGroup(label)
@@ -892,16 +887,16 @@ class LayerTreeManager(LizmapProtocol):
         return new_group
 
     @staticmethod
-    def existing_group(
-        root_group: QgsLayerTree,
+    def _existing_group(
+        root_group: Optional[QgsLayerTree],
         label: str,
         index: bool = False,
-    ) -> QgsLayerTreeGroup | int | None:
+    ) -> Optional[Tuple[QgsLayerTreeGroup, int]]:
         """Return the existing group in the legend if existing.
 
         It will either return the group itself if found, or its index.
         """
-        if not root_group:
+        if root_group is None:
             return None
 
         # Iterate over all child (layers and groups)
@@ -912,8 +907,7 @@ class LayerTreeManager(LizmapProtocol):
                 i += 1
                 continue
 
-            qgis_group = cast_to_group(child)
-            qgis_group: QgsLayerTreeGroup
+            qgis_group: QgsLayerTreeGroup = cast_to_group(child)
             count_children = len(qgis_group.children())
             if count_children >= 1 or qgis_group.name() == label:
                 # We do not want to count empty groups
@@ -921,9 +915,25 @@ class LayerTreeManager(LizmapProtocol):
                 i += 1
 
             if qgis_group.name() == label:
-                return i if index else qgis_group
+                return (qgis_group, i)
 
         return None
+
+    @staticmethod
+    def existing_group(
+        root_group: Optional[QgsLayerTree],
+        label: str,
+    ) -> Optional[QgsLayerTreeGroup]:
+        g = LayerTreeManager._existing_group(root_group, label)
+        return g[0] if g is not None else None
+
+    @staticmethod
+    def existing_group_index(
+        root_group: Optional[QgsLayerTree],
+        label: str,
+    ) -> Optional[QgsLayerTreeGroup]:
+        g = LayerTreeManager._existing_group(root_group, label)
+        return g[1] if g is not None else None
 
     def _add_base_layer(
         self,

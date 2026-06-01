@@ -1,34 +1,41 @@
-import logging
 import sys
 
 from pathlib import Path
+from typing import Any
 
 import pytest
 
-from qgis.core import Qgis, QgsApplication
-from qgis.PyQt import Qt
+from qgis.gui import QgisInterface
+from qgis.PyQt.QtCore import QT_VERSION_STR
 
-from .qgis_testing import start_app
+from .qgis_testing import QGIS_VERSION_INT, install_logger_hook, load_plugin
 
 # with warnings.catch_warnings():
 #    warnings.filterwarnings("ignore", category=DeprecationWarning)
 #    from osgeo import gdal
+
+PLUGIN_SOURCE = "lizmap"
 
 
 def pytest_report_header(config):
     from osgeo import gdal
 
     return (
-        f"QGIS : {Qgis.versionInt()}\n"
+        f"QGIS : {QGIS_VERSION_INT}\n"
         f"Python GDAL : {gdal.VersionInfo('VERSION_NUM')}\n"
         f"Python : {sys.version}\n"
-        f"QT : {Qt.QT_VERSION_STR}"
+        f"QT : {QT_VERSION_STR}"
     )
 
 
 #
 # Fixtures
 #
+
+
+def pytest_sessionstart(session: pytest.Session):
+    """Start qgis application"""
+    install_logger_hook()
 
 
 @pytest.fixture(scope="session")
@@ -41,40 +48,9 @@ def data(rootdir: Path) -> Path:
     return rootdir.joinpath("data")
 
 
-#
-# Session
-#
+@pytest.fixture(autouse=True, scope="session")
+def plugin(rootdir: Path, qgis_iface: QgisInterface, qgis_processing: Any) -> Any:
+    plugin_path = rootdir.parent.joinpath(PLUGIN_SOURCE)
+    plugin = load_plugin(plugin_path, qgis_iface, processing=False)
 
-
-# Path the 'qgis.utils.iface' property
-# Which is not initialized when QGIS app
-# is initialized from testing module
-
-def pytest_sessionstart(session):
-    """Start qgis application"""
-    sys.path.append("/usr/share/qgis/python")
-    start_app(session.path, False)
-
-#
-# Logger hook
-#
-
-
-def install_logger_hook(verbose: bool = False) -> None:
-    """Install message log hook"""
-    from qgis.core import Qgis
-
-    # Add a hook to qgis  message log
-    def writelogmessage(message, tag, level):
-        arg = f"{tag}: {message}"
-        if level == Qgis.MessageLevel.Warning:
-            logging.warning(arg)
-        elif level == Qgis.MessageLevel.Critical:
-            logging.error(arg)
-        elif verbose:
-            # Qgis is somehow very noisy
-            # log only if verbose is set
-            logging.info(arg)
-
-    messageLog = QgsApplication.messageLog()
-    messageLog.messageReceived.connect(writelogmessage)
+    yield plugin

@@ -322,7 +322,7 @@ class ConfigFileManager(LizmapProtocol):
                 self.project.layerTreeRoot(),
                 GroupNames.BaseLayers,
             )
-            if qgis_group and self.lwc_version >= LwcVersions.Lizmap_3_7:
+            if qgis_group is not None and self.lwc_version >= LwcVersions.Lizmap_3_7:
                 self.disable_legacy_empty_base_layer()
 
         if self.version_checker:

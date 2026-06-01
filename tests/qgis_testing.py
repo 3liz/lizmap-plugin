@@ -1,127 +1,124 @@
+import configparser
+import importlib
 import logging
-import os
-import shutil
 import sys
 
 from pathlib import Path
+from typing import (
+    Any,
+    Optional,
+)
 
-from qgis.core import QgsApplication
+import semver
 
-
-# Path the 'qgis.utils.iface' property
-# Which is not initialized when QGIS app
-# is initialized from testing module
-def _patch_iface():
-    import qgis.utils
-
-    from qgis.testing.mocked import get_iface
-    qgis.utils.iface = get_iface()
-
-
-# NOTE: we cannot use qgis.testing.start_app() directly
-# because it does not allow us to initialize the qgis settings
-# path as we want.
-def start_app(rootdir: Path, cleanup: bool = True):
-    from qgis.PyQt.QtCore import QCoreApplication, Qt
-
-    sys.path.append("/usr/share/qgis/python/plugins/")  # for processing
-
-    display = os.getenv("DISPLAY")
-    if not display:
-        os.environ["QT_QPA_PLATFORM"] = "offscreen"
-
-    global QGISAPP
-
-    QCoreApplication.setOrganizationName(QgsApplication.QGIS_ORGANIZATION_NAME)
-    QCoreApplication.setOrganizationName(QgsApplication.QGIS_ORGANIZATION_DOMAIN)
-    QCoreApplication.setApplicationName(QgsApplication.QGIS_APPLICATION_NAME)
-
-    QCoreApplication.setAttribute(
-        Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True
-    )
-
-    load_qgis_settings(rootdir)
-
-    # See https://github.com/python/mypy/issues/5732
-    QGISAPP = QgsApplication(  # type: ignore [name-defined]
-        [],
-        True,
-        platformName="3liz-tests",
-    )
-
-    install_logger_hook(verbose=True)
-
-    QGISAPP.initQgis()  # type: ignore [name-defined]
-    print(QGISAPP.showSettings())  # type: ignore [name-defined]
-
-    # Patch 'iface' in qgis.utils
-    _patch_iface()
-
-    if cleanup:
-        import atexit
-
-        @atexit.register
-        def exitQgis():
-            QGISAPP.exitQgis()
-
-
-def init_processing():
-    sys.path.append("/usr/share/qgis/python/plugins/")
-
-    from processing.core.Processing import Processing
-    Processing.initialize()
-
-
-def load_qgis_settings(rootdir: Path):
-    from qgis.core import QgsSettings
-    from qgis.PyQt.QtCore import QSettings
-
-    path = rootdir.joinpath(".qgis-settings")
-
-    os.environ["QGIS_CUSTOM_CONFIG_PATH"] = str(path)
-    os.environ["QGIS_OPTIONS_PATH"] = str(path)
-
-    settings_path = path.joinpath("profiles", "default")
-
-    # Copy the ini file at correct location
-    settings_file = settings_path.joinpath(
-        QgsApplication.QGIS_ORGANIZATION_DOMAIN,
-        "QGIS3.ini",
-    )
-    settings_file.parent.mkdir(parents=True, exist_ok=True)
-
-    # Copy the ini file
-    settings = rootdir.joinpath("qgis_settings.ini")
-    if settings.exists():
-        shutil.copyfile(settings, settings_file)
-
-    QSettings.setDefaultFormat(QSettings.IniFormat)
-    QSettings.setPath(QSettings.IniFormat, QSettings.UserScope, str(settings_path))
-
-    qgssettings = QgsSettings()
-    print("Settings loaded from ", qgssettings.fileName())
-
+from qgis.core import Qgis, QgsApplication
+from qgis.gui import QgisInterface
+from qgis.server import QgsServerInterface
 
 #
 # Logger hook
 #
 
+QGIS_VERSION_INT = Qgis.versionInt()
 
-def install_logger_hook(verbose: bool = False) -> None:
+
+def install_logger_hook() -> None:
     """Install message log hook"""
+    logging.info("Installing logger hook")
     from qgis.core import Qgis
 
     # Add a hook to qgis  message log
-    def writelogmessage(message, tag, level):
+    def writelogmessage(message, tag, level, *args):
         arg = f"{tag}: {message}"
-        if level == Qgis.MessageLevel.Warning:
+        if level == Qgis.Warning:
             logging.warning(arg)
-        elif level == Qgis.MessageLevel.Critical:
+        elif level == Qgis.Critical:
             logging.error(arg)
-        elif verbose:
-            # Qgis is somehow very noisy
-            # log only if verbose is set
+        else:
             logging.info(arg)
 
     messageLog = QgsApplication.messageLog()
-    messageLog.messageReceived.connect(writelogmessage)
+    if QGIS_VERSION_INT < 40000:
+        messageLog.messageReceived.connect(writelogmessage)
+    else:
+        messageLog.messageReceivedWithFormat.connect(writelogmessage)
+
+#
+# Plugin loader
+#
+
+
+def load_plugin(
+    plugin_path: Path,
+    iface: Optional[QgisInterface] = None,
+    *,
+    processing: bool = False,
+) -> Any:
+    package = _load_plugin(plugin_path, processing=processing)
+    init = package.classFactory(iface)
+    if processing:
+        init.initProcessing()
+
+    return init
+
+
+def load_server_plugin(
+    plugin_path: Path,
+    iface: QgsServerInterface,
+    *,
+    processing: bool = False,
+) -> Any:
+    package = _load_plugin(plugin_path, processing=processing)
+    init = package.serverClassFactory(iface)
+    if processing:
+        init.initProcessing()
+
+    return init
+
+
+def _load_plugin(
+    plugin_path: Path,
+    *,
+    server: bool = False,
+    processing: bool = False,
+) -> Any:
+    logging.info("Loading plugin: %s", plugin_path)
+    cp = configparser.ConfigParser()
+    with plugin_path.joinpath("metadata.txt").open() as f:
+        cp.read_file(f)
+        if server:
+            assert cp["server"].getboolean("server"), "Server plugin required"
+        if processing:
+            assert cp["general"].getboolean("hasProcessingProvider"), "Processing plugin required"
+        assert _check_qgis_version(
+            cp["general"].get("qgisMinimumVersion"),
+            cp["general"].get("qgisMaximumVersion"),
+        ), f"Qgis version {Qgis.version()} not supported"
+
+    sys.path.append(str(plugin_path.parent))
+
+    plugin = plugin_path.name
+
+    package = importlib.import_module(plugin)
+    assert plugin in sys.modules
+
+    return package
+
+
+def _check_qgis_version(minver: Optional[str], maxver: Optional[str]) -> bool:
+    version = semver.Version.parse(Qgis.QGIS_VERSION.split("-", maxsplit=1)[0])
+
+    def _version(ver: Optional[str]) -> semver.Version:
+        if not ver:
+            return version
+
+        # Normalize version
+        parts = ver.split(".")
+        match len(parts):
+            case 1:
+                parts.extend(("0", "0"))
+            case 2:
+                parts.append("0")
+        return semver.Version.parse(".".join(parts))
+
+    return _version(minver) <= version <= _version(maxver)

@@ -1,7 +1,7 @@
 services:
   qgis:
-    user: ${UID}:${GID}
     image: ${QGIS_IMAGE_TAG}
+    user: ${UID}:${GID}
     network_mode: host
     container_name: qgis-lizmap-tests
     environment:
