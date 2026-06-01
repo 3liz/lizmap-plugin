@@ -5,8 +5,8 @@ import json
 import os
 
 from typing import (
-    TYPE_CHECKING,
     Any,
+    Optional,
     Protocol,
     Tuple,
 )
@@ -25,6 +25,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (
@@ -33,6 +34,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from .. import logger
+from ..config import GlobalOptionsDefinitions, LayerOptionDefinitions
 from ..definitions.definitions import (
     DURATION_WARNING_BAR,
     GroupNames,
@@ -54,12 +56,6 @@ from ..widgets.project_tools import (
     is_layer_wms_excluded,
 )
 from .helpers import display_error, string_to_list
-
-if TYPE_CHECKING:
-    from qgis.gui import QgisInterface
-
-    from ..config import GlobalOptionsDefinitions, LayerOptionDefinitions
-    from ..dialogs.main import LizmapDialog
 
 
 class LizmapProtocol(Protocol):

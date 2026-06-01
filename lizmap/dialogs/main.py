@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from qgis.core import (
     Qgis,
@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSpacerItem,
+    QWidget,
 )
 from qgis.utils import OverrideCursor, iface
 
@@ -91,9 +92,6 @@ except ModuleNotFoundError:
         WebView = None
         WEB_ENGINE = False
         WEBKIT_AVAILABLE = False
-
-if TYPE_CHECKING:
-    from qgis.PyQt.QtWidgets import QWidget
 
 
 FORM_CLASS = load_ui('ui_lizmap.ui')

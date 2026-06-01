@@ -5,7 +5,6 @@ import json
 import os
 
 from collections import namedtuple
-from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -20,15 +19,17 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from .. import logger
-from ..definitions.base import BaseDefinitions, InputType
+from ..definitions.base import (
+    BaseDefinitions,
+    InputType,
+    InputTypeError,
+)
 from ..definitions.dataviz import AggregationType, GraphType
 from ..definitions.definitions import LwcVersions
+from ..dialogs.main import LizmapDialog
 from ..qt_style_sheets import NEW_FEATURE_CSS
 from ..toolbelt.convert import as_boolean
 from ..toolbelt.i18n import tr
-
-if TYPE_CHECKING:
-    from .dialogs.main import LizmapDialog
 
 
 class CellError(Exception):

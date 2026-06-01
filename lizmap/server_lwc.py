@@ -6,7 +6,6 @@ from enum import Enum
 from functools import partial
 from pathlib import Path
 from typing import (
-    TYPE_CHECKING,
     Callable,
 )
 
@@ -40,28 +39,25 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
-from lizmap.definitions.definitions import (
+from . import logger
+from .definitions.definitions import (
     DEV_VERSION_PREFIX,
     UNSTABLE_VERSION_PREFIX,
     ReleaseStatus,
     ServerComboData,
 )
-from lizmap.definitions.lizmap_cloud import CLOUD_QGIS_MIN_RECOMMENDED
-from lizmap.dialogs.server_wizard import (
+from .definitions.lizmap_cloud import CLOUD_QGIS_MIN_RECOMMENDED
+from .dialogs.main import LizmapDialog
+from .dialogs.server_wizard import (
     CreateFolderWizard,
     NamePage,
     ServerWizard,
 )
-
-from . import logger
 from .saas import is_lizmap_cloud, webdav_properties
 from .toolbelt.convert import ambiguous_to_bool
 from .toolbelt.i18n import tr
 from .toolbelt.plugin import lizmap_user_folder, user_settings
 from .toolbelt.version import qgis_version_info, version
-
-if TYPE_CHECKING:
-    from .dialogs.main import LizmapDialog
 
 
 class TableCell(Enum):

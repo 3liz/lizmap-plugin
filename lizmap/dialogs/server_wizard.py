@@ -5,7 +5,6 @@ import sys
 from base64 import b64encode
 from enum import IntEnum, auto
 from functools import partial
-from typing import TYPE_CHECKING
 
 from qgis.core import (
     Qgis,
@@ -39,6 +38,7 @@ from qgis.PyQt.QtWidgets import (
     QSpacerItem,
     QSpinBox,
     QVBoxLayout,
+    QWidget,
     QWizard,
     QWizardPage,
 )
@@ -53,10 +53,6 @@ from ..server_dav import WebDav
 from ..toolbelt.i18n import tr
 from ..toolbelt.plugin import lizmap_user_folder, user_settings
 from ..toolbelt.version import version
-
-if TYPE_CHECKING:
-    from qgis.PyQt.QtWidgets import QWidget
-
 
 THUMBS = " 👍"
 DEBUG = True

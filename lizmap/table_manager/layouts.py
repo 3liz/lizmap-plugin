@@ -1,17 +1,18 @@
 """ Table manager for layouts. """
 from enum import Enum
-from typing import TYPE_CHECKING
 
 from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import (
+    QAbstractButton,
+    QDialog,
+    QWidget,
+)
 
 from .. import logger
+from ..definitions.base import BaseDefinitions
 from ..definitions.definitions import LwcVersions
 from .base import TableManager
-
-if TYPE_CHECKING:
-    from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QWidget
-    from lizmap.definitions.base import BaseDefinitions
 
 
 class TableManagerLayouts(TableManager):

@@ -2,8 +2,6 @@
 
 import json
 
-from typing import TYPE_CHECKING
-
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
@@ -26,19 +24,16 @@ from qgis.PyQt.QtWidgets import QAbstractButton, QDialog, QLabel, QWidget
 from qgis.utils import OverrideCursor
 
 from .. import logger
+from ..definitions.base import BaseDefinitions
 from ..definitions.dataviz import GraphType
 from ..definitions.definitions import ServerComboData
+from ..dialogs.main import LizmapDialog
 from ..dialogs.server_wizard import ServerWizard
 from ..table_manager.base import TableManager
 from ..toolbelt.convert import as_boolean
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import resources_path
 from ..toolbelt.strings import merge_strings
-
-if TYPE_CHECKING:
-    from lizmap.definitions.base import BaseDefinitions
-    from lizmap.dialogs.main import LizmapDialog
-
 
 
 class TableManagerDataviz(TableManager):

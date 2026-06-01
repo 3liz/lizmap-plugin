@@ -1,5 +1,4 @@
 from enum import Enum, unique
-from typing import TYPE_CHECKING
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QBrush, QIcon
@@ -16,11 +15,10 @@ from qgis.PyQt.QtWidgets import (
 )
 
 from . import logger
+from .definitions.dataviz import DatavizDefinitions
 from .toolbelt.i18n import tr
 from .toolbelt.resources import resources_path
 
-if TYPE_CHECKING:
-    from lizmap.definitions.dataviz import DatavizDefinitions
 
 @unique
 class Container(Enum):

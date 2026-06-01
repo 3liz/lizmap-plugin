@@ -3,13 +3,6 @@ import json
 
 from functools import partial
 from os.path import relpath
-from pathlib import Path
-
-from typing import (
-    TYPE_CHECKING,
-    Dict,
-    Optional,
-)
 
 from qgis.core import (
     Qgis,
@@ -23,6 +16,7 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
+from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     Qt,
@@ -140,11 +134,6 @@ from .scales import ScalesManager
 from .settings import configure_qgis_settings
 from .training import TrainingManager
 from .webdav import WebDavManager
-
-if TYPE_CHECKING:
-    from qgis.gui import QgisInterface
-
-from . import helpers
 
 VERSION_URL = "https://raw.githubusercontent.com/3liz/lizmap-web-client/versions/versions.json"
 # To try a local file
@@ -531,31 +520,6 @@ class Lizmap(
         self.help_action_cloud = None
 
     def configure_dev_version(self):
-        # File handler for logging
-        temp_dir = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
-        if not temp_dir.exists():
-            temp_dir.mkdir()
-
-        if not as_boolean(os.getenv("CI")):
-            file_handler = logging.FileHandler(temp_dir.joinpath("lizmap.log"))
-            file_handler.setLevel(logging.DEBUG)
-            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-            file_handler.setFormatter(formatter)
-            add_logging_handler_once(LOGGER, file_handler)
-            LOGGER.debug(
-                f"The directory <a href='file://{temp_dir}'>{temp_dir}</a> "
-                "is currently used for file logging."
-            )
-
-        # All logs
-        def write_log_message(message, tag, level):
-            """Write all tabs from QGIS to files."""
-            temp_dir_log = Path(tempfile.gettempdir()).joinpath("QGIS_Lizmap")
-            with open(temp_dir_log.joinpath("all.log"), "a") as log_file:
-                log_file.write(f"{tag}({level}): {message}")
-
-        QgsApplication.messageLog().messageReceived.connect(write_log_message)
-
         self.dlg.setWindowTitle(
             f"Lizmap branch {self.version}, commit {current_git_hash()}, next {next_git_tag()}"
         )

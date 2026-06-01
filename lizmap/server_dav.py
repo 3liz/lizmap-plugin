@@ -1,7 +1,6 @@
 from base64 import b64encode
 from collections import namedtuple
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from qgis.core import (
     Qgis,
@@ -17,13 +16,10 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from . import logger
 from .definitions.definitions import RepositoryComboData, ServerComboData
+from .dialogs.main import LizmapDialog
 from .saas import webdav_properties
 from .toolbelt.i18n import tr
 from .toolbelt.strings import path_to_url
-
-if TYPE_CHECKING:
-    from  .dialogs.main import LizmapDialog
-
 
 PropFindFileResponse = namedtuple(
     'PropFindFile',
