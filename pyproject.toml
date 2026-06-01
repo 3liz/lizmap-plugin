@@ -41,6 +41,7 @@ lint = [
     "mypy",
     "bandit",
     "vulture",
+    "detect-secrets",
 ]
 packaging = [
     "qt-transifex; python_full_version >= '3.12'",
