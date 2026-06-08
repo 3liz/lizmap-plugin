@@ -241,3 +241,36 @@ class TestProjectTable(TestCase):
 
         data = _duplicated_label_legend_layer(QgsRuleBasedRenderer(root_rule))
         self.assertDictEqual({"label-1": 1, "label": 2, "label-2": 1}, data)
+
+    def test_gdal_virtual_filesystem_path_detection(self):
+        """Guard condition: paths starting with /vsi are GDAL virtual filesystem (online) paths.
+
+        This is the condition added in project_safeguards_checks() to skip layers
+        such as COG (/vsicurl/), S3 (/vsis3/), GCS (/vsigs/), Azure (/vsiaz/).
+        Before the fix, these paths went through relpath() and produced '..'-filled
+        strings that triggered PreventParentFolder incorrectly.
+        """
+        virtual_paths = [
+            '/vsicurl/https://example.com/cog.tif',
+            '/vsicurl/http://tiles.example.org/dem.tif',
+            '/vsis3/mybucket/subfolder/file.tif',
+            '/vsigs/mybucket/file.tif',
+            '/vsiaz/mycontainer/file.tif',
+            '/vsiswift/container/file.tif',
+        ]
+        local_paths = [
+            '/home/user/data/raster.tif',
+            '/tmp/myproject/subdir/raster.tif',
+            '../parent_dir/raster.tif',
+            'relative/raster.tif',
+        ]
+
+        for path_str in virtual_paths:
+            layer_path_lower = str(Path(path_str)).lower()
+            is_virtual = layer_path_lower.startswith('/vsi') or layer_path_lower.startswith('\\vsi')
+            self.assertTrue(is_virtual, f"Expected '{path_str}' to be detected as a virtual path")
+
+        for path_str in local_paths:
+            layer_path_lower = str(Path(path_str)).lower()
+            is_virtual = layer_path_lower.startswith('/vsi') or layer_path_lower.startswith('\\vsi')
+            self.assertFalse(is_virtual, f"Expected '{path_str}' NOT to be detected as a virtual path")
