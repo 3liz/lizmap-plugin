@@ -118,6 +118,9 @@ def project_safeguards_checks(
 
         layer_path = Path(components['path'])
 
+        if str(layer_path).startswith('/vsi') or str(layer_path).lower().startswith('\\vsi'):
+            continue  # online layer via GDAL virtual filesystem (COG, S3, GCS, Azure...)
+
         try:
             relative_path = relpath(layer_path, project_home)
         except ValueError:
