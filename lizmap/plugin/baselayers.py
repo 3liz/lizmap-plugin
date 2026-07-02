@@ -15,8 +15,6 @@ from lizmap.definitions.definitions import (
     LwcVersions,
 )
 
-from ..dialogs.main import LizmapDialog
-
 if TYPE_CHECKING:
     from ..config import GlobalOptionsDefinitions
     from ..dialogs.main import LizmapDialog

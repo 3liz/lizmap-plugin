@@ -15,11 +15,6 @@ from qgis.core import (
     QgsRectangle,
     QgsSettings,
 )
-from qgis.gui import QgisInterface
-
-if TYPE_CHECKING:
-    from qgis.gui import QgisInterface
-
 from qgis.PyQt.QtWidgets import (
     QMessageBox,
 )
@@ -32,11 +27,12 @@ from ..definitions.definitions import (
     LwcVersions,
 )
 from ..definitions.qgis_settings import Settings
-from ..dialogs.main import LizmapDialog
 from ..toolbelt.convert import ambiguous_to_bool
 from ..toolbelt.i18n import tr
 
 if TYPE_CHECKING:
+    from qgis.gui import QgisInterface
+
     from ..dialogs.main import LizmapDialog
 
 from .. import logger
