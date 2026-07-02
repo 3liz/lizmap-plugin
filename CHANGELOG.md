@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Remove "BAN" entry in address search list
+* fix: skip GDAL virtual filesystem paths in project PreventParentFolder safeguards check
+
 ## 4.5.10 - 2026-04-20
 
 * Fix blocking I/O on unavailable network drives during project checks
