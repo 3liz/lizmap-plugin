@@ -1,5 +1,8 @@
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Protocol,
+)
 
 from qgis.core import (
     Qgis,
@@ -9,11 +12,6 @@ from qgis.core import (
 
 if TYPE_CHECKING:
     from qgis.gui import QgisInterface
-
-from typing import (
-    TYPE_CHECKING,
-    Protocol,
-)
 
 from qgis.PyQt.QtCore import (
     Qt,
@@ -37,7 +35,6 @@ from lizmap.definitions.definitions import (
 
 from ..definitions.definitions import LwcVersions
 from ..definitions.online_help import Panels
-from ..dialogs.main import LizmapDialog
 from ..dialogs.server_wizard import CreateFolderWizard
 from ..server_dav import WebDav
 from ..toolbelt.i18n import tr

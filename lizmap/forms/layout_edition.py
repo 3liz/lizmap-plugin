@@ -7,9 +7,7 @@ from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.gui import QgsFileWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QWidget
 
-from lizmap.definitions.definitions import LwcVersions
 from lizmap.definitions.layouts import Dpi, FormatType, LayoutsDefinitions
 from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr

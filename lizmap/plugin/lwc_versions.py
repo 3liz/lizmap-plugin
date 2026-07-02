@@ -22,7 +22,6 @@ from qgis.PyQt.QtGui import (
 from qgis.PyQt.QtWidgets import QWidget
 
 from ..definitions.definitions import LwcVersions
-from ..dialogs.main import LizmapDialog
 from ..qt_style_sheets import NEW_FEATURE_COLOR, NEW_FEATURE_CSS
 from ..toolbelt.plugin import lizmap_user_folder
 

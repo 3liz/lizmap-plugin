@@ -43,7 +43,6 @@ from ..definitions.definitions import (
     PredefinedGroup,
 )
 from ..definitions.online_help import Panels
-from ..dialogs.main import LizmapDialog
 from ..toolbelt.convert import ambiguous_to_bool, as_boolean, cast_to_group, cast_to_layer
 from ..toolbelt.i18n import tr
 from ..toolbelt.layer import (
