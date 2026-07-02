@@ -78,6 +78,9 @@ class GlobalOptionsDefinitions(TypedDict):
     theme: ModelItem
     atlasShowAtStartup: ModelItem
     atlasAutoPlay: ModelItem
+    panoramax: ModelItem
+    panoramaxLocation: ModelItem
+    panoramaxUrl: ModelItem
     fixed_scale_overview_map: ModelItem
     dxfExportEnabled: ModelItem
     allowedGroups: ModelItem
@@ -270,6 +273,28 @@ globalOptionDefinitions = {
     },
     "atlasShowAtStartup": {"wType": "checkbox", "type": "boolean", "default": False},
     "atlasAutoPlay": {"wType": "checkbox", "type": "boolean", "default": False},
+    "panoramax": {
+        "wType": "checkbox",
+        "type": "boolean",
+        "default": False,
+        "use_proper_boolean": True,
+        "tooltip": tr("Enable the Panoramax street-level imagery viewer."),
+    },
+    "panoramaxLocation": {
+        "wType": "list",
+        "type": "string",
+        "default": "dock",
+        "list": ["dock", "bottom-dock", "mini-dock", "right-dock"],
+    },
+    "panoramaxUrl": {
+        "wType": "text",
+        "type": "string",
+        "default": "",
+        "tooltip": tr(
+            "Panoramax API URL. Leave empty to use the default public "
+            "instance (https://panoramax.openstreetmap.fr/api)."
+        ),
+    },
     "fixed_scale_overview_map": {
         "wType": "checkbox",
         "type": "boolean",

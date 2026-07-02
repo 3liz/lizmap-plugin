@@ -96,6 +96,10 @@ def global_options(dlg: "LizmapDialog", lizmap_config: LizmapConfig) -> GlobalOp
     global_options["atlasShowAtStartup"]["widget"] = dlg.atlasShowAtStartup
     global_options["atlasAutoPlay"]["widget"] = dlg.atlasAutoPlay
 
+    global_options["panoramax"]["widget"] = dlg.checkbox_panoramax_enabled
+    global_options["panoramaxLocation"]["widget"] = dlg.combo_panoramax_location
+    global_options["panoramaxUrl"]["widget"] = dlg.text_panoramax_url
+
     return global_options
 
 

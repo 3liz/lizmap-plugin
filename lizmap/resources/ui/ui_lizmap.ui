@@ -175,6 +175,11 @@ QListWidget::item::selected {
          </item>
          <item>
           <property name="text">
+           <string>Panoramax</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Locate by layer</string>
           </property>
          </item>
@@ -4475,6 +4480,117 @@ This is different to the map maximum extent (defined in QGIS project properties,
                   </item>
                  </layout>
                 </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_panoramax">
+          <layout class="QVBoxLayout" name="verticalLayout_panoramax">
+           <item>
+            <widget class="QScrollArea" name="scrollArea_panoramax">
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_panoramax">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>534</width>
+                <height>494</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_panoramax_inner">
+               <item>
+                <widget class="QLabel" name="label_panoramax_panel">
+                 <property name="text">
+                  <string>Panoramax lets you browse street-level imagery directly in the map. Enable the tool, choose where its viewer is docked, and optionally point it to a specific Panoramax instance.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="checkbox_panoramax_enabled">
+                 <property name="toolTip">
+                  <string>Enable the Panoramax street-level imagery viewer.</string>
+                 </property>
+                 <property name="text">
+                  <string>Enable Panoramax</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QFormLayout" name="formLayout_panoramax">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_panoramax_location">
+                   <property name="text">
+                    <string>Location</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="combo_panoramax_location">
+                   <property name="toolTip">
+                    <string>Where the Panoramax viewer is displayed in Lizmap Web Client.</string>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string notr="true">dock</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string notr="true">bottom-dock</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string notr="true">mini-dock</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string notr="true">right-dock</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_panoramax_url">
+                   <property name="text">
+                    <string>API URL</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="text_panoramax_url">
+                   <property name="toolTip">
+                    <string>Panoramax API URL. Leave empty to use the default public instance (https://panoramax.openstreetmap.fr/api).</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string>https://panoramax.openstreetmap.fr/api</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_panoramax">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>

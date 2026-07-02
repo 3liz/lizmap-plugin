@@ -222,7 +222,12 @@ def configure_lwc_versions(dlg: LizmapDialog) -> OrderedDict:
         dlg.button_dxf_wizard_group,
         dlg.label_dxf_layers_info,
         dlg.checkbox_group_popup_by_layer,
-        dlg.checkbox_short_link_permalink
+        dlg.checkbox_short_link_permalink,
+        # Panoramax panel
+        dlg.label_panoramax_panel,
+        dlg.checkbox_panoramax_enabled,
+        dlg.combo_panoramax_location,
+        dlg.text_panoramax_url,
     ]
     lwc_versions[LwcVersions.Lizmap_3_11] = []
 

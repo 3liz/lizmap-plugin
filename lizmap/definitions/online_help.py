@@ -58,13 +58,14 @@ class Panels:
     Actions = 12
     TimeManager = 13
     Atlas = 14
-    LocateByLayer = 15
-    ToolTip = 16
-    Checks = 17
-    AutoFix = 18
-    Settings = 19
-    Upload = 20
-    Training = 21
+    Panoramax = 15
+    LocateByLayer = 16
+    ToolTip = 17
+    Checks = 18
+    AutoFix = 19
+    Settings = 20
+    Upload = 21
+    Training = 22
 
 
 MAPPING_INDEX_DOC = {
@@ -81,6 +82,7 @@ MAPPING_INDEX_DOC = {
     Panels.Actions: 'publish/lizmap_plugin/actions.html',
     Panels.TimeManager: 'publish/lizmap_plugin/time_manager.html',
     Panels.Atlas: 'publish/lizmap_plugin/atlas.html',
+    Panels.Panoramax: 'publish/lizmap_plugin/panoramax.html',
     Panels.LocateByLayer: 'publish/lizmap_plugin/locate_by_layer.html',
     Panels.ToolTip: 'publish/lizmap_plugin/tooltip.html',
     Panels.Checks: None,  # Log/checks
