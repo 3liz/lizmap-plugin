@@ -1808,6 +1808,11 @@ class Lizmap:
             try:
                 sjson = json.loads(json_file_reader)
                 json_options = sjson['options']
+
+                # Migrate deprecated "ban" value to "ign"
+                if json_options.get("externalSearch") == "ban":
+                    json_options["externalSearch"] = "ign"
+
                 for key in self.layers_table.keys():
                     if key in sjson:
                         self.layers_table[key]['jsonConfig'] = sjson[key]

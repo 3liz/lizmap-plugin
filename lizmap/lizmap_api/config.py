@@ -163,11 +163,6 @@ class LizmapConfig:
                         tr('Google Geocoding API. A key is required.'),
                         ('icons', 'google.png'),
                     ), (
-                        'ban',
-                        tr('French BAN'),
-                        tr('The French BAN API.'),
-                        ':images/flags/fr.svg',
-                    ), (
                         'ign',
                         tr('French IGN'),
                         tr('The French IGN API.'),
