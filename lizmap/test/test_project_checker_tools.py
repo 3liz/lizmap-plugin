@@ -268,17 +268,11 @@ class TestProjectTable(unittest.TestCase):
         ]
 
         for path_str in virtual_paths:
-            layer_path = Path(path_str)
-            is_virtual = (
-                str(layer_path).startswith('/vsi')
-                or str(layer_path).lower().startswith('\\vsi')
-            )
+            layer_path_lower = str(Path(path_str)).lower()
+            is_virtual = layer_path_lower.startswith('/vsi') or layer_path_lower.startswith('\\vsi')
             self.assertTrue(is_virtual, f"Expected '{path_str}' to be detected as a virtual path")
 
         for path_str in local_paths:
-            layer_path = Path(path_str)
-            is_virtual = (
-                str(layer_path).startswith('/vsi')
-                or str(layer_path).lower().startswith('\\vsi')
-            )
+            layer_path_lower = str(Path(path_str)).lower()
+            is_virtual = layer_path_lower.startswith('/vsi') or layer_path_lower.startswith('\\vsi')
             self.assertFalse(is_virtual, f"Expected '{path_str}' NOT to be detected as a virtual path")
