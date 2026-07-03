@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 5.0.0-rc.2 - 2026-07-03
+
+* Remove "BAN" entry in address search list https://github.com/3liz/lizmap-plugin/pull/742
+* fix: skip GDAL virtual filesystem paths in project PreventParentFolder safeguards check https://github.com/3liz/lizmap-plugin/pull/743
+* Fix QGIS crash when opening project with invalid/unreachable layers https://github.com/3liz/lizmap-plugin/pull/744
+* Add Panoramax configuration panel https://github.com/3liz/lizmap-plugin/pull/745
 
 ## 5.0.0-rc.1 - 2026-05-28
 
