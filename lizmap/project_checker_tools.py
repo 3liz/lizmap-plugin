@@ -123,8 +123,8 @@ def project_safeguards_checks(
 
         layer_path = Path(components['path'])
 
-        _layer_path_lower = str(layer_path).lower()
-        if _layer_path_lower.startswith('/vsi') or _layer_path_lower.startswith('\\vsi'):
+        layer_path_lower = str(layer_path).lower()
+        if layer_path_lower.startswith('/vsi') or layer_path_lower.startswith('\\vsi'):
             continue  # online layer via GDAL virtual filesystem (COG, S3, GCS, Azure...)
 
         try:
