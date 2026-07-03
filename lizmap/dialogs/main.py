@@ -1060,6 +1060,13 @@ class LizmapDialog(QDialog, FORM_CLASS):
         self.mOptionsListWidget.item(Panels.Atlas).setIcon(icon)
         self.mOptionsListWidget.item(Panels.Atlas).setData(Qt.ItemDataRole.UserRole, 'atlas')
 
+        # Panoramax
+        icon = QIcon()
+        icon.addFile(resources_path('icons', 'panoramax.svg'), mode=QIcon.Mode.Normal)
+        icon.addFile(resources_path('icons', 'panoramax.svg'), mode=QIcon.Mode.Selected)
+        self.mOptionsListWidget.item(Panels.Panoramax).setIcon(icon)
+        self.mOptionsListWidget.item(Panels.Panoramax).setData(Qt.ItemDataRole.UserRole, 'panoramax')
+
         # Locate by layer
         icon = QIcon()
         icon.addFile(resources_path('icons', '04-locate-white.png'), mode=QIcon.Mode.Normal)
