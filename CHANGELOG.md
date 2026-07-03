@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.5.11 - 2026-07-03
+
 * Remove "BAN" entry in address search list
 * fix: skip GDAL virtual filesystem paths in project PreventParentFolder safeguards check
 * Fix QGIS crash when opening project with invalid/unreachable layers
