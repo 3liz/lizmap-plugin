@@ -307,10 +307,16 @@ class TableManagerDataviz(TableManager):
         # We use only the first field.
         field = parent_layer.fields().at(field[0])
 
-        # Set the layer in the feature combobox if not set or if it's a different one
+        # Set the layer in the feature combobox if not set or if it's a different one.
+        # Guard against invalid layers (e.g. unreachable PostGIS) — same crash
+        # class as issue #642: QgsFeaturePickerWidget.setLayer() schedules a
+        # QgsFeaturePickerModel reload that crashes on an invalid provider.
         previous_layer = self.parent.dataviz_feature_picker.layer()
         if (previous_layer and previous_layer.id() != layer.id()) or not previous_layer:
-            self.parent.dataviz_feature_picker.setLayer(child_layer)
+            if child_layer is not None and child_layer.isValid():
+                self.parent.dataviz_feature_picker.setLayer(child_layer)
+            else:
+                self.parent.dataviz_feature_picker.setLayer(None)
 
         # Make widget visible
         self.parent.dataviz_feature_picker.setVisible(True)
