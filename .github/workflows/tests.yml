@@ -22,7 +22,7 @@ jobs:
         run: pip install --quiet -r requirements/lint.txt
 
       - name: Run linter
-        run: ruff check --preview --output-format=concise lizmap
+        run: ruff check --output-format=concise lizmap
 
       - name: Run security check
         run: bandit -r lizmap -ll
