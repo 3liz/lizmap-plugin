@@ -1062,8 +1062,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         # Panoramax
         icon = QIcon()
-        icon.addFile(resources_path('icons', 'panoramax.svg'), mode=QIcon.Mode.Normal)
-        icon.addFile(resources_path('icons', 'panoramax.svg'), mode=QIcon.Mode.Selected)
+        icon.addFile(resources_path('icons', 'panoramax-white.svg'), mode=QIcon.Mode.Normal)
+        icon.addFile(resources_path('icons', 'panoramax-dark.svg'), mode=QIcon.Mode.Selected)
         self.mOptionsListWidget.item(Panels.Panoramax).setIcon(icon)
         self.mOptionsListWidget.item(Panels.Panoramax).setData(Qt.ItemDataRole.UserRole, 'panoramax')
 
