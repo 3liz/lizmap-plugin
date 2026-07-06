@@ -4507,9 +4507,12 @@ This is different to the map maximum extent (defined in QGIS project properties,
                <item>
                 <widget class="QLabel" name="label_panoramax_panel">
                  <property name="text">
-                  <string>Panoramax lets you browse street-level imagery directly in the map. Enable the tool, choose where its viewer is docked, and optionally point it to a specific Panoramax instance.</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Panoramax lets you browse street-level imagery directly in the map. Enable the tool, choose where its viewer is docked, and optionally point it to a specific Panoramax instance. A list of Panoramax instances is available &lt;a href=&quot;https://explore.panoramax.fr/fr/instances&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                 <property name="openExternalLinks">
                   <bool>true</bool>
                  </property>
                 </widget>
