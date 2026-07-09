@@ -28,6 +28,11 @@ from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.toolbelt.convert import as_boolean
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import plugin_name
+from lizmap.widgets.sortable_table import (
+    make_table_sortable,
+    reset_table_sort_indicator,
+    sort_table_by_column,
+)
 
 if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
@@ -95,6 +100,10 @@ class TableManager:
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
         self.table.cellDoubleClicked.connect(self.edit_existing_row)
+
+        # Allow sorting the rows by clicking on a column header, like the QGIS
+        # attribute table.
+        make_table_sortable(self.table)
 
         # This is a hack to get the layer and then field icons.
         self._layer = None
@@ -480,6 +489,18 @@ class TableManager:
 
         self.table.clearSelection()
 
+    def sort_by_column(self, column: int):
+        """Sort the rows by the clicked column header, toggling ascending/descending.
+
+        This performs a one-shot sort (QTableWidget.sortItems) so it does not
+        interfere with row population or the manual reordering buttons.
+        """
+        sort_table_by_column(self.table, column)
+
+    def _clear_sort_indicator(self):
+        """Reset the header sort indicator after a manual reorder."""
+        reset_table_sort_indicator(self.table)
+
     def move_layer_up(self):
         """Move the selected layer up."""
         row = self.table.currentRow()
@@ -491,6 +512,7 @@ class TableManager:
             self.table.setItem(row - 1, i, self.table.takeItem(row + 1, i))
             self.table.setCurrentCell(row - 1, column)
         self.table.removeRow(row + 1)
+        self._clear_sort_indicator()
 
     def move_layer_down(self):
         """Move the selected layer down."""
@@ -503,6 +525,7 @@ class TableManager:
             self.table.setItem(row + 2, i, self.table.takeItem(row, i))
             self.table.setCurrentCell(row + 2, column)
         self.table.removeRow(row)
+        self._clear_sort_indicator()
 
     def remove_selection(self):
         """Remove the selected row from the table."""

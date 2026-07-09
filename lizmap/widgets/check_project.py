@@ -18,6 +18,7 @@ from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
 from lizmap.definitions.online_help import pg_service_help
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.toolbelt.i18n import tr
+from lizmap.widgets.sortable_table import make_table_sortable
 
 # 10 000 * 10 000
 RASTER_COUNT_CELL = 100000000
@@ -1012,8 +1013,9 @@ class TableCheck(QTableWidget):
         self.setAlternatingRowColors(True)
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setVisible(True)
-        # Bug, same as self.sort()
-        # self.setSortingEnabled(True)
+        # One-shot sort on header click, to avoid the row corruption caused by
+        # QTableWidget.setSortingEnabled() while the table is being populated.
+        make_table_sortable(self)
 
         headers = Headers()
         self.setColumnCount(len(headers.members))
