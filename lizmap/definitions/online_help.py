@@ -82,7 +82,7 @@ MAPPING_INDEX_DOC = {
     Panels.Actions: 'publish/lizmap_plugin/actions.html',
     Panels.TimeManager: 'publish/lizmap_plugin/time_manager.html',
     Panels.Atlas: 'publish/lizmap_plugin/atlas.html',
-    Panels.Panoramax: 'publish/lizmap_plugin/panoramax.html',
+    Panels.Panoramax: None,
     Panels.LocateByLayer: 'publish/lizmap_plugin/locate_by_layer.html',
     Panels.ToolTip: 'publish/lizmap_plugin/tooltip.html',
     Panels.Checks: None,  # Log/checks
