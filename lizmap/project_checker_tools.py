@@ -7,6 +7,7 @@ from pathlib import Path
 
 from psycopg2 import connect, sql
 from qgis.core import (
+    Qgis,
     QgsAbstractDatabaseProviderConnection,
     QgsDataSourceUri,
     QgsFeatureRenderer,
@@ -422,13 +423,19 @@ def use_estimated_metadata(project: QgsProject, fix: bool = False) -> list[Sourc
     return results
 
 
-def project_trust_layer_metadata(project: QgsProject, fix: bool = False) -> bool:
-    """ Trust layer metadata at the project level. """
-    if not fix:
+def project_trust_layer_metadata(project: QgsProject) -> bool:
+    if Qgis.versionInt() < 34000:
         return project.trustLayerMetadata()
 
-    project.setTrustLayerMetadata(True)
-    return True
+    return project.flags() & Qgis.ProjectFlag.TrustStoredLayerStatistics
+
+
+def set_project_trust_layer_metadata(project: QgsProject):
+    """ Trust layer metadata at the project level. """
+    if Qgis.versionInt() < 34000:
+        project.setTrustLayerMetadata(True)
+    else:
+        project.setFlag(Qgis.ProjectFlag.TrustStoredLayerStatistics)
 
 
 def count_legend_items(layer_tree: QgsLayerTreeNode, project: QgsProject, list_qgs: list) -> list:

@@ -60,7 +60,7 @@ from lizmap.project_checker_tools import (
     PREVENT_ECW,
     PREVENT_OTHER_DRIVE,
     PREVENT_SERVICE,
-    project_trust_layer_metadata,
+    set_project_trust_layer_metadata,
     simplify_provider_side,
     use_estimated_metadata,
 )
@@ -1417,7 +1417,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def fix_project_trust(self):
         """ Fix the current project trust metadata. """
         self.enabled_trust_project(False)
-        project_trust_layer_metadata(self.project, True)
+        set_project_trust_layer_metadata(self.project)
         self.display_message_bar(tr("Trust project"), tr('Trust project is enabled'), Qgis.MessageLevel.Success)
 
     def fix_simplify_geom_provider(self):
