@@ -1,6 +1,6 @@
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2020, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 import json
 import logging
@@ -19,14 +19,13 @@ from lizmap.dialogs.news import NewVersionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.plugin import lizmap_user_folder
 
-LOGGER = logging.getLogger('Lizmap')
+LOGGER = logging.getLogger("Lizmap")
 DAYS_BEING_OUTDATED = 90
 
 
 class VersionChecker:
-
     def __init__(self, dialog: LizmapDialog, url: str, is_dev: bool):
-        """ Update the dialog when versions have been fetched. """
+        """Update the dialog when versions have been fetched."""
         self.dialog = dialog
         self.url = url
         self.fetcher = None
@@ -39,13 +38,13 @@ class VersionChecker:
         self.is_dev = is_dev
 
     def fetch(self):
-        """ Fetch the JSON file and call the function when it's finished. """
+        """Fetch the JSON file and call the function when it's finished."""
         self.fetcher = QgsNetworkContentFetcher()
         self.fetcher.finished.connect(self.request_finished)
         self.fetcher.fetchContent(QUrl(self.url))
 
     def request_finished(self):
-        """ Dispatch the answer to update the GUI. """
+        """Dispatch the answer to update the GUI."""
         content = self.fetcher.contentAsString()
         if not content:
             return
@@ -65,18 +64,18 @@ class VersionChecker:
         self.update_lwc_servers(released_versions)
 
         # Cache the file
-        content += '\n'
+        content += "\n"
         with open(lizmap_user_folder().joinpath("released_versions.json"), "w") as output:
             output.write(content)
 
     def update_lwc_servers(self, released_versions: dict):
-        """ Update LWC version status for each server. """
+        """Update LWC version status for each server."""
         for index in range(self.dialog.server_combo.count()):
             version = self.dialog.current_lwc_version()
 
             for i, json_version in enumerate(released_versions):
                 try:
-                    lwc_version = LwcVersions(json_version['branch'])
+                    lwc_version = LwcVersions(json_version["branch"])
                 except ValueError:
                     # The version is found in the online JSON file
                     # But not in the Lizmap source code, in the "definitions.py" file
@@ -86,15 +85,13 @@ class VersionChecker:
                 if lwc_version != version:
                     continue
 
-                flag = ReleaseStatus.find(json_version.get('status'))
+                flag = ReleaseStatus.find(json_version.get("status"))
                 self.dialog.server_combo.setItemData(index, flag, ServerComboData.LwcBranchStatus.value)
 
     def update_lwc_releases(self, released_versions: dict):
-        """ Update labels about latest releases. """
+        """Update labels about latest releases."""
         template = (
-            '<a href="https://github.com/3liz/lizmap-web-client/releases/tag/{tag}">'
-            '{tag}   -    {date}'
-            '</a>'
+            '<a href="https://github.com/3liz/lizmap-web-client/releases/tag/{tag}">{tag}   -    {date}</a>'
         )
 
         self.dialog.lwc_version_latest_changelog.setVisible(False)
@@ -108,42 +105,40 @@ class VersionChecker:
         single_stable_version_release = True
         self.dialog.lwc_version_feature_freeze.setVisible(False)
         for json_version in released_versions:
-
             # The is_dev flag is to raise an exception only for developers
             # if the Python source code is missing a version
-            lwc_version = LwcVersions.find(json_version['branch'])
+            lwc_version = LwcVersions.find(json_version["branch"])
 
-            qdate = QDate.fromString(
-                json_version['latest_release_date'],
-                "yyyy-MM-dd")
+            qdate = QDate.fromString(json_version["latest_release_date"], "yyyy-MM-dd")
             date_string = qdate.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
-            status = ReleaseStatus.find(json_version['status'])
+            status = ReleaseStatus.find(json_version["status"])
 
-            changelog = json_version.get('changelog')
+            changelog = json_version.get("changelog")
             if changelog:
-                changelog = json_version.get('changelog')
+                changelog = json_version.get("changelog")
                 changelog_url = changelog.get(current_locale())
                 if not changelog_url:
-                    changelog_url = changelog.get('en')
+                    changelog_url = changelog.get("en")
 
                 link = '<a href="{}">{}</a>'.format(
-                    changelog_url, tr("What's new in {} ?").format(json_version['branch']))
+                    changelog_url, tr("What's new in {} ?").format(json_version["branch"])
+                )
             else:
                 link = None
                 changelog_url = None
 
             text = template.format(
-                tag=json_version['latest_release_version'],
+                tag=json_version["latest_release_version"],
                 date=date_string,
             )
 
             if status == ReleaseStatus.ReleaseCandidate:
-                if not json_version.get('first_release_date'):
+                if not json_version.get("first_release_date"):
                     # TODO, remove in a few months
                     text = (
                         '<a href="https://github.com/3liz/lizmap-web-client/releases/">'
-                        '{tag}   -    {version}'
-                        '</a>'
+                        "{tag}   -    {version}"
+                        "</a>"
                     ).format(tag=tr("Release candidate"), version=lwc_version.value)
                 self.dialog.lwc_version_feature_freeze.setText(text)
                 self.dialog.lwc_version_feature_freeze.setVisible(True)
@@ -152,7 +147,7 @@ class VersionChecker:
                 if i == 0:
                     self.dialog.lwc_version_latest.setText(text)
                     self.date_newest_release_branch = qdate
-                    self.newest_release_branch = json_version['latest_release_version']
+                    self.newest_release_branch = json_version["latest_release_version"]
 
                     if link:
                         self.dialog.lwc_version_latest_changelog.setVisible(True)
@@ -170,7 +165,7 @@ class VersionChecker:
                     single_stable_version_release = False
                     self.dialog.lwc_version_oldest.setText(text)
                     self.date_oldest_release_branch = qdate
-                    self.oldest_release_branche = json_version['latest_release_version']
+                    self.oldest_release_branche = json_version["latest_release_version"]
 
                     if link:
                         self.dialog.lwc_version_oldest_changelog.setVisible(True)
@@ -187,19 +182,19 @@ class VersionChecker:
             self.dialog.lwc_version_oldest.setVisible(False)
 
     def check_outdated_version(self, lwc_version: LwcVersions, with_gui: True):
-        """ Display a warning about outdated LWC version. """
+        """Display a warning about outdated LWC version."""
         if lwc_version not in self.outdated:
             return
 
         if with_gui:
-            title = tr('Outdated branch of Lizmap Web Client')
+            title = tr("Outdated branch of Lizmap Web Client")
             description = tr(
-                "This branch of Lizmap Web Client {} is already outdated for more than {} days.").format(
-                lwc_version.value, DAYS_BEING_OUTDATED)
+                "This branch of Lizmap Web Client {} is already outdated for more than {} days."
+            ).format(lwc_version.value, DAYS_BEING_OUTDATED)
             details = tr(
-                f'We encourage you strongly to upgrade to the latest {self.newest_release_branch} or {self.oldest_release_branche} as soon as possible. A possible '
-                'update of the plugin in a few months will remove the support for writing the Lizmap configuration '
-                'file to this version.'
+                f"We encourage you strongly to upgrade to the latest {self.newest_release_branch} or {self.oldest_release_branche} as soon as possible. A possible "
+                "update of the plugin in a few months will remove the support for writing the Lizmap configuration "
+                "file to this version."
             )
             self.dialog.display_message_bar(title, description, Qgis.MessageLevel.Warning, 10, details)
             return

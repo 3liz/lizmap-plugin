@@ -16,12 +16,12 @@ if TYPE_CHECKING:
     from lizmap.definitions.definitions import LwcVersions
     from lizmap.dialog.main import LizmapDialog
 
-CLASS = load_ui('ui_form_locate_layer.ui')
+CLASS = load_ui("ui_form_locate_layer.ui")
 
 
 class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
-
-    def __init__(self,
+    def __init__(
+        self,
         parent: LizmapDialog | None = None,
         unicity: dict[str, str] | None = None,
         lwc_version: LwcVersions | None = None,
@@ -29,19 +29,19 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = LocateByLayerDefinitions()
-        self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('fieldName', self.display_field)
-        self.config.add_layer_widget('filterFieldName', self.field_group_by)
-        self.config.add_layer_widget('displayGeom', self.display_geometry)
-        self.config.add_layer_widget('minLength', self.autocomplete)
-        self.config.add_layer_widget('filterOnLocate', self.filter_layer)
+        self.config.add_layer_widget("layerId", self.layer)
+        self.config.add_layer_widget("fieldName", self.display_field)
+        self.config.add_layer_widget("filterFieldName", self.field_group_by)
+        self.config.add_layer_widget("displayGeom", self.display_geometry)
+        self.config.add_layer_widget("minLength", self.autocomplete)
+        self.config.add_layer_widget("filterOnLocate", self.filter_layer)
 
-        self.config.add_layer_label('layerId', self.label_layer)
-        self.config.add_layer_label('fieldName', self.label_display_field)
-        self.config.add_layer_label('filterFieldName', self.label_group_by)
-        self.config.add_layer_label('displayGeom', self.label_display_geom)
-        self.config.add_layer_label('minLength', self.label_autocomplete)
-        self.config.add_layer_label('filterOnLocate', self.label_filter_layer)
+        self.config.add_layer_label("layerId", self.label_layer)
+        self.config.add_layer_label("fieldName", self.label_display_field)
+        self.config.add_layer_label("filterFieldName", self.label_group_by)
+        self.config.add_layer_label("displayGeom", self.label_display_geom)
+        self.config.add_layer_label("minLength", self.label_autocomplete)
+        self.config.add_layer_label("filterOnLocate", self.label_filter_layer)
 
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
@@ -58,10 +58,10 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
         self.check_layer_wfs()
 
     def check_layer_wfs(self):
-        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        """When the layer has changed in the combobox, check if the layer is published as WFS."""
         layer = self.layer.currentLayer()
         if not layer:
-            self.show_error(tr('A layer is mandatory.'))
+            self.show_error(tr("A layer is mandatory."))
             return
 
         self.label_layer_in_pg.setVisible(is_vector_pg(layer))
@@ -80,6 +80,6 @@ class LocateLayerEditionDialog(BaseEditionDialog, CLASS):
             return not_in_wfs
 
         if not self.display_field.currentField():
-            return tr('Display field is mandatory.')
+            return tr("Display field is mandatory.")
 
         return None

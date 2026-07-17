@@ -18,7 +18,7 @@ from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_database_layer
 from lizmap.toolbelt.resources import load_ui
 
-CLASS = load_ui('ui_form_time_manager.ui')
+CLASS = load_ui("ui_form_time_manager.ui")
 
 if TYPE_CHECKING:
     from qgis.PyQt.QtWidgets import QWidget
@@ -27,8 +27,8 @@ if TYPE_CHECKING:
 
 
 class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
-
-    def __init__(self,
+    def __init__(
+        self,
         parent: QWidget | None = None,
         unicity: dict[str, str] | None = None,
         version: LwcVersions | None = None,
@@ -36,19 +36,19 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         super().__init__(parent, unicity, version)
         self.setupUi(self)
         self.config = TimeManagerDefinitions()
-        self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('startAttribute', self.start_field)
-        self.config.add_layer_widget('endAttribute', self.end_field)
-        self.config.add_layer_widget('attributeResolution', self.resolution)
-        self.config.add_layer_widget('min_timestamp', self.edit_min_value)
-        self.config.add_layer_widget('max_timestamp', self.edit_max_value)
+        self.config.add_layer_widget("layerId", self.layer)
+        self.config.add_layer_widget("startAttribute", self.start_field)
+        self.config.add_layer_widget("endAttribute", self.end_field)
+        self.config.add_layer_widget("attributeResolution", self.resolution)
+        self.config.add_layer_widget("min_timestamp", self.edit_min_value)
+        self.config.add_layer_widget("max_timestamp", self.edit_max_value)
 
-        self.config.add_layer_label('layerId', self.label_layer)
-        self.config.add_layer_label('startAttribute', self.label_start_attribute)
-        self.config.add_layer_label('endAttribute', self.label_end_attribute)
-        self.config.add_layer_label('attributeResolution', self.label_resolution)
-        self.config.add_layer_label('min_timestamp', self.label_min_value)
-        self.config.add_layer_label('max_timestamp', self.label_max_value)
+        self.config.add_layer_label("layerId", self.label_layer)
+        self.config.add_layer_label("startAttribute", self.label_start_attribute)
+        self.config.add_layer_label("endAttribute", self.label_end_attribute)
+        self.config.add_layer_label("attributeResolution", self.label_resolution)
+        self.config.add_layer_label("min_timestamp", self.label_min_value)
+        self.config.add_layer_label("max_timestamp", self.label_max_value)
 
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
 
@@ -73,10 +73,10 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.check_layer_wfs()
 
     def check_layer_wfs(self):
-        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        """When the layer has changed in the combobox, check if the layer is published as WFS."""
         layer = self.layer.currentLayer()
         if not layer:
-            self.show_error(tr('A layer is mandatory.'))
+            self.show_error(tr("A layer is mandatory."))
             return
 
         not_in_wfs = self.is_layer_in_wfs(layer)
@@ -108,12 +108,12 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         exp_context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
         exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
 
-        exp = QgsExpression(f'to_string({expression})')
+        exp = QgsExpression(f"to_string({expression})")
         exp.prepare(exp_context)
         return exp.evaluate(exp_context)
 
     def set_visible_min_max(self):
-        """ Some widgets are hidden when the layer is stored in a database.
+        """Some widgets are hidden when the layer is stored in a database.
 
         For PostgreSQL, GPKG and Sqlite, we don't display these widgets.
         """
@@ -125,16 +125,16 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
         self.set_max_value.setVisible(is_file_based)
         self.edit_min_value.setVisible(is_file_based)
         self.edit_max_value.setVisible(is_file_based)
-        self.edit_min_value.setText('')
-        self.edit_max_value.setText('')
+        self.edit_min_value.setText("")
+        self.edit_max_value.setText("")
 
     def start_field_changed(self):
-        self.edit_min_value.setText('')
+        self.edit_min_value.setText("")
         if not self.end_field.currentField():
-            self.edit_max_value.setText('')
+            self.edit_max_value.setText("")
 
     def end_field_changed(self):
-        self.edit_max_value.setText('')
+        self.edit_max_value.setText("")
 
     def validate(self) -> str | None:
         upstream = super().validate()
@@ -147,11 +147,12 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
             return not_in_wfs
 
         if not self.start_field.currentField():
-            return tr('Start attribute is mandatory.')
+            return tr("Start attribute is mandatory.")
 
-        msg = tr('The min/max values must be computed.')
-        if self.edit_min_value.isVisible() \
-            and (self.edit_min_value.text() == '' or self.edit_max_value.text() == ''):
+        msg = tr("The min/max values must be computed.")
+        if self.edit_min_value.isVisible() and (
+            self.edit_min_value.text() == "" or self.edit_max_value.text() == ""
+        ):
             return msg
 
         return None

@@ -1,6 +1,6 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2023, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 import logging
 
@@ -29,7 +29,7 @@ from qgis.utils import iface
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import resources_path
 
-LOGGER = logging.getLogger('Lizmap')
+LOGGER = logging.getLogger("Lizmap")
 
 # Detect available Web widget
 WEBKIT_AVAILABLE = False
@@ -37,6 +37,7 @@ WEB_ENGINE = False
 try:
     # Prefer QWebEngine (modern)
     from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
+
     WebView = QWebEngineView
     WEBKIT_AVAILABLE = True
     WEB_ENGINE = True
@@ -44,6 +45,7 @@ except ModuleNotFoundError:
     try:
         # Fallback to legacy QtWebKit
         from qgis.PyQt.QtWebKitWidgets import QWebView
+
         WebView = QWebView
         WEBKIT_AVAILABLE = True
         WEB_ENGINE = False
@@ -55,10 +57,9 @@ except ModuleNotFoundError:
 
 
 class HtmlPreview(QDockWidget):
-
     # noinspection PyArgumentList
     def __init__(self, parent, *__args):
-        """ Constructor. """
+        """Constructor."""
         super().__init__(parent, *__args)
         self.setObjectName("html_maptip_preview")
         self.setWindowTitle("Lizmap HTML Maptip Preview")
@@ -72,16 +73,18 @@ class HtmlPreview(QDockWidget):
         if WebView:
             self.web_view = WebView(self.dock)
         else:
-            self.web_view = QLabel(tr('You must install Qt Webkit to enable this feature.'))
+            self.web_view = QLabel(tr("You must install Qt Webkit to enable this feature."))
             self.web_view.setWordWrap(True)
 
         self.layout.addWidget(self.web_view)
 
         # Info label
         if not WEBKIT_AVAILABLE:
-            self.label = QLabel(tr('You must install Qt Webkit to enable this feature.'))
+            self.label = QLabel(tr("You must install Qt Webkit to enable this feature."))
         else:
-            self.label = QLabel(tr("This only a preview of the HTML maptip. Lizmap will add more CSS classes."))
+            self.label = QLabel(
+                tr("This only a preview of the HTML maptip. Lizmap will add more CSS classes.")
+            )
         self.label.setWordWrap(True)
         self.layout.addWidget(self.label)
 
@@ -102,7 +105,7 @@ class HtmlPreview(QDockWidget):
         # Refresh button and last update label
         horizontal = QHBoxLayout()
         self.refresh = QPushButton(self.dock)
-        self.refresh.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
+        self.refresh.setIcon(QIcon(QgsApplication.iconPath("mActionRefresh.svg")))
         self.refresh.clicked.connect(self.update_html)
         horizontal.addWidget(self.refresh)
 
@@ -130,25 +133,27 @@ class HtmlPreview(QDockWidget):
         self.update_html()
 
     def set_server_url(self, url: str):
-        """ Set the server URL according to the main dialog. """
+        """Set the server URL according to the main dialog."""
         if not url:
             return
-        if not url.endswith('/'):
-            url += '/'
+        if not url.endswith("/"):
+            url += "/"
         self._server_url = url
 
     def css(self) -> str:
-        """ Links to CSS style sheet according to the server. """
+        """Links to CSS style sheet according to the server."""
         assets = (
-            'assets/css/bootstrap.min.css',
-            'themes/default/css/main.css',
-            'themes/default/css/map.css',
+            "assets/css/bootstrap.min.css",
+            "themes/default/css/main.css",
+            "themes/default/css/map.css",
         )
-        html = [f'<link type="text/css" href="{self._server_url + asset}" rel="stylesheet" />' for asset in assets]
-        return '\n'.join(html)
+        html = [
+            f'<link type="text/css" href="{self._server_url + asset}" rel="stylesheet" />' for asset in assets
+        ]
+        return "\n".join(html)
 
     def current_layer_changed(self):
-        """ When the layer has changed. """
+        """When the layer has changed."""
         layer = self.layer.currentLayer()
         # Passing an invalid layer to QgsFeaturePickerWidget triggers a
         # QgsFeaturePickerModel reload via QTimer.  When the timer fires
@@ -162,7 +167,7 @@ class HtmlPreview(QDockWidget):
 
     # noinspection PyArgumentList
     def update_html(self):
-        """ Update the HTML preview. """
+        """Update the HTML preview."""
         if not self.isVisible():
             return
 
@@ -187,9 +192,9 @@ class HtmlPreview(QDockWidget):
         exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
         exp_context.setFeature(feature)
         html_string = QgsExpression.replaceExpressionText(layer.mapTipTemplate(), exp_context)
-        base_url = QUrl.fromLocalFile(resources_path('images', 'non_existing_file.png'))
+        base_url = QUrl.fromLocalFile(resources_path("images", "non_existing_file.png"))
 
-        with open(resources_path('html', 'maptip_preview.html'), encoding='utf8') as f:
+        with open(resources_path("html", "maptip_preview.html"), encoding="utf8") as f:
             html_template = f.read()
 
         html_content = html_template.format(

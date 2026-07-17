@@ -30,22 +30,25 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger("Lizmap")
 
 PropFindFileResponse = namedtuple(
-    'PropFindFile',
-    [
-        'http_code', 'etag', 'content_length', 'last_modified', 'last_modified_pretty', 'href'
-    ])
+    "PropFindFile", ["http_code", "etag", "content_length", "last_modified", "last_modified_pretty", "href"]
+)
 
 PropFindDirResponse = namedtuple(
-    'PropFindDir',
+    "PropFindDir",
     [
-        'http_code', 'quota_used_bytes', 'quota_available_bytes', 'last_modified', 'last_modified_pretty', 'href'
-    ])
+        "http_code",
+        "quota_used_bytes",
+        "quota_available_bytes",
+        "last_modified",
+        "last_modified_pretty",
+        "href",
+    ],
+)
 
 
 class WebDav:
-
     def __init__(self, dav_server: str | None = None, auth_id: str | None = None):
-        """ Constructor. """
+        """Constructor."""
         super().__init__()
         # Either from the dialog
         self.parent: LizmapDialog | None = None
@@ -62,7 +65,7 @@ class WebDav:
 
         # noinspection PyArgumentList
         registry = QgsApplication.externalStorageRegistry()
-        self.webdav = registry.externalStorageFromType('WebDAV')
+        self.webdav = registry.externalStorageFromType("WebDAV")
         self.webdav: QgsExternalStorage
 
         self.qgs_path = None
@@ -89,34 +92,34 @@ class WebDav:
 
     @property
     def auth_id(self) -> str | None:
-        """ Return the auth ID, either from the dialog first, or the one in the constructor. """
+        """Return the auth ID, either from the dialog first, or the one in the constructor."""
         if self.parent:
             return self.parent.server_combo.currentData(ServerComboData.AuthId.value)
         return self._auth_id
 
     @property
     def dav_server(self) -> str | None:
-        """ Return the URL to the DAV server, either from the dialog first, or the one in the constructor. """
+        """Return the URL to the DAV server, either from the dialog first, or the one in the constructor."""
         if self.parent:
-            metadata = webdav_properties(self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value))
+            metadata = webdav_properties(
+                self.parent.server_combo.currentData(ServerComboData.JsonMetadata.value)
+            )
             if not metadata:
                 # Module not enabled
                 return None
-            return self.url_slash(
-                self.url_slash(metadata.get('url'))
-                + metadata.get('projects_path'))
+            return self.url_slash(self.url_slash(metadata.get("url")) + metadata.get("projects_path"))
 
         return self.url_slash(self._dav_server)
 
     @staticmethod
     def url_slash(url: str) -> str:
-        """ Append slash to the URL at the end if needed. """
-        if not url.endswith('/'):
-            url += '/'
+        """Append slash to the URL at the end if needed."""
+        if not url.endswith("/"):
+            url += "/"
         return url
 
     def dav_repository_url(self) -> str | None:
-        """ With webdav, returns the full URL to the repository. """
+        """With webdav, returns the full URL to the repository."""
         url = self.dav_server + self.parent.current_repository(RepositoryComboData.Path)
         if not url:
             # No repository yet
@@ -125,32 +128,32 @@ class WebDav:
         return self.url_slash(url)
 
     def server_url(self) -> str | None:
-        """ URL from the server. """
+        """URL from the server."""
         return self.url_slash(self.parent.server_combo.currentData(ServerComboData.ServerUrl.value))
 
     def project_url(self) -> str:
-        """ Returns the URL to the project in the web browser. """
+        """Returns the URL to the project in the web browser."""
         return (
             self.server_url()
-            + f'index.php/view/map?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}'
+            + f"index.php/view/map?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}"
         )
 
     def thumbnail_url(self) -> str:
-        """ Returns the URL to the thumbnail in the web browser. """
+        """Returns the URL to the thumbnail in the web browser."""
         return (
             self.server_url()
-            + f'index.php/view/media/illustration?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}'
+            + f"index.php/view/media/illustration?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}"
         )
 
     def media_url(self, media: str) -> str:
-        """ Returns the URL to the media in the web browser. """
+        """Returns the URL to the media in the web browser."""
         return (
             self.server_url()
-            + f'index.php/view/media/getMedia?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}&path={media}'
+            + f"index.php/view/media/getMedia?repository={self.parent.current_repository(RepositoryComboData.Id)}&project={Path(self.qgs_path).stem}&path={media}"
         )
 
     def setup_webdav_dialog(self, dialog: LizmapDialog = None) -> bool:
-        """ Setting up the WebDAV connection. """
+        """Setting up the WebDAV connection."""
         if dialog:
             self.parent = dialog
 
@@ -174,17 +177,17 @@ class WebDav:
         return True
 
     def config_project(self):
-        """ Set the current project. """
+        """Set the current project."""
         # noinspection PyArgumentList
         self.qgs_path = QgsProject.instance().fileName()
-        self.cfg_path = self.qgs_path + '.cfg'
+        self.cfg_path = self.qgs_path + ".cfg"
 
     def send_all_project_files(self) -> tuple[bool, str, str]:
-        """ Send all files related to the project : qgs, cfg and thumbnail. """
+        """Send all files related to the project : qgs, cfg and thumbnail."""
         self.config_project()
         url = self.dav_repository_url()
         if not url:
-            return False, '', ''
+            return False, "", ""
 
         LOGGER.info(f"SEND files to {url}")
 
@@ -198,7 +201,7 @@ class WebDav:
         error = self.qgs.errorString()
         if error:
             LOGGER.error("Error while sending the QGS file : " + error)
-            return False, error, ''
+            return False, error, ""
 
         loop = QEventLoop()
         LOGGER.debug(f"Local path {self.cfg_path} to {url} with token {self.auth_id}")
@@ -210,28 +213,30 @@ class WebDav:
         error = self.cfg.errorString()
         if error:
             LOGGER.error("Error while sending the Lizmap configuration file : " + error)
-            return False, error, ''
+            return False, error, ""
 
         url = self.project_url()
         LOGGER.info(f"Project published on {url}")
-        return True, '', url
+        return True, "", url
 
     def send_thumbnail(self) -> tuple[bool, str]:
-        """ Send the thumbnail to the WebDAV server. """
+        """Send the thumbnail to the WebDAV server."""
         if not self.parent:
-            return False, ''
+            return False, ""
 
         self.thumbnail_path = self.parent.thumbnail_file()
         if not self.thumbnail_path:
-            return False, ''
+            return False, ""
 
         url = self.dav_repository_url()
         if not url:
-            return False, ''
+            return False, ""
 
         loop = QEventLoop()
         LOGGER.debug(f"Local path {self.thumbnail_path} to {url} with token {self.auth_id}")
-        self.thumbnail = self.webdav.store(str(self.thumbnail_path), url, self.auth_id, Qgis.ActionStart.Deferred)
+        self.thumbnail = self.webdav.store(
+            str(self.thumbnail_path), url, self.auth_id, Qgis.ActionStart.Deferred
+        )
         self.thumbnail.stored.connect(loop.quit)
         self.thumbnail.store()
         loop.exec()
@@ -244,17 +249,17 @@ class WebDav:
         return True, self.thumbnail_url()
 
     def send_action(self) -> tuple[bool, str]:
-        """ Send the thumbnail to the WebDAV server. """
+        """Send the thumbnail to the WebDAV server."""
         if not self.parent:
-            return False, ''
+            return False, ""
 
         self.action_path = self.parent.action_file()
         if not self.action_path or not self.action_path.exists():
-            return False, ''
+            return False, ""
 
         url = self.dav_repository_url()
         if not url:
-            return False, ''
+            return False, ""
 
         loop = QEventLoop()
         LOGGER.debug(f"Local path {self.action_path} to {url} with token {self.auth_id}")
@@ -268,18 +273,18 @@ class WebDav:
             LOGGER.error("Error while sending the thumbnail : " + error)
             return False, error
 
-        return True, ''
+        return True, ""
 
     def send_media(self, file_path: Path) -> tuple[bool, str]:
-        """ Send the media to the WebDAV server. """
+        """Send the media to the WebDAV server."""
         if not self.parent:
-            return False, ''
+            return False, ""
 
         url = self.dav_repository_url()
         if not url:
-            return False, tr('No repository URL')
+            return False, tr("No repository URL")
 
-        url += 'media/'
+        url += "media/"
 
         loop = QEventLoop()
         LOGGER.debug(f"Local path {file_path} to {url} with token {self.auth_id}")
@@ -293,10 +298,10 @@ class WebDav:
             LOGGER.error("Error while sending the media : " + error)
             return False, error
 
-        return True, ''
+        return True, ""
 
     def remove_qgs(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Remove QGS file. """
+        """Remove QGS file."""
         self.config_project()
         if self.qgs_path:
             file_name = Path(self.qgs_path).name
@@ -306,33 +311,33 @@ class WebDav:
         return self.remove_file(file_name)
 
     def remove_cfg(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Remove CFG file. """
+        """Remove CFG file."""
         self.config_project()
         return self.remove_file(Path(self.cfg_path).name)
 
     def remove_thumbnail(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Remove thumbnail file. """
+        """Remove thumbnail file."""
         self.thumbnail_path = self.parent.thumbnail_file()
         if not self.thumbnail_path:
-            return None, tr('No thumbnail found on the local file system, not checking on the server.')
+            return None, tr("No thumbnail found on the local file system, not checking on the server.")
         return self.remove_file(self.thumbnail_path.name)
 
     def remove_action(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Remove action file. """
+        """Remove action file."""
         self.action_path = self.parent.action_file()
         if not self.action_path or not self.action_path.exists():
-            return None, tr('No action found on the local file system, not checking on the server.')
+            return None, tr("No action found on the local file system, not checking on the server.")
         return self.remove_file(self.action_path.name)
 
     def remove_file(self, remote_path: str) -> tuple[bool, str]:
-        """ Remove a remote file path. """
+        """Remove a remote file path."""
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
         elif self._user:
             # Only for tests
             user, password = self._user, self._password
         else:
-            return False, 'Missing auth ID'
+            return False, "Missing auth ID"
 
         if self.parent and self.parent.current_repository(RepositoryComboData.Path):
             directory = self.parent.current_repository(RepositoryComboData.Path)
@@ -340,7 +345,7 @@ class WebDav:
             # Only for tests
             directory = self._repository
         else:
-            return False, 'Missing repository'
+            return False, "Missing repository"
 
         network_request = QNetworkRequest()
         network_request.setRawHeader(b"Authorization", self._token(user, password))
@@ -350,14 +355,14 @@ class WebDav:
         # noinspection PyArgumentList
         network_request.setUrl(QUrl(self.dav_server + directory + remote_path))
 
-        reply = self._custom_blocking_request(network_request, 'DELETE')
+        reply = self._custom_blocking_request(network_request, "DELETE")
         data = reply.readAll()
-        content = data.data().decode('utf8')
+        content = data.data().decode("utf8")
 
         return True, content
 
     def put_file(self, file_path: Path, remote_path: Path) -> tuple[bool, str]:
-        """ Send a generic file.
+        """Send a generic file.
 
         :param file_path: Local file path to send.
         :param remote_path: The path on the WebDAV.
@@ -368,7 +373,7 @@ class WebDav:
             # Only for tests
             directory = self._repository
         else:
-            return False, 'Missing repository'
+            return False, "Missing repository"
 
         # directory = self.url_slash(directory)
 
@@ -387,7 +392,9 @@ class WebDav:
 
         loop = QEventLoop()
         LOGGER.debug(f"Local path {file_path} to {remote_server} with token {self.auth_id}")
-        self.generic = self.webdav.store(str(file_path), remote_server, self.auth_id, Qgis.ActionStart.Deferred)
+        self.generic = self.webdav.store(
+            str(file_path), remote_server, self.auth_id, Qgis.ActionStart.Deferred
+        )
         self.generic.stored.connect(loop.quit)
         self.generic.store()
         loop.exec()
@@ -397,7 +404,7 @@ class WebDav:
             LOGGER.error("Error while sending the generic file : " + error)
             return False, error
 
-        return True, ''
+        return True, ""
         #
         # loop = QEventLoop()
         #
@@ -491,15 +498,15 @@ class WebDav:
     #     return False, self.xml_reply_from_dav(reply)
 
     def check_exists_qgs(self) -> tuple[bool, str | None]:
-        """ Check if the project exists on the server. """
+        """Check if the project exists on the server."""
         result, error_msg = self.file_stats_qgs()
         if result and "200" in result.http_code:
-            return True, ''
+            return True, ""
 
         return False, error_msg
 
     def file_stats_qgs(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Fetch file stats on the server about QGS file. """
+        """Fetch file stats on the server about QGS file."""
         self.config_project()
         if self.qgs_path:
             file_name = Path(self.qgs_path).name
@@ -509,37 +516,37 @@ class WebDav:
         return self.file_stats(file_name)
 
     def file_stats_cfg(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Fetch file stats on the server about CFG file. """
+        """Fetch file stats on the server about CFG file."""
         self.config_project()
         return self.file_stats(Path(self.cfg_path).name)
 
     def file_stats_thumbnail(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Fetch file stats on the server about thumbnail. """
+        """Fetch file stats on the server about thumbnail."""
         self.thumbnail_path = self.parent.thumbnail_file()
         if not self.thumbnail_path:
-            return None, tr('No thumbnail found on the local file system, not checking on the server.')
+            return None, tr("No thumbnail found on the local file system, not checking on the server.")
         return self.file_stats(self.thumbnail_path.name)
 
     def file_stats_action(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Fetch file stats on the server about action. """
+        """Fetch file stats on the server about action."""
         self.action_path = self.parent.action_file()
         if not self.action_path or not self.action_path.exists():
-            return None, tr('No action found on the local file system, not checking on the server.')
+            return None, tr("No action found on the local file system, not checking on the server.")
         return self.file_stats(self.action_path.name)
 
     def file_stats_media(self) -> tuple[PropFindFileResponse | None, str]:
-        """ Fetch file stats on the server about media folder. """
+        """Fetch file stats on the server about media folder."""
         return self.file_stats("media")
 
     def file_stats(self, filename: str) -> tuple[PropFindFileResponse | None, str | None]:
-        """ Get file stats on a file. """
+        """Get file stats on a file."""
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
         elif self._user:
             # Only for tests
             user, password = self._user, self._password
         else:
-            return None, 'Missing auth ID'
+            return None, "Missing auth ID"
 
         if self.parent and self.parent.current_repository(RepositoryComboData.Path):
             directory = self.parent.current_repository(RepositoryComboData.Path)
@@ -547,7 +554,7 @@ class WebDav:
             # Only for tests
             directory = self._repository
         else:
-            return None, 'Missing repository'
+            return None, "Missing repository"
 
         network_request = QNetworkRequest()
         network_request.setRawHeader(b"Authorization", self._token(user, password))
@@ -557,25 +564,25 @@ class WebDav:
         # noinspection PyArgumentList
         network_request.setUrl(QUrl(self.dav_server + directory + filename))
         # print(network_request.url())
-        reply = self._custom_blocking_request(network_request, 'PROPFIND')
+        reply = self._custom_blocking_request(network_request, "PROPFIND")
 
         data = reply.readAll()
-        content = data.data().decode('utf8')
+        content = data.data().decode("utf8")
         if reply.error() == QNetworkReply.NetworkError.NoError:
             # No error occurred, return the parsed response without any error message
-            return self.parse_propfind_response(content), ''
+            return self.parse_propfind_response(content), ""
 
         if reply.error() == QNetworkReply.NetworkError.ContentNotFoundError:
             # The file doesn't exist on the server
             # Return None and empty error message
-            return None, ''
+            return None, ""
 
         LOGGER.error(reply.errorString())
         # Return None but try to parse the error message
         return None, self.xml_reply_from_dav(reply)
 
     def make_dirs_recursive(self, directory: Path, exists_ok: bool = True) -> tuple[bool, str | None]:
-        """ Make a remote directory with an auth ID. """
+        """Make a remote directory with an auth ID."""
         # print(directory)
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
@@ -583,7 +590,7 @@ class WebDav:
             # Only for tests
             user, password = self._user, self._password
         else:
-            return False, 'Missing auth ID'
+            return False, "Missing auth ID"
         return self.make_dirs_recursive_basic(directory, exists_ok, user, password)
 
     def make_dirs_recursive_basic(
@@ -593,14 +600,14 @@ class WebDav:
         user: str,
         password: str,
     ) -> tuple[bool, str]:
-        """ Make all dirs if necessary. """
+        """Make all dirs if necessary."""
         if self.parent and self.parent.current_repository(RepositoryComboData.Path):
             directory = self.parent.current_repository(RepositoryComboData.Path)
         elif self._repository:
             # Only for tests
             directory = self._repository
         else:
-            return None, 'Missing repository'
+            return None, "Missing repository"
 
         directory = self.url_slash(directory)
 
@@ -617,55 +624,59 @@ class WebDav:
                 return False, msg
 
         if file_path.suffix:
-            return True, ''
+            return True, ""
         return self.make_dir_basic(directory + str(file_path), exists_ok, user, password)
 
     def make_dir(self, directory: str, exists_ok: bool = False) -> tuple[bool, str | None]:
-        """ Make a remote directory with an auth ID. """
+        """Make a remote directory with an auth ID."""
         if self.auth_id:
             user, password = self.extract_auth_id(self.auth_id)
         elif self._user:
             # Only for tests
             user, password = self._user, self._password
         else:
-            return False, 'Missing auth ID'
+            return False, "Missing auth ID"
         return self.make_dir_basic(directory, exists_ok, user, password)
 
-    def make_dir_basic(self, directory: str, exists_ok: bool, user: str, password: str) -> tuple[bool, str | None]:
-        """ Make a remote directory with a login and password. """
+    def make_dir_basic(
+        self, directory: str, exists_ok: bool, user: str, password: str
+    ) -> tuple[bool, str | None]:
+        """Make a remote directory with a login and password."""
         network_request = QNetworkRequest()
         network_request.setRawHeader(b"Authorization", self._token(user, password))
         # noinspection PyArgumentList
         network_request.setUrl(QUrl(self.dav_server + directory))
 
-        reply = self._custom_blocking_request(network_request, 'MKCOL')
+        reply = self._custom_blocking_request(network_request, "MKCOL")
         if reply.error() == QNetworkReply.NetworkError.NoError:
-            return True, ''
+            return True, ""
 
         error = self.xml_reply_from_dav(reply)
 
-        if error == 'The resource you tried to create already exists':
+        if error == "The resource you tried to create already exists":
             return exists_ok, error
 
         return False, error
 
     @classmethod
     def extract_auth_id(cls, auth_id: str) -> tuple[str, str]:
-        """ Extract user and password from an auth ID. """
+        """Extract user and password from an auth ID."""
         conf = QgsAuthMethodConfig()
         # noinspection PyArgumentList
         QgsApplication.authManager().loadAuthenticationConfig(auth_id, conf, True)
-        user = conf.config('username')
-        password = conf.config('password')
+        user = conf.config("username")
+        password = conf.config("password")
         return user, password
 
     @classmethod
-    def _custom_blocking_request(cls, request: QNetworkRequest, http: str, multi_part: QHttpMultiPart = None) -> QNetworkReply:
-        """ Make a custom blocking HTTP request. """
+    def _custom_blocking_request(
+        cls, request: QNetworkRequest, http: str, multi_part: QHttpMultiPart = None
+    ) -> QNetworkReply:
+        """Make a custom blocking HTTP request."""
         # noinspection PyArgumentList
         network_manager = QgsNetworkAccessManager.instance()
         loop = QEventLoop()
-        reply = network_manager.sendCustomRequest(request, http.encode('utf-8'), multi_part)
+        reply = network_manager.sendCustomRequest(request, http.encode("utf-8"), multi_part)
         reply: QNetworkReply
         # noinspection PyUnresolvedReferences
         reply.finished.connect(loop.quit)
@@ -674,33 +685,35 @@ class WebDav:
 
     @classmethod
     def _token(cls, user: str, password: str | None = None) -> bytes:
-        """ Return the encoded token for HTTP requests. """
+        """Return the encoded token for HTTP requests."""
         token = b64encode(f"{user}:{password}".encode()).decode("ascii")
         return f"Basic {token}".encode()
 
     @classmethod
     def xml_reply_from_dav(cls, reply: QNetworkReply) -> str:
-        """ Read the error message in a reply from the dav server.
+        """Read the error message in a reply from the dav server.
 
-            Exemple of content:
-            <?xml version="1.0" encoding="utf-8"?>
-            <d:error xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">
-            <s:exception>Sabre\\DAV\\Exception\\NotFound</s:exception>
-            <s:message>Tag with id 15 not found</s:message>
-            </d:error>
+        Exemple of content:
+        <?xml version="1.0" encoding="utf-8"?>
+        <d:error xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">
+        <s:exception>Sabre\\DAV\\Exception\\NotFound</s:exception>
+        <s:message>Tag with id 15 not found</s:message>
+        </d:error>
         """
         data = reply.readAll()
-        content = data.data().decode('utf8')
+        content = data.data().decode("utf8")
         if not content:
-            return tr(
-                "Unknown error from the webdav server. No content has been returned."
-            ) + " ; Error from the HTTP request " + reply.errorString()
+            return (
+                tr("Unknown error from the webdav server. No content has been returned.")
+                + " ; Error from the HTTP request "
+                + reply.errorString()
+            )
 
-        dom_doc = QDomDocument('dav')
+        dom_doc = QDomDocument("dav")
         content_result = dom_doc.setContent(content)
         if not content_result[0]:
             # Error in the xml content
-            return f'{content_result[1]} - {content}'
+            return f"{content_result[1]} - {content}"
 
         # Get the message or the exception of the error
         doc_elem = dom_doc.documentElement()
@@ -709,7 +722,7 @@ class WebDav:
 
         if messages.count() == 0 and exceptions.count() == 0:
             # No message or exception found
-            return f'{content} - {reply.errorString()}'
+            return f"{content} - {reply.errorString()}"
         if messages.count() == 0:
             # No message found, return the exception
             return exceptions.item(0).toElement().text()
@@ -718,27 +731,27 @@ class WebDav:
 
     @classmethod
     def parse_propfind_response(cls, xml_data: str) -> PropFindFileResponse | PropFindDirResponse:
-        """ Parse a response from a PROPFIND request.
+        """Parse a response from a PROPFIND request.
 
-            Exemple of content:
-            <?xml version="1.0"?>
-            <d:multistatus xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">
-                <d:response>
-                    <d:href>/remote.php/webdav/Photos/Squirrel.jpg</d:href>
-                    <d:propstat>
-                        <d:prop>
-                            <d:getlastmodified>Wed, 03 May 2017 11:05:49 GMT</d:getlastmodified>
-                            <d:getetag>"etag123456789"</d:getetag>
-                            <d:getcontenttype>image/jpeg</d:getcontenttype>
-                            <d:resourcetype/>
-                            <d:getcontentlength>233724</d:getcontentlength>
-                        </d:prop>
-                        <d:status>HTTP/1.1 200 OK</d:status>
-                    </d:propstat>
-                </d:response>
-            </d:multistatus>
+        Exemple of content:
+        <?xml version="1.0"?>
+        <d:multistatus xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">
+            <d:response>
+                <d:href>/remote.php/webdav/Photos/Squirrel.jpg</d:href>
+                <d:propstat>
+                    <d:prop>
+                        <d:getlastmodified>Wed, 03 May 2017 11:05:49 GMT</d:getlastmodified>
+                        <d:getetag>"etag123456789"</d:getetag>
+                        <d:getcontenttype>image/jpeg</d:getcontenttype>
+                        <d:resourcetype/>
+                        <d:getcontentlength>233724</d:getcontentlength>
+                    </d:prop>
+                    <d:status>HTTP/1.1 200 OK</d:status>
+                </d:propstat>
+            </d:response>
+        </d:multistatus>
         """
-        dom_doc = QDomDocument('dav')
+        dom_doc = QDomDocument("dav")
         dom_doc.setContent(xml_data)
         doc_elem = dom_doc.documentElement()
 
@@ -791,7 +804,7 @@ class WebDav:
         return PropFindFileResponse(http, etag, length, last_modified, date_string, href)
 
     def _for_test(self, user: str, password: str, repository: str, file_name: str):
-        """ Only for testing purpose. """
+        """Only for testing purpose."""
         self._user = user
         self._password = password
         self._repository = repository

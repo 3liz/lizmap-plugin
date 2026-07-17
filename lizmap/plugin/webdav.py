@@ -563,7 +563,7 @@ class WebDavManager(LizmapProtocol):
             box.setWindowTitle(tr("Cache about the thumbnail"))
             box.setText(
                 tr(
-                    'The upload of the thumbnail is successful. You can open it in your '
+                    "The upload of the thumbnail is successful. You can open it in your "
                     '<a href="{}">web-browser</a>.'
                 ).format(message)
                 + "<br><br>"

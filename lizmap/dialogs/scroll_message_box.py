@@ -1,6 +1,6 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2023, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
@@ -13,7 +13,6 @@ from qgis.PyQt.QtWidgets import (
 
 
 class ScrollMessageBox(QMessageBox):
-
     def __init__(self, parent: QDialog, *args, **kwargs):
         QMessageBox.__init__(self, *args, **kwargs)
         if parent:
@@ -28,5 +27,5 @@ class ScrollMessageBox(QMessageBox):
         scroll.setWidget(label)
         scroll.setMinimumSize(400, 200)
         grid.addWidget(scroll, 0, 1)
-        children[1].setText('')
+        children[1].setText("")
         self.exec()

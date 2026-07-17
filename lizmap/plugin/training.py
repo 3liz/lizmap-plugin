@@ -3,6 +3,7 @@
 This module provides the TrainingManager class which handles training
 operations using the delegate pattern.
 """
+
 from __future__ import annotations
 
 import tempfile

@@ -89,7 +89,7 @@ def get_layer_wms_parameters(layer):
 
 
 def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str:
-    """ Get layer server property """
+    """Get layer server property"""
     if item_property == LayerProperties.ShortName:
         if Qgis.versionInt() < 33800:
             return layer.shortName()
@@ -110,7 +110,7 @@ def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str
 
 
 def set_layer_property(layer: QgsVectorLayer, item_property: LayerProperties, value: str | None):
-    """ Set layer server property """
+    """Set layer server property"""
     if item_property == LayerProperties.ShortName:
         if Qgis.versionInt() < 33800:
             layer.setShortName(value)

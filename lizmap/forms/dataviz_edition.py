@@ -28,11 +28,10 @@ if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
 
 
-CLASS = load_ui('ui_form_dataviz.ui')
+CLASS = load_ui("ui_form_dataviz.ui")
 
 
 class DatavizEditionDialog(BaseEditionDialog, CLASS):
-
     def __init__(
         self,
         parent: LizmapDialog | None = None,
@@ -43,57 +42,57 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.setupUi(self)
         self.parent = parent
         self.config = DatavizDefinitions()
-        self.config.add_layer_widget('title', self.title)
-        self.config.add_layer_widget('title_popup', self.title_popup)
-        self.config.add_layer_widget('type', self.type_graph)
-        self.config.add_layer_widget('description', self.text_description)
-        self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('x_field', self.x_field)
-        self.config.add_layer_widget('aggregation', self.aggregation)
-        self.config.add_layer_widget('traces', self.traces)
-        self.config.add_layer_widget('html_template', self.html_template)
-        self.config.add_layer_widget('layout', self.json_layout)
-        self.config.add_layer_widget('horizontal', self.horizontal)
-        self.config.add_layer_widget('stacked', self.stacked)
-        self.config.add_layer_widget('popup_display_child_plot', self.popup_display_child_plot)
-        self.config.add_layer_widget('trigger_filter', self.refresh_if_filtered)
-        self.config.add_layer_widget('only_show_child', self.only_show_child)
-        self.config.add_layer_widget('display_legend', self.display_legend)
-        self.config.add_layer_widget('display_when_layer_visible', self.display_when_layer_visible)
-        self.config.add_layer_widget('uuid', self.uuid)
+        self.config.add_layer_widget("title", self.title)
+        self.config.add_layer_widget("title_popup", self.title_popup)
+        self.config.add_layer_widget("type", self.type_graph)
+        self.config.add_layer_widget("description", self.text_description)
+        self.config.add_layer_widget("layerId", self.layer)
+        self.config.add_layer_widget("x_field", self.x_field)
+        self.config.add_layer_widget("aggregation", self.aggregation)
+        self.config.add_layer_widget("traces", self.traces)
+        self.config.add_layer_widget("html_template", self.html_template)
+        self.config.add_layer_widget("layout", self.json_layout)
+        self.config.add_layer_widget("horizontal", self.horizontal)
+        self.config.add_layer_widget("stacked", self.stacked)
+        self.config.add_layer_widget("popup_display_child_plot", self.popup_display_child_plot)
+        self.config.add_layer_widget("trigger_filter", self.refresh_if_filtered)
+        self.config.add_layer_widget("only_show_child", self.only_show_child)
+        self.config.add_layer_widget("display_legend", self.display_legend)
+        self.config.add_layer_widget("display_when_layer_visible", self.display_when_layer_visible)
+        self.config.add_layer_widget("uuid", self.uuid)
 
-        self.config.add_layer_label('title', self.label_title)
-        self.config.add_layer_label('title_popup', self.label_title_popup)
-        self.config.add_layer_label('type', self.label_type)
-        self.config.add_layer_label('description', self.label_description)
-        self.config.add_layer_label('layerId', self.label_layer)
-        self.config.add_layer_label('x_field', self.label_x_field)
-        self.config.add_layer_label('aggregation', self.label_aggregation)
-        self.config.add_layer_label('traces', self.label_traces)
-        self.config.add_layer_label('html_template', self.label_html_template)
-        self.config.add_layer_label('layout', self.label_layout)
-        self.config.add_layer_label('uuid', self.label_uuid)
+        self.config.add_layer_label("title", self.label_title)
+        self.config.add_layer_label("title_popup", self.label_title_popup)
+        self.config.add_layer_label("type", self.label_type)
+        self.config.add_layer_label("description", self.label_description)
+        self.config.add_layer_label("layerId", self.label_layer)
+        self.config.add_layer_label("x_field", self.label_x_field)
+        self.config.add_layer_label("aggregation", self.label_aggregation)
+        self.config.add_layer_label("traces", self.label_traces)
+        self.config.add_layer_label("html_template", self.label_html_template)
+        self.config.add_layer_label("layout", self.label_layout)
+        self.config.add_layer_label("uuid", self.label_uuid)
 
         # noinspection PyCallByClass,PyArgumentList
-        self.add_trace.setText('')
-        self.add_trace.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-        self.add_trace.setToolTip(tr('Add a new trace to the chart.'))
-        self.remove_trace.setText('')
-        self.remove_trace.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
-        self.remove_trace.setToolTip(tr('Remove the selected trace from the chart.'))
+        self.add_trace.setText("")
+        self.add_trace.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
+        self.add_trace.setToolTip(tr("Add a new trace to the chart."))
+        self.remove_trace.setText("")
+        self.remove_trace.setIcon(QIcon(QgsApplication.iconPath("symbologyRemove.svg")))
+        self.remove_trace.setToolTip(tr("Remove the selected trace from the chart."))
 
-        self.add_trace_html.setText('')
-        self.add_trace_html.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-        self.add_trace_html.setToolTip(tr('Add the trace in the HTML.'))
+        self.add_trace_html.setText("")
+        self.add_trace_html.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
+        self.add_trace_html.setToolTip(tr("Add the trace in the HTML."))
         self.add_trace_html.clicked.connect(self.add_current_trace_html)
 
         # Set traces table
-        items = self.config.layer_config['traces']['items']
+        items = self.config.layer_config["traces"]["items"]
         self.traces.setColumnCount(len(items))
         for i, item in enumerate(items):
             sub_definition = self.config.layer_config[item]
-            column = QTableWidgetItem(sub_definition['header'])
-            column.setToolTip(sub_definition['tooltip'])
+            column = QTableWidgetItem(sub_definition["header"])
+            column.setToolTip(sub_definition["tooltip"])
             self.traces.setHorizontalHeaderItem(i, column)
         header = self.traces.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
@@ -114,9 +113,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.add_trace.clicked.connect(self.add_new_trace)
         self.remove_trace.clicked.connect(self.remove_selection)
 
-        self.lwc_versions[LwcVersions.Lizmap_3_4] = [
-            self.label_graph_34
-        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_4] = [self.label_graph_34]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
             self.label_title_popup,
             self.refresh_if_filtered,
@@ -127,10 +124,10 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.check_layer_wfs()
 
     def check_layer_wfs(self):
-        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        """When the layer has changed in the combobox, check if the layer is published as WFS."""
         layer = self.layer.currentLayer()
         if not layer:
-            self.show_error(tr('A layer is mandatory.'))
+            self.show_error(tr("A layer is mandatory."))
             return
 
         not_in_wfs = self.is_layer_in_wfs(layer)
@@ -159,24 +156,23 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         value = []
         rows = self.traces.rowCount()
 
-        collection_definition = self.config.layer_config['traces']
+        collection_definition = self.config.layer_config["traces"]
         for row in range(rows):
             trace_data = {}
-            for i, sub_key in enumerate(collection_definition['items']):
-
-                input_type = self.config.layer_config[sub_key]['type']
+            for i, sub_key in enumerate(collection_definition["items"]):
+                input_type = self.config.layer_config[sub_key]["type"]
                 item = self.traces.item(row, i)
 
                 if item is None:
                     # Safeguard
                     # Do not put if not item, it might be False
-                    raise CellError(f'Cell is not initialized ({row}, {i})')
+                    raise CellError(f"Cell is not initialized ({row}, {i})")
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Safeguard
                     # Do not put if not cell, it might be False
-                    raise CellError(f'Cell has no data ({row}, {i})')
+                    raise CellError(f"Cell has no data ({row}, {i})")
 
                 if input_type == InputType.Field or input_type == InputType.Color:
                     trace_data[sub_key] = cell
@@ -196,14 +192,15 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         """Add a new trace in the table after clicking the 'add' button."""
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
-            if item_enum.value['data'] == graph:
+            if item_enum.value["data"] == graph:
                 graph = item_enum
                 break
         else:
-            raise UnknownError('Error with list')
+            raise UnknownError("Error with list")
 
         dialog = TraceDatavizEditionDialog(
-            self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection())
+            self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection()
+        )
         result = dialog.exec()
         if result != QDialog.DialogCode.Accepted:
             return
@@ -216,17 +213,17 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def _edit_trace_row(self, row, data):
         """Internal function to edit a row."""
-        for i, key in enumerate(self.config.layer_config['traces']['items']):
+        for i, key in enumerate(self.config.layer_config["traces"]["items"]):
             cell = QTableWidgetItem()
 
             value = data.get(key)
             if not value:
-                cell.setText('')
-                cell.setData(Qt.ItemDataRole.UserRole, '')
+                cell.setText("")
+                cell.setData(Qt.ItemDataRole.UserRole, "")
                 self.traces.setItem(row, i, cell)
                 continue
 
-            input_type = self.config.layer_config[key]['type']
+            input_type = self.config.layer_config[key]["type"]
             if input_type == InputType.Field:
                 cell.setText(value)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
@@ -266,11 +263,11 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         """According to the kind of graph, the button might be disabled."""
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
-            if item_enum.value['data'] == graph:
+            if item_enum.value["data"] == graph:
                 graph = item_enum
                 break
         else:
-            raise UnknownError('Error with list')
+            raise UnknownError("Error with list")
 
         if self.traces.rowCount() > 0 and graph in [GraphType.Pie, GraphType.Histogram2D]:
             self.add_trace.setEnabled(False)
@@ -289,30 +286,36 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             if self.traces.rowCount() >= 2:
                 self.add_trace.setStyleSheet(NEW_FEATURE_CSS)
             else:
-                self.add_trace.setStyleSheet('')
+                self.add_trace.setStyleSheet("")
         else:
-            self.add_trace.setStyleSheet('')
+            self.add_trace.setStyleSheet("")
 
     def check_form_graph_type(self):
         """Enable or not features according to the type of graph."""
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
-            if item_enum.value['data'] == graph:
+            if item_enum.value["data"] == graph:
                 graph = item_enum
                 break
         else:
-            raise UnknownError('Error with list')
+            raise UnknownError("Error with list")
 
         # Field X
         if graph in [
-                GraphType.Scatter, GraphType.Bar, GraphType.Histogram,
-                GraphType.Histogram2D, GraphType.Polar, GraphType.Pie,
-                GraphType.Sunburst, GraphType.HtmlTemplate]:
+            GraphType.Scatter,
+            GraphType.Bar,
+            GraphType.Histogram,
+            GraphType.Histogram2D,
+            GraphType.Polar,
+            GraphType.Pie,
+            GraphType.Sunburst,
+            GraphType.HtmlTemplate,
+        ]:
             self.x_field.setAllowEmptyFieldName(False)
         elif graph in [GraphType.Box]:
             self.x_field.setAllowEmptyFieldName(True)
         else:
-            raise UnknownError('Unknown graph type for X')
+            raise UnknownError("Unknown graph type for X")
 
         # Bar chart
         is_bar_chart = graph == GraphType.Bar
@@ -332,7 +335,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.check_trace_action()
 
     def add_current_trace_html(self):
-        """ Add the current trace from the combobox in the HTML template. """
+        """Add the current trace from the combobox in the HTML template."""
         self.html_template.insert_text(f"{{$y{self.trace_combo.currentData()}}}")
 
     def validate(self) -> str | None:
@@ -346,27 +349,28 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             return not_in_wfs
 
         if self.traces.rowCount() == 0:
-            return tr('At least one Y field is required.')
+            return tr("At least one Y field is required.")
 
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
-            if item_enum.value['data'] == graph:
+            if item_enum.value["data"] == graph:
                 graph = item_enum
                 break
         if graph == GraphType.HtmlTemplate:
             html = self.html_template.html_content()
-            if html == '':
-                return tr('HTML template is mandatory.')
+            if html == "":
+                return tr("HTML template is mandatory.")
 
         layout = self.json_layout.text()
         if layout:
             import json
+
             try:
                 data = json.loads(layout)
             except json.decoder.JSONDecodeError as e:
-                return tr('JSON layout is not valid : {}').format(str(e))
+                return tr("JSON layout is not valid : {}").format(str(e))
 
             if not isinstance(data, dict):
-                return tr('The JSON layout must be a dictionary.')
+                return tr("The JSON layout must be a dictionary.")
 
         return None

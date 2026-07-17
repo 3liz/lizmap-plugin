@@ -1,4 +1,3 @@
-
 import json
 import os
 import platform
@@ -32,10 +31,10 @@ ENV_SKIP_STATS = "LIZMAP_SKIP_STATS"
 # Plausible is GDPR friendly https://plausible.io/data-policy
 # The User-Agent is set by QGIS Desktop itself
 
-class Plausible:
 
+class Plausible:
     def __init__(self, dlg):
-        """ Constructor. """
+        """Constructor."""
         self.dialog = dlg
         self.previous_date = None
         self.locale = QgsSettings().value("locale/userLocale", "")
@@ -44,7 +43,7 @@ class Plausible:
         self.locale = self.locale[0:2].lower()
 
     def request_stat_event(self) -> bool:
-        """ Request to send an event to the API. """
+        """Request to send an event to the API."""
         if not ambiguous_to_bool(os.getenv(ENV_SKIP_STATS)):
             # Disabled by environment variable
             return False
@@ -70,15 +69,15 @@ class Plausible:
         if not metadata:
             return False
 
-        qgis_server_info = metadata.get('qgis_server_info')
+        qgis_server_info = metadata.get("qgis_server_info")
         if not qgis_server_info:
             return False
 
-        qgis_metadata = qgis_server_info.get('metadata')
+        qgis_metadata = qgis_server_info.get("metadata")
         if not qgis_metadata:
             return False
 
-        qgis_server_version = qgis_metadata.get('version')
+        qgis_server_version = qgis_metadata.get("version")
         if not qgis_server_version:
             return False
 
@@ -89,13 +88,13 @@ class Plausible:
         return False
 
     def _send_stat_event(self, current_metadata: dict, qgis_server_version: str) -> bool:
-        """ Send stats event to the API. """
+        """Send stats event to the API."""
         # Only turn ON for debug purpose, temporary !
         debug = False
         extra_debug = False
 
         lizmap_plugin_version = version()
-        if lizmap_plugin_version in ('master', 'dev'):
+        if lizmap_plugin_version in ("master", "dev"):
             # Dev versions of the plugin, it's a kind of debug
             debug = True
 
@@ -122,11 +121,11 @@ class Plausible:
             return False
 
         if all(lizmap_cloud_instances):
-            lizmap_cloud = 'all'
+            lizmap_cloud = "all"
         elif any(lizmap_cloud_instances):
-            lizmap_cloud = 'mixed'
+            lizmap_cloud = "mixed"
         else:
-            lizmap_cloud = 'no'
+            lizmap_cloud = "no"
 
         plausible_url = PLAUSIBLE_URL_TEST if debug else PLAUSIBLE_URL_PROD
 
@@ -140,40 +139,40 @@ class Plausible:
 
         # Qgis.QGIS_VERSION → 3.34.6-Prizren
         # noinspection PyUnresolvedReferences
-        qgis_version_full = Qgis.QGIS_VERSION.split('-')[0]
+        qgis_version_full = Qgis.QGIS_VERSION.split("-")[0]
         # qgis_version_full → 3.34.6
-        qgis_version_branch = '.'.join(qgis_version_full.split('.')[0:2])
+        qgis_version_branch = ".".join(qgis_version_full.split(".")[0:2])
         # qgis_version_branch → 3.34
 
         python_version_full = platform.python_version()
         # python_version_full → 3.10.12
-        python_version_branch = '.'.join(python_version_full.split('.')[0:2])
+        python_version_branch = ".".join(python_version_full.split(".")[0:2])
         # python_version_branch → 3.10
 
         # Current selected metadata
         lwc_version_full = current_metadata.get("info").get("version")
         # lwc_version_full → 3.7.7-pre.7357
-        lwc_version_light = lwc_version_full.split('-')[0]
+        lwc_version_light = lwc_version_full.split("-")[0]
         # lwc_version_light → 3.7.7
         lwc_version_branch = LwcVersions.find_from_metadata(current_metadata)
         # lwc_version_branch → 3.7 as Python enum
 
         # qgis_server_version → 3.34.6
-        qgis_server_branch = '.'.join(qgis_server_version.split('.')[0:2])
+        qgis_server_branch = ".".join(qgis_server_version.split(".")[0:2])
         # qgis_server_branch → 3.34
 
         # QGIS version diff between desktop and server
         # QGIS Server 3.34, QGIS Desktop 3.30 → 6
         # QGIS Server 3.28, QGIS Desktop 3.36 → -8
         # Positive number are better
-        qgis_diff = int(qgis_server_branch.split('.')[1]) - int(qgis_version_branch.split('.')[1])
+        qgis_diff = int(qgis_server_branch.split(".")[1]) - int(qgis_version_branch.split(".")[1])
 
         data = {
             "name": "plugin",
             "props": {
                 # Lizmap Desktop version
                 "lizmap-plugin-version": lizmap_plugin_version,
-                "lizmap-plugin-desktop": 'yes',
+                "lizmap-plugin-desktop": "yes",
                 # Current server LWC and linked QGIS server
                 "client-version-full": lwc_version_full,
                 "client-version-light": lwc_version_light,
@@ -182,7 +181,7 @@ class Plausible:
                 "qgis-server-branch": qgis_server_branch,
                 # Lizmap Cloud
                 "lizmap-cloud-instances": lizmap_cloud,
-                "lizmap-cloud": 'yes' if any(lizmap_cloud_instances) else 'no',
+                "lizmap-cloud": "yes" if any(lizmap_cloud_instances) else "no",
                 # QGIS
                 "qgis-version-full": qgis_version_full,
                 "qgis-version-branch": qgis_version_branch,

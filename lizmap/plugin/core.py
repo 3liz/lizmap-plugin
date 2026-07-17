@@ -420,15 +420,15 @@ class Lizmap(
                 "downButton": self.dlg.down_layout_form_button,
                 "manager": None,
             },
-            'portfolios': {
-                'panel': Panels.Portfolios,
-                'tableWidget': self.dlg.table_portfolios,
-                'addButton': self.dlg.add_portfolios_button,
-                'removeButton': self.dlg.remove_portfolios_button,
-                'editButton': self.dlg.edit_portfolios_button,
-                'upButton': self.dlg.up_portfolios_button,
-                'downButton': self.dlg.down_portfolios_button,
-                'manager': None,
+            "portfolios": {
+                "panel": Panels.Portfolios,
+                "tableWidget": self.dlg.table_portfolios,
+                "addButton": self.dlg.add_portfolios_button,
+                "removeButton": self.dlg.remove_portfolios_button,
+                "editButton": self.dlg.edit_portfolios_button,
+                "upButton": self.dlg.up_portfolios_button,
+                "downButton": self.dlg.down_portfolios_button,
+                "manager": None,
             },
             "dxfExport": {
                 "panel": Panels.DxfExport,
@@ -823,18 +823,18 @@ class Lizmap(
                         item.get("upButton"),
                         item.get("downButton"),
                     )
-                elif key == 'portfolios':
+                elif key == "portfolios":
                     definition = PortfolioDefinitions()
                     dialog = PortfolioEditionDialog
-                    item['manager'] = TableManagerPortfolio(
+                    item["manager"] = TableManagerPortfolio(
                         self.dlg,
                         definition,
                         dialog,
-                        item['tableWidget'],
-                        item['removeButton'],
-                        item['editButton'],
-                        item.get('upButton'),
-                        item.get('downButton'),
+                        item["tableWidget"],
+                        item["removeButton"],
+                        item["editButton"],
+                        item.get("upButton"),
+                        item.get("downButton"),
                     )
                 else:
                     if key == "atlas":
@@ -1366,10 +1366,10 @@ class Lizmap(
         versions = ServerManager.split_lizmap_version(server_metadata["info"]["version"])
         if versions[0:2] <= (3, 7):
             # LWC 3.7.X and older
-            html_content += Tooltip.css()
+            html_content += Tooltip.css
         elif (3, 8, 0) <= versions[0:3] <= (3, 8, 7):
             # LWC 3.8.0 to 3.8.6
-            html_content += Tooltip.css_3_8_6()
+            html_content += Tooltip.css_3_8_6
 
         self._set_maptip(layer, html_content)
 

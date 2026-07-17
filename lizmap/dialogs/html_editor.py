@@ -1,6 +1,6 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2023, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 import logging
 
@@ -10,11 +10,10 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 from lizmap.toolbelt.i18n import tr
 from lizmap.widgets.html_editor import HtmlEditorWidget
 
-LOGGER = logging.getLogger('Lizmap')
+LOGGER = logging.getLogger("Lizmap")
 
 
 class HtmlEditorDialog(QDialog):
-
     def __init__(self):
         # noinspection PyArgumentList
         QDialog.__init__(self)
@@ -26,7 +25,9 @@ class HtmlEditorDialog(QDialog):
         layout.addWidget(self.editor)
 
         self.button_box = QDialogButtonBox()
-        self.button_box.setStandardButtons(QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok)
+        self.button_box.setStandardButtons(
+            QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok
+        )
         # noinspection PyArgumentList
         layout.addWidget(self.button_box)
 

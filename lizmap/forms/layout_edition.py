@@ -1,4 +1,5 @@
 """Dialog for layout edition."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -18,11 +19,10 @@ if TYPE_CHECKING:
 
     from lizmap.definitions.definitions import LwcVersions
 
-CLASS = load_ui('ui_form_layout.ui')
+CLASS = load_ui("ui_form_layout.ui")
 
 
 class LayoutEditionDialog(BaseEditionDialog, CLASS):
-
     def __init__(
         self,
         parent: QWidget | None = None,
@@ -35,30 +35,30 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         # self.layout_type: QLabel
         self.layout_type.setWordWrap(True)
         self.config = LayoutsDefinitions()
-        self.config.add_layer_widget('layout', self.layout)
-        self.config.add_layer_widget('enabled', self.enabled)
-        self.config.add_layer_widget('icon', self.icon)
-        self.config.add_layer_widget('allowed_groups', self.allowed_groups)
-        self.config.add_layer_widget('formats_available', self.formats)
-        self.config.add_layer_widget('dpi_available', self.dpi)
-        self.config.add_layer_widget('default_format', self.default_format)
-        self.config.add_layer_widget('default_dpi', self.default_dpi)
+        self.config.add_layer_widget("layout", self.layout)
+        self.config.add_layer_widget("enabled", self.enabled)
+        self.config.add_layer_widget("icon", self.icon)
+        self.config.add_layer_widget("allowed_groups", self.allowed_groups)
+        self.config.add_layer_widget("formats_available", self.formats)
+        self.config.add_layer_widget("dpi_available", self.dpi)
+        self.config.add_layer_widget("default_format", self.default_format)
+        self.config.add_layer_widget("default_dpi", self.default_dpi)
 
-        self.config.add_layer_label('layout', self.label_layout)
-        self.config.add_layer_label('enabled', self.label_enabled)
-        self.config.add_layer_label('icon', self.label_icon)
-        self.config.add_layer_label('allowed_groups', self.allowed_groups)
-        self.config.add_layer_label('formats_available', self.label_formats)
-        self.config.add_layer_label('dpi_available', self.label_dpi)
-        self.config.add_layer_label('default_format', self.label_default_format)
-        self.config.add_layer_label('default_dpi', self.label_default_dpi)
+        self.config.add_layer_label("layout", self.label_layout)
+        self.config.add_layer_label("enabled", self.label_enabled)
+        self.config.add_layer_label("icon", self.label_icon)
+        self.config.add_layer_label("allowed_groups", self.allowed_groups)
+        self.config.add_layer_label("formats_available", self.label_formats)
+        self.config.add_layer_label("dpi_available", self.label_dpi)
+        self.config.add_layer_label("default_format", self.label_default_format)
+        self.config.add_layer_label("default_dpi", self.label_default_dpi)
 
         # noinspection PyUnresolvedReferences
         self.layout.setReadOnly(True)
 
         # Wizard ACL group
-        icon = QIcon(resources_path('icons', 'user_group.svg'))
-        self.button_wizard_group.setText('')
+        icon = QIcon(resources_path("icons", "user_group.svg"))
+        self.button_wizard_group.setText("")
         self.button_wizard_group.setIcon(icon)
         self.button_wizard_group.clicked.connect(self.open_wizard_group)
         self.button_wizard_group.setToolTip(tr("Open the group wizard"))
@@ -73,7 +73,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
 
     def post_load_form(self):
-        """ When the form has been loaded. """
+        """When the form has been loaded."""
         manager = QgsProject.instance().layoutManager()
         layout = manager.layoutByName(self.layout.text())
 
@@ -110,19 +110,23 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         # Reset some values
         if is_atlas:
             # Formats options
-            for index, item in enumerate(self.config.layer_config.get('formats_available')['items']):
-                self.formats.setItemCheckState(index, Qt.CheckState.Checked if item == FormatType.Pdf else Qt.CheckState.Unchecked)
+            for index, item in enumerate(self.config.layer_config.get("formats_available")["items"]):
+                self.formats.setItemCheckState(
+                    index, Qt.CheckState.Checked if item == FormatType.Pdf else Qt.CheckState.Unchecked
+                )
 
             # Default format
-            index = self.default_format.findData(FormatType.Pdf.value['data'])
+            index = self.default_format.findData(FormatType.Pdf.value["data"])
             self.default_format.setCurrentIndex(index)
 
             # DPI options
-            for index, item in enumerate(self.config.layer_config.get('dpi_available')['items']):
-                self.dpi.setItemCheckState(index, Qt.CheckState.Checked if item == Dpi.Dpi100 else Qt.CheckState.Unchecked)
+            for index, item in enumerate(self.config.layer_config.get("dpi_available")["items"]):
+                self.dpi.setItemCheckState(
+                    index, Qt.CheckState.Checked if item == Dpi.Dpi100 else Qt.CheckState.Unchecked
+                )
 
             # Default DPI
-            index = self.default_dpi.findData(Dpi.Dpi100.value['data'])
+            index = self.default_dpi.findData(Dpi.Dpi100.value["data"])
             self.default_dpi.setCurrentIndex(index)
         else:
             self.icon.setFilePath("")
@@ -134,15 +138,15 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
 
         default_format = self.default_format.currentData()
         if default_format not in self.formats.checkedItemsData():
-            return tr('The default format is not the available list.')
+            return tr("The default format is not the available list.")
 
         default_dpi = self.default_dpi.currentData()
         if default_dpi not in self.dpi.checkedItemsData():
-            return tr('The default DPI is not the available list.')
+            return tr("The default DPI is not the available list.")
 
         return None
 
     def open_wizard_group(self):
-        """ Open the wizard about ACL. """
+        """Open the wizard about ACL."""
         helper = tr("Setting groups for the layout print capabilities '{}'").format(self.layout.text())
         super().open_wizard_dialog(helper)

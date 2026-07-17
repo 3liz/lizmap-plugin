@@ -50,10 +50,12 @@ def data(rootdir: Path) -> Path:
 # Which is not initialized when QGIS app
 # is initialized from testing module
 
+
 def pytest_sessionstart(session):
     """Start qgis application"""
     sys.path.append("/usr/share/qgis/python")
     start_app(session.path, False)
+
 
 #
 # Logger hook

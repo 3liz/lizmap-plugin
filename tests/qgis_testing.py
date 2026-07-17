@@ -15,6 +15,7 @@ def _patch_iface():
     import qgis.utils
 
     from qgis.testing.mocked import get_iface
+
     qgis.utils.iface = get_iface()
 
 
@@ -36,9 +37,7 @@ def start_app(rootdir: Path, cleanup: bool = True):
     QCoreApplication.setOrganizationName(QgsApplication.QGIS_ORGANIZATION_DOMAIN)
     QCoreApplication.setApplicationName(QgsApplication.QGIS_APPLICATION_NAME)
 
-    QCoreApplication.setAttribute(
-        Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True
-    )
+    QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True)
 
     load_qgis_settings(rootdir)
 
@@ -69,6 +68,7 @@ def init_processing():
     sys.path.append("/usr/share/qgis/python/plugins/")
 
     from processing.core.Processing import Processing
+
     Processing.initialize()
 
 

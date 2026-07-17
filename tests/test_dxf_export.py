@@ -85,7 +85,7 @@ class TestTableManagerDxfExport(TestCase):
         self.assertEqual(table.rowCount(), 0)
 
         # Load with dict without layers
-        manager.load_wfs_layers({'options': {}})
+        manager.load_wfs_layers({"options": {}})
         self.assertEqual(table.rowCount(), 0)
 
     def test_load_wfs_layers(self, wfs_layer: QgsVectorLayer):
@@ -94,14 +94,7 @@ class TestTableManagerDxfExport(TestCase):
         manager = TableManagerDxfExport(table)
 
         # Prepare config data
-        config = {
-            'layers': {
-                'test_lines': {
-                    'id': wfs_layer.id(),
-                    'dxfExportEnabled': False
-                }
-            }
-        }
+        config = {"layers": {"test_lines": {"id": wfs_layer.id(), "dxfExportEnabled": False}}}
 
         # Load layers
         manager.load_wfs_layers(config)
@@ -111,7 +104,7 @@ class TestTableManagerDxfExport(TestCase):
 
         # Check layer name
         name_item = table.item(0, 0)
-        self.assertEqual(name_item.text(), 'test_lines')
+        self.assertEqual(name_item.text(), "test_lines")
         self.assertEqual(name_item.data(Qt.ItemDataRole.UserRole), wfs_layer.id())
 
         # Check checkbox state (should be unchecked because dxfExportEnabled=False)
@@ -123,14 +116,7 @@ class TestTableManagerDxfExport(TestCase):
         table = QTableWidget()
         manager = TableManagerDxfExport(table)
 
-        config = {
-            'layers': {
-                'test_lines': {
-                    'id': wfs_layer.id(),
-                    'dxfExportEnabled': True
-                }
-            }
-        }
+        config = {"layers": {"test_lines": {"id": wfs_layer.id(), "dxfExportEnabled": True}}}
 
         manager.load_wfs_layers(config)
 
@@ -145,10 +131,10 @@ class TestTableManagerDxfExport(TestCase):
 
         # Test with string "False"
         config = {
-            'layers': {
-                'test_lines': {
-                    'id': wfs_layer.id(),
-                    'dxfExportEnabled': 'False'  # String, not boolean
+            "layers": {
+                "test_lines": {
+                    "id": wfs_layer.id(),
+                    "dxfExportEnabled": "False",  # String, not boolean
                 }
             }
         }
@@ -160,7 +146,7 @@ class TestTableManagerDxfExport(TestCase):
 
         # Test with string "True"
         table.setRowCount(0)
-        config['layers']['test_lines']['dxfExportEnabled'] = 'True'
+        config["layers"]["test_lines"]["dxfExportEnabled"] = "True"
         manager.load_wfs_layers(config)
         checkbox_item = table.item(0, 1)
         self.assertEqual(checkbox_item.checkState(), Qt.CheckState.Checked)
@@ -171,9 +157,9 @@ class TestTableManagerDxfExport(TestCase):
         manager = TableManagerDxfExport(table)
 
         config = {
-            'layers': {
-                'test_lines': {
-                    'id': wfs_layer.id()
+            "layers": {
+                "test_lines": {
+                    "id": wfs_layer.id()
                     # No dxfExportEnabled key
                 }
             }
@@ -189,14 +175,7 @@ class TestTableManagerDxfExport(TestCase):
         table = QTableWidget()
         manager = TableManagerDxfExport(table)
 
-        config = {
-            'layers': {
-                'test_points': {
-                    'id': non_wfs_layer.id(),
-                    'dxfExportEnabled': True
-                }
-            }
-        }
+        config = {"layers": {"test_points": {"id": non_wfs_layer.id(), "dxfExportEnabled": True}}}
 
         manager.load_wfs_layers(config)
 
@@ -210,7 +189,7 @@ class TestTableManagerDxfExport(TestCase):
 
         result = manager.to_json()
 
-        self.assertDictEqual(result, {'layers': []})
+        self.assertDictEqual(result, {"layers": []})
 
     def test_to_json_with_layers(self, wfs_layer: QgsVectorLayer):
         """Test to_json with populated table."""
@@ -227,13 +206,13 @@ class TestTableManagerDxfExport(TestCase):
         result = manager.to_json()
 
         # Check structure
-        self.assertIn('layers', result)
-        self.assertEqual(len(result['layers']), 1)
+        self.assertIn("layers", result)
+        self.assertEqual(len(result["layers"]), 1)
 
         # Check layer data
-        layer_data = result['layers'][0]
-        self.assertEqual(layer_data['layerId'], wfs_layer.id())
-        self.assertEqual(layer_data['enabled'], False)
+        layer_data = result["layers"][0]
+        self.assertEqual(layer_data["layerId"], wfs_layer.id())
+        self.assertEqual(layer_data["enabled"], False)
 
     def test_to_json_checked_layer(self, wfs_layer: QgsVectorLayer):
         """Test to_json with checked layer."""
@@ -245,8 +224,8 @@ class TestTableManagerDxfExport(TestCase):
         # Keep layer checked (default)
         result = manager.to_json()
 
-        layer_data = result['layers'][0]
-        self.assertEqual(layer_data['enabled'], True)
+        layer_data = result["layers"][0]
+        self.assertEqual(layer_data["enabled"], True)
 
     def test_populate_from_project(self, wfs_layer: QgsVectorLayer):
         """Test populate_from_project method."""
@@ -264,7 +243,7 @@ class TestTableManagerDxfExport(TestCase):
 
         # Check defaults
         name_item = table.item(0, 0)
-        self.assertEqual(name_item.text(), 'test_lines')
+        self.assertEqual(name_item.text(), "test_lines")
 
         checkbox_item = table.item(0, 1)
         # Should default to checked
@@ -334,21 +313,21 @@ class TestBooleanConversion(TestCase):
     def test_ambiguous_to_bool_true_values(self):
         """Test conversion of various true values."""
         self.assertTrue(ambiguous_to_bool(True))
-        self.assertTrue(ambiguous_to_bool('True'))
-        self.assertTrue(ambiguous_to_bool('true'))
-        self.assertTrue(ambiguous_to_bool('TRUE'))
+        self.assertTrue(ambiguous_to_bool("True"))
+        self.assertTrue(ambiguous_to_bool("true"))
+        self.assertTrue(ambiguous_to_bool("TRUE"))
         self.assertTrue(ambiguous_to_bool(1))
-        self.assertTrue(ambiguous_to_bool('1'))
+        self.assertTrue(ambiguous_to_bool("1"))
 
     def test_ambiguous_to_bool_false_values(self):
         """Test conversion of various false values."""
         self.assertFalse(ambiguous_to_bool(False))
-        self.assertFalse(ambiguous_to_bool('False'))
-        self.assertFalse(ambiguous_to_bool('false'))
-        self.assertFalse(ambiguous_to_bool('FALSE'))
+        self.assertFalse(ambiguous_to_bool("False"))
+        self.assertFalse(ambiguous_to_bool("false"))
+        self.assertFalse(ambiguous_to_bool("FALSE"))
         self.assertFalse(ambiguous_to_bool(0))
-        self.assertFalse(ambiguous_to_bool('0'))
-        self.assertFalse(ambiguous_to_bool('', default_value=False))
+        self.assertFalse(ambiguous_to_bool("0"))
+        self.assertFalse(ambiguous_to_bool("", default_value=False))
         self.assertFalse(ambiguous_to_bool(None, default_value=False))
 
 
@@ -370,11 +349,8 @@ class TestDxfExportIntegration(TestCase):
 
         # Create config as it would be saved
         config = {
-            'layers': {
-                'test_lines': {
-                    'id': wfs_layer.id(),
-                    'dxfExportEnabled': exported['layers'][0]['enabled']
-                }
+            "layers": {
+                "test_lines": {"id": wfs_layer.id(), "dxfExportEnabled": exported["layers"][0]["enabled"]}
             }
         }
 
@@ -394,10 +370,10 @@ class TestDxfExportIntegration(TestCase):
 
         # Config without dxfExportEnabled (old format)
         config = {
-            'layers': {
-                'test_lines': {
-                    'id': wfs_layer.id(),
-                    'title': 'Test Layer'
+            "layers": {
+                "test_lines": {
+                    "id": wfs_layer.id(),
+                    "title": "Test Layer",
                     # No dxfExportEnabled key
                 }
             }

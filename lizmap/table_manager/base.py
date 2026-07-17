@@ -1,4 +1,5 @@
 """Table manager."""
+
 from __future__ import annotations
 
 import inspect
@@ -40,8 +41,7 @@ class CellError(Exception):
 
 
 class TableManager:
-
-    """ Class to manage a table with add, edit, remove, reorder rows. """
+    """Class to manage a table with add, edit, remove, reorder rows."""
 
     def __init__(
         self,
@@ -54,7 +54,7 @@ class TableManager:
         up_button: QAbstractButton,
         down_button: QAbstractButton,
     ):
-        """ Constructor. """
+        """Constructor."""
         self.parent = parent
         self.definitions = definitions
         self.edition = edition
@@ -77,17 +77,17 @@ class TableManager:
             LwcVersions.Lizmap_3_10,
         ]
 
-        self.keys = [i for i, j in self.definitions.layer_config.items() if j.get('plural') is None]
+        self.keys = [i for i, j in self.definitions.layer_config.items() if j.get("plural") is None]
         self.table.setColumnCount(len(self.keys))
 
         for i, key in enumerate(self.keys):
             item = self.definitions.layer_config[key]
-            column = QTableWidgetItem(item['header'])
-            tooltip = item.get('tooltip')
+            column = QTableWidgetItem(item["header"])
+            tooltip = item.get("tooltip")
             if tooltip:
                 column.setToolTip(tooltip)
             self.table.setHorizontalHeaderItem(i, column)
-            if not item.get('visible', True):
+            if not item.get("visible", True):
                 self.table.setColumnHidden(i, True)
 
         self.table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -103,57 +103,57 @@ class TableManager:
         # header.setSectionResizeMode(QHeaderView.ResizeToContents)
         # header.setSectionResizeMode(0, QHeaderView.Stretch)
 
-        if self.definitions.key() == 'datavizLayers' and self.parent:
-            self.definitions.add_general_widget('datavizLocation', self.parent.liDatavizContainer)
-            self.definitions.add_general_widget('datavizTemplate', self.parent.dataviz_html_template)
-            self.definitions.add_general_widget('theme', self.parent.combo_theme)
+        if self.definitions.key() == "datavizLayers" and self.parent:
+            self.definitions.add_general_widget("datavizLocation", self.parent.liDatavizContainer)
+            self.definitions.add_general_widget("datavizTemplate", self.parent.dataviz_html_template)
+            self.definitions.add_general_widget("theme", self.parent.combo_theme)
 
-            self.definitions.add_general_label('datavizLocation', self.parent.label_dataviz_location)
-            self.definitions.add_general_label('datavizTemplate', self.parent.label_dataviz_template)
-            self.definitions.add_general_label('theme', self.parent.label_dataviz_theme)
+            self.definitions.add_general_label("datavizLocation", self.parent.label_dataviz_location)
+            self.definitions.add_general_label("datavizTemplate", self.parent.label_dataviz_template)
+            self.definitions.add_general_label("theme", self.parent.label_dataviz_theme)
 
-        elif self.definitions.key() == 'filter_by_polygon' and self.parent:
-            self.definitions.add_general_widget('polygon_layer_id', self.parent.layer_filter_polygon)
-            self.definitions.add_general_widget('group_field', self.parent.field_filter_polygon)
-            self.definitions.add_general_widget('filter_by_user', self.parent.filter_polygon_by_user)
+        elif self.definitions.key() == "filter_by_polygon" and self.parent:
+            self.definitions.add_general_widget("polygon_layer_id", self.parent.layer_filter_polygon)
+            self.definitions.add_general_widget("group_field", self.parent.field_filter_polygon)
+            self.definitions.add_general_widget("filter_by_user", self.parent.filter_polygon_by_user)
 
-            self.definitions.add_general_label('polygon_layer_id', self.parent.label_layer_filter_polygon)
-            self.definitions.add_general_label('group_field', self.parent.label_field_filter_polygon)
-            self.definitions.add_general_label('filter_by_user', self.parent.label_filter_polygon_by_user)
+            self.definitions.add_general_label("polygon_layer_id", self.parent.label_layer_filter_polygon)
+            self.definitions.add_general_label("group_field", self.parent.label_field_filter_polygon)
+            self.definitions.add_general_label("filter_by_user", self.parent.label_filter_polygon_by_user)
 
-        elif self.definitions.key() == 'layouts' and self.parent:
-            self.definitions.add_general_widget('default_popup_print', self.parent.checkbox_default_print)
+        elif self.definitions.key() == "layouts" and self.parent:
+            self.definitions.add_general_widget("default_popup_print", self.parent.checkbox_default_print)
 
         # Set tooltips and combobox items if needed
         for general_config in self.definitions.general_config.values():
             general_config: dict
-            widget = general_config.get('widget')
+            widget = general_config.get("widget")
             if widget is None:
                 continue
 
-            tooltip = general_config.get('tooltip')
+            tooltip = general_config.get("tooltip")
             if tooltip:
                 widget.setToolTip(tooltip)
-                label = general_config.get('label')
+                label = general_config.get("label")
                 if label:
                     label.setToolTip(tooltip)
 
-            if general_config['type'] == InputType.CheckBoxAsDropdown:
+            if general_config["type"] == InputType.CheckBoxAsDropdown:
                 # Duplicated code from base_edition_dialog.py
-                items = general_config.get('items')
+                items = general_config.get("items")
                 for item in items:
-                    icon = item.value.get('icon')
+                    icon = item.value.get("icon")
                     if icon:
-                        widget.addItem(QIcon(icon), item.value['label'], item.value['data'])
+                        widget.addItem(QIcon(icon), item.value["label"], item.value["data"])
                     else:
-                        widget.addItem(item.value['label'], item.value['data'])
-                    index = widget.findData(item.value['data'])
-                    tooltip = item.value.get('tooltip')
+                        widget.addItem(item.value["label"], item.value["data"])
+                    index = widget.findData(item.value["data"])
+                    tooltip = item.value.get("tooltip")
                     if tooltip:
                         widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
-                default = general_config.get('default')
+                default = general_config.get("default")
                 if default:
-                    index = widget.findData(default.value['data'])
+                    index = widget.findData(default.value["data"])
                     widget.setCurrentIndex(index)
                 # End of duplicated code from base_edition_dialog.py
 
@@ -165,30 +165,30 @@ class TableManager:
         self.project = QgsProject.instance()
 
     def set_lwc_version(self, current_version: LwcVersions):
-        """ When the target LWC version is changed, we need to update all widgets to set the color. """
+        """When the target LWC version is changed, we need to update all widgets to set the color."""
         # LOGGER.debug("Set new LWC version {} in {}".format(current_version.value, self.definitions.key()))
         found = False
         for lwc_version in self.lwc_versions:
             if found:
                 for general_config in self.definitions.general_config.values():
-                    version = general_config.get('version')
+                    version = general_config.get("version")
                     if version == lwc_version:
-                        label = general_config.get('label')
+                        label = general_config.get("label")
                         if label:
                             label.setStyleSheet(NEW_FEATURE_CSS)
             else:
                 for general_config in self.definitions.general_config.values():
-                    version = general_config.get('version')
+                    version = general_config.get("version")
                     if version == lwc_version:
-                        label = general_config.get('label')
+                        label = general_config.get("label")
                         if label:
-                            label.setStyleSheet('')
+                            label.setStyleSheet("")
 
             if lwc_version == current_version:
                 found = True
 
     def _primary_keys(self) -> dict:
-        """ Fetch the list of values part of the primary key for each row. """
+        """Fetch the list of values part of the primary key for each row."""
         unicity_dict = {}
         rows = self.table.rowCount()
 
@@ -202,7 +202,7 @@ class TableManager:
                         item: QTableWidgetItem
                         if item is None:
                             # Do not put if not item, it might be False
-                            raise CellError(f'Cell is not initialized ({row}, {i})')
+                            raise CellError(f"Cell is not initialized ({row}, {i})")
 
                         if item.isSelected():
                             # We do not want to add selected values in the list.
@@ -212,14 +212,14 @@ class TableManager:
                         cell = item.data(Qt.ItemDataRole.UserRole)
                         if cell is None:
                             # Do not put if not cell, it might be False
-                            raise CellError(f'Cell has no data ({row}, {i})')
+                            raise CellError(f"Cell has no data ({row}, {i})")
 
                         unicity_dict[key].append(cell)
 
         return unicity_dict
 
     def add_new_row(self):
-        """ When clicking on the "add" button, to add new row in the table. """
+        """When clicking on the "add" button, to add new row in the table."""
         # We give the main UI of the plugin in the edition dialog
         dialog = self.edition(self.parent, self._primary_keys())
         result = dialog.exec()
@@ -230,7 +230,7 @@ class TableManager:
             self._edit_row(row, data)
 
     def edit_existing_row(self):
-        """ When editing an existing row in the table. """
+        """When editing an existing row in the table."""
         selection = self.table.selectedIndexes()
 
         if len(selection) <= 0:
@@ -264,20 +264,20 @@ class TableManager:
         return result
 
     def _edit_row(self, row, data):
-        """ Internal function to edit a row. """
+        """Internal function to edit a row."""
         self._layer = None
         for i, key in enumerate(data.keys()):
             value = data[key]
             cell = QTableWidgetItem()
 
-            input_type = self.definitions.layer_config[key]['type']
+            input_type = self.definitions.layer_config[key]["type"]
 
             if self._layer and callable(value):
                 # Value is a for now a function, we need to evaluate it
                 sig = inspect.signature(value)
-                if 'plot_type' in sig.parameters:
+                if "plot_type" in sig.parameters:
                     # TODO fixme for dataviz
-                    value = value(self._layer, data.get('type'))
+                    value = value(self._layer, data.get("type"))
                 else:
                     value = value(self._layer)
 
@@ -286,7 +286,9 @@ class TableManager:
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 if self._layer:
                     cell.setText(self._layer.name())
-                    cell.setData(Qt.ItemDataRole.ToolTipRole, f'{self._layer.name()} ({self._layer.crs().authid()})')
+                    cell.setData(
+                        Qt.ItemDataRole.ToolTipRole, f"{self._layer.name()} ({self._layer.crs().authid()})"
+                    )
                     if self._layer.isValid():
                         cell.setIcon(QgsMapLayerModel.iconForLayer(self._layer))
                         cell.setData(Qt.ItemDataRole.UserRole + 1, True)
@@ -302,18 +304,18 @@ class TableManager:
                     cell.setData(
                         Qt.ItemDataRole.ToolTipRole,
                         tr(
-                            'Layer {} is unavailable in QGIS, it\'s not possible to edit its configuration.'
-                        ).format(tooltip_value)
+                            "Layer {} is unavailable in QGIS, it's not possible to edit its configuration."
+                        ).format(tooltip_value),
                     )
 
             elif input_type == InputType.Layers:
                 names = []
                 for layer in value:
-                    if layer != '':
+                    if layer != "":
                         vector = self.project.mapLayer(layer)
                         if vector:
                             names.append(vector.name())
-                display = ' ,'.join(names)
+                display = " ,".join(names)
                 cell.setText(display)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, display)
@@ -325,7 +327,7 @@ class TableManager:
 
                 # All field inputs are not required, so we might have an empty string
                 # Only check for icon if the field is defined
-                if value != '':
+                if value != "":
                     # Get the icon for the field
                     if self._layer:
                         index = self._layer.fields().indexFromName(value)
@@ -333,16 +335,21 @@ class TableManager:
                             cell.setIcon(self._layer.fields().iconForField(index))
                         else:
                             cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
-                            cell.setData(Qt.ItemDataRole.ToolTipRole, tr(
-                                'Field "{}" not found in the layer. You should check this configuration or fix your '
-                                'fields.'
-                            ).format(value))
+                            cell.setData(
+                                Qt.ItemDataRole.ToolTipRole,
+                                tr(
+                                    'Field "{}" not found in the layer. You should check this configuration or fix your '
+                                    "fields."
+                                ).format(value),
+                            )
                     else:
                         # No layer
                         cell.setIcon(QIcon(":/images/themes/default/mIconWarning.svg"))
                         cell.setData(
                             Qt.ItemDataRole.ToolTipRole,
-                            tr("Not possible to check the field type if the layer is not loaded in QGIS").format(value)
+                            tr(
+                                "Not possible to check the field type if the layer is not loaded in QGIS"
+                            ).format(value),
                         )
 
             elif input_type == InputType.Fields or input_type == InputType.File:
@@ -359,13 +366,13 @@ class TableManager:
 
             elif input_type == InputType.CheckBox:
                 if value:
-                    cell.setText('✓')
+                    cell.setText("✓")
                     cell.setData(Qt.ItemDataRole.UserRole, True)
-                    cell.setData(Qt.ItemDataRole.ToolTipRole, tr('True'))
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, tr("True"))
                 else:
-                    cell.setText('')
+                    cell.setText("")
                     cell.setData(Qt.ItemDataRole.UserRole, False)
-                    cell.setData(Qt.ItemDataRole.ToolTipRole, tr('False'))
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, tr("False"))
                 cell.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
             elif input_type == InputType.Json:
@@ -374,21 +381,21 @@ class TableManager:
                     cell.setData(Qt.ItemDataRole.UserRole, value)
                     cell.setData(Qt.ItemDataRole.ToolTipRole, value)
                 else:
-                    cell.setText('')
-                    cell.setData(Qt.ItemDataRole.UserRole, '')
-                    cell.setData(Qt.ItemDataRole.ToolTipRole, '')
+                    cell.setText("")
+                    cell.setData(Qt.ItemDataRole.UserRole, "")
+                    cell.setData(Qt.ItemDataRole.ToolTipRole, "")
 
             elif input_type in (InputType.List, InputType.CheckBoxAsDropdown):
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
-                items = self.definitions.layer_config[key].get('items')
-                multiple_selection = self.definitions.layer_config[key].get('multiple_selection', False)
+                items = self.definitions.layer_config[key].get("items")
+                multiple_selection = self.definitions.layer_config[key].get("multiple_selection", False)
                 if items:
                     if not multiple_selection:
                         for item_enum in items:
-                            if item_enum.value['data'] == value:
-                                text = item_enum.value['label']
-                                icon = item_enum.value.get('icon')
+                            if item_enum.value["data"] == value:
+                                text = item_enum.value["label"]
+                                icon = item_enum.value.get("icon")
                                 break
                         else:
                             msg = f'Error with value = "{value}" in list "{key}"'
@@ -400,12 +407,12 @@ class TableManager:
                     else:
                         labels = []
                         for item_enum in items:
-                            if item_enum.value['data'] in value:
+                            if item_enum.value["data"] in value:
                                 # TODO
                                 # We should add the label and not the data, but there is a bug later when opening the
                                 # form
-                                labels.append(item_enum.value['data'])
-                        value = ','.join(labels)
+                                labels.append(item_enum.value["data"])
+                        value = ",".join(labels)
                         cell.setText(value)
                 else:
                     # Some settings are a list, but not using a Python enum yet
@@ -415,17 +422,17 @@ class TableManager:
                     cell.setText(value)
 
             elif input_type == InputType.SpinBox:
-                unit = self.definitions.layer_config[key].get('unit')
+                unit = self.definitions.layer_config[key].get("unit")
                 if unit:
-                    display = f'{value}{unit}'
+                    display = f"{value}{unit}"
                 else:
-                    display = f'{value}'
+                    display = f"{value}"
                 cell.setText(display)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
             elif input_type == InputType.Text:
-                separator = self.definitions.layer_config[key].get('separator', ',')
+                separator = self.definitions.layer_config[key].get("separator", ",")
                 if separator and isinstance(value, list):
                     value = separator.join(value)
 
@@ -434,7 +441,7 @@ class TableManager:
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
-                if self.definitions.key() == 'layouts' and key == 'layout':
+                if self.definitions.key() == "layouts" and key == "layout":
                     manager = QgsProject.instance().layoutManager()
                     layout = manager.layoutByName(value)
 
@@ -464,7 +471,7 @@ class TableManager:
                 json_dump = json.dumps(value)
                 cell.setText(json_dump)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
-                function = self.definitions.layer_config[key]['represent_value']
+                function = self.definitions.layer_config[key]["represent_value"]
                 cell.setData(Qt.ItemDataRole.ToolTipRole, function(value))
 
             else:
@@ -473,7 +480,7 @@ class TableManager:
             self.table.setItem(row, i, cell)
         self._layer = None
 
-        if self.definitions.key() == 'dataviz':
+        if self.definitions.key() == "dataviz":
             # We want to refresh the plot.
             # noinspection PyUnresolvedReferences
             self.preview_dataviz_dialog()
@@ -538,7 +545,7 @@ class TableManager:
 
     @staticmethod
     def label_dictionary_list() -> str:
-        """ The label in the CFG file prefixing the list. """
+        """The label in the CFG file prefixing the list."""
         return "layers"
 
     def to_json(self, version: LwcVersions = None) -> dict:
@@ -551,25 +558,25 @@ class TableManager:
 
         data = {}
 
-        if self.definitions.key() in ('filter_by_polygon', 'layouts'):
-            data['config'] = {}
+        if self.definitions.key() in ("filter_by_polygon", "layouts"):
+            data["config"] = {}
             for config_key, general_config in self.definitions.general_config.items():
-                widget = general_config.get('widget')
+                widget = general_config.get("widget")
                 if widget is None:
                     continue
 
-                input_type = general_config['type']
+                input_type = general_config["type"]
 
                 if input_type == InputType.Layer:
                     layer = widget.currentLayer()
                     # The combobox might be empty, the layer me be deleted in the meantime
-                    data['config'][config_key] = layer.id() if layer else None
+                    data["config"][config_key] = layer.id() if layer else None
                 elif input_type in (InputType.Field, InputType.PrimaryKeyField):
-                    data['config'][config_key] = widget.currentField()
+                    data["config"][config_key] = widget.currentField()
                 elif input_type == InputType.CheckBox:
-                    data['config'][config_key] = widget.isChecked()
+                    data["config"][config_key] = widget.isChecked()
                 elif input_type == InputType.CheckBoxAsDropdown:
-                    data['config'][config_key] = widget.currentData()
+                    data["config"][config_key] = widget.currentData()
                 else:
                     raise InputTypeError(f'InputType global "{input_type}" not implemented')
 
@@ -582,30 +589,32 @@ class TableManager:
         for row in range(rows):
             layer_data = {}
             for i, key in enumerate(self.keys):
-                input_type = self.definitions.layer_config[key]['type']
-                use_bool_type = self.definitions.layer_config[key].get('use_json', False)
+                input_type = self.definitions.layer_config[key]["type"]
+                use_bool_type = self.definitions.layer_config[key].get("use_json", False)
                 item = self.table.item(row, i)
 
                 if export_legacy_single_row:
-                    key = f'{self.definitions.key()}{key[0].capitalize()}{key[1:]}'
+                    key = f"{self.definitions.key()}{key[0].capitalize()}{key[1:]}"
 
                 if item is None:
                     # Do not put if not item, it might be False
-                    raise CellError(f'Cell is not initialized ({row}, {i})')
+                    raise CellError(f"Cell is not initialized ({row}, {i})")
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
                 if cell is None:
                     # Do not put if not cell, it might be False
-                    raise CellError(f'Cell has no data ({row}, {i})')
+                    raise CellError(f"Cell has no data ({row}, {i})")
 
-                if input_type == InputType.Layer \
-                        or input_type == InputType.Collection \
-                        or input_type == InputType.Layers \
-                        or input_type == InputType.Color \
-                        or input_type in (InputType.Field, InputType.PrimaryKeyField) \
-                        or input_type == InputType.Fields \
-                        or input_type == InputType.File \
-                        or input_type == InputType.Json:
+                if (
+                    input_type == InputType.Layer
+                    or input_type == InputType.Collection
+                    or input_type == InputType.Layers
+                    or input_type == InputType.Color
+                    or input_type in (InputType.Field, InputType.PrimaryKeyField)
+                    or input_type == InputType.Fields
+                    or input_type == InputType.File
+                    or input_type == InputType.Json
+                ):
                     layer_data[key] = cell
                 elif input_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                     if use_bool_type:
@@ -616,8 +625,8 @@ class TableManager:
                 elif input_type == InputType.SpinBox or input_type == InputType.List:
                     layer_data[key] = cell
                 elif input_type == InputType.Text:
-                    json_array = self.definitions.layer_config[key].get('use_json')
-                    separator = self.definitions.layer_config[key].get('separator', ',')
+                    json_array = self.definitions.layer_config[key].get("use_json")
+                    separator = self.definitions.layer_config[key].get("separator", ",")
                     if json_array and separator and cell:
                         layer_data[key] = cell.split(separator)
                     else:
@@ -627,133 +636,132 @@ class TableManager:
                 else:
                     raise InputTypeError(f'InputType "{input_type}" not implemented')
 
-                if layer_data[key] == '':
+                if layer_data[key] == "":
                     layer_data.pop(key)
 
             for key in self.keys:
                 # Re-iterate after we got the layer ID in the form
 
-                default_value = self.definitions.layer_config[key].get('default')
-                is_read_only = self.definitions.layer_config[key].get('read_only', False)
+                default_value = self.definitions.layer_config[key].get("default")
+                is_read_only = self.definitions.layer_config[key].get("read_only", False)
 
                 # By default, some functions might be called everytime : feature count, min/max values of a field
-                update = self.definitions.layer_config[key].get('update_on_saving', True)
-                if not update and (key not in layer_data or layer_data[key] is None or layer_data[key] == ''):
+                update = self.definitions.layer_config[key].get("update_on_saving", True)
+                if not update and (key not in layer_data or layer_data[key] is None or layer_data[key] == ""):
                     # Only the first time if the value wasn't set, we compute the value anyway
                     update = True
 
                 if default_value is not None and callable(default_value) and is_read_only and update:
                     # Value is a for now a function, we need to evaluate it
-                    vector_layer = self.project.mapLayer(layer_data['layerId'])
+                    vector_layer = self.project.mapLayer(layer_data["layerId"])
                     # TODO to make it future-proof by inspecting parameters etc
                     # We assume for now we use the QgsVectorLayer for the input and optional dataviz type
                     sig = inspect.signature(default_value)
-                    if 'plot_type' in sig.parameters:
+                    if "plot_type" in sig.parameters:
                         # hack, only for dataviz UUID
-                        layer_data[key] = default_value(vector_layer, layer_data['type'])
+                        layer_data[key] = default_value(vector_layer, layer_data["type"])
                     else:
                         layer_data[key] = default_value(vector_layer)
 
-                    if isinstance(layer_data[key], bool) \
-                        and not self.definitions.layer_config[key].get('use_json', False):
+                    if isinstance(layer_data[key], bool) and not self.definitions.layer_config[key].get(
+                        "use_json", False
+                    ):
                         # Ticket #176 about true boolean
                         layer_data[key] = str(True) if layer_data[key] else str(False)
 
-            if self.definitions.key() == 'datavizLayers' \
-                and layer_data['type'] == GraphType.Box.value['data'] \
-                and layer_data['aggregation'] == AggregationType.No.value['data']:
-                layer_data['aggregation'] = ''
+            if (
+                self.definitions.key() == "datavizLayers"
+                and layer_data["type"] == GraphType.Box.value["data"]
+                and layer_data["aggregation"] == AggregationType.No.value["data"]
+            ):
+                layer_data["aggregation"] = ""
 
-            if self.definitions.key() == 'editionLayers':
+            if self.definitions.key() == "editionLayers":
                 capabilities_keys = [
-                    'createFeature',
-                    'allow_without_geom',
-                    'modifyAttribute',
-                    'modifyGeometry',
-                    'deleteFeature',
+                    "createFeature",
+                    "allow_without_geom",
+                    "modifyAttribute",
+                    "modifyGeometry",
+                    "deleteFeature",
                 ]
-                layer_data['capabilities'] = {key: layer_data[key] for key in capabilities_keys}
+                layer_data["capabilities"] = {key: layer_data[key] for key in capabilities_keys}
                 for key in capabilities_keys:
                     layer_data.pop(key)
 
-                geometry_type = {
-                    0: 'point',
-                    1: 'line',
-                    2: 'polygon',
-                    3: 'unknown',
-                    4: 'none'
-                }
-                vector_layer = self.project.mapLayer(layer_data['layerId'])
-                layer_data['geometryType'] = geometry_type[vector_layer.geometryType()]
+                geometry_type = {0: "point", 1: "line", 2: "polygon", 3: "unknown", 4: "none"}
+                vector_layer = self.project.mapLayer(layer_data["layerId"])
+                layer_data["geometryType"] = geometry_type[vector_layer.geometryType()]
 
-            if version <= LwcVersions.Lizmap_3_3 and self.definitions.key() == 'datavizLayers':
-                traces = layer_data.pop('traces')
+            if version <= LwcVersions.Lizmap_3_3 and self.definitions.key() == "datavizLayers":
+                traces = layer_data.pop("traces")
                 for j, trace in enumerate(traces):
                     for key in trace:
                         definition = self.definitions.layer_config[key]
                         if j == 0:
-                            json_key = definition['plural'].format('')
+                            json_key = definition["plural"].format("")
                             # If the plural is at the end
-                            json_key.removesuffix('_')
+                            json_key.removesuffix("_")
                         else:
-                            json_key = definition['plural'].format(j + 1)
+                            json_key = definition["plural"].format(j + 1)
 
                         layer_data[json_key] = trace[key]
 
-            if version < LwcVersions.Lizmap_3_7 and self.definitions.key() == 'formFilterLayers':
+            if version < LwcVersions.Lizmap_3_7 and self.definitions.key() == "formFilterLayers":
                 # We need to change keys to write in the legacy format
-                if layer_data.get('type') == 'numeric':
-                    if layer_data.get('end_field'):
+                if layer_data.get("type") == "numeric":
+                    if layer_data.get("end_field"):
                         # Incompatible with this format, but we don't remove it just in case
                         LOGGER.error(
                             "A end_field is defined for the form filter. "
                             "This is not compatible for this version of Lizmap Web Client"
                         )
-                    if layer_data.get('start_field'):
-                        layer_data['field'] = layer_data.get('start_field')
-                        del layer_data['start_field']
-                elif layer_data.get('type') == 'date':
-                    if layer_data.get('start_field'):
-                        layer_data['min_date'] = layer_data.get('start_field')
-                        del layer_data['start_field']
-                    if layer_data.get('end_field'):
-                        layer_data['max_date'] = layer_data.get('end_field')
-                        del layer_data['end_field']
+                    if layer_data.get("start_field"):
+                        layer_data["field"] = layer_data.get("start_field")
+                        del layer_data["start_field"]
+                elif layer_data.get("type") == "date":
+                    if layer_data.get("start_field"):
+                        layer_data["min_date"] = layer_data.get("start_field")
+                        del layer_data["start_field"]
+                    if layer_data.get("end_field"):
+                        layer_data["max_date"] = layer_data.get("end_field")
+                        del layer_data["end_field"]
 
             if export_legacy_single_row:
-                if self.definitions.key() == 'atlas':
-                    layer_data['atlasEnabled'] = str(True)
-                    layer_data['atlasMaxWidth'] = 25
+                if self.definitions.key() == "atlas":
+                    layer_data["atlasEnabled"] = str(True)
+                    layer_data["atlasMaxWidth"] = 25
                 return layer_data
 
             data[self.label_dictionary_list()].append(layer_data)
 
         # Check for PG with centroid options
         # Maybe move this code later if we have more checks to do when saving CFG
-        if self.definitions.key() == 'filter_by_polygon':
-            for layer_data in data['layers']:
-                if layer_data['use_centroid']:
-                    vector_layer = self.project.mapLayer(layer_data['layer'])
-                    if vector_layer.providerType() == 'postgres':
+        if self.definitions.key() == "filter_by_polygon":
+            for layer_data in data["layers"]:
+                if layer_data["use_centroid"]:
+                    vector_layer = self.project.mapLayer(layer_data["layer"])
+                    if vector_layer.providerType() == "postgres":
                         # noinspection PyUnresolvedReferences
                         has_index, message = self.definitions.has_spatial_centroid_index(vector_layer)
                         if not has_index:
                             # noinspection PyUnresolvedReferences,PyArgumentList
-                            QMessageBox.critical(self.parent, tr('Filter by polygon'), message, QMessageBox.StandardButton.Ok)
+                            QMessageBox.critical(
+                                self.parent, tr("Filter by polygon"), message, QMessageBox.StandardButton.Ok
+                            )
 
         if self.definitions.key() in [
-            'locateByLayer',
-            'loginFilteredLayers',
-            'tooltipLayers',
-            'attributeLayers',
-            'editionLayers',
-            'timemanagerLayers',
-            'formFilterLayers',
-            'datavizLayers',
+            "locateByLayer",
+            "loginFilteredLayers",
+            "tooltipLayers",
+            "attributeLayers",
+            "editionLayers",
+            "timemanagerLayers",
+            "formFilterLayers",
+            "datavizLayers",
         ]:
             result = {}
-            for i, layer in enumerate(data['layers']):
-                layer_id = layer.get('layerId')
+            for i, layer in enumerate(data["layers"]):
+                layer_id = layer.get("layerId")
                 vector_layer = self.project.mapLayer(layer_id)
                 if not vector_layer:
                     # Since commit dc03cedf992c46b1f1b996b1692a5c9013ab4b0f
@@ -761,17 +769,18 @@ class TableManager:
                     # https://github.com/3liz/lizmap-plugin/issues/527
                     continue
                 layer_name = vector_layer.name()
-                if self.definitions.key() in ['formFilterLayers', 'datavizLayers']:
+                if self.definitions.key() in ["formFilterLayers", "datavizLayers"]:
                     key = str(i)
                 else:
                     key = layer_name
                 if result.get(layer_name):
                     LOGGER.warning(
-                        f'Skipping "{layer_name}" while saving "{self.definitions.key()}" JSON configuration. Duplicated entry.')
+                        f'Skipping "{layer_name}" while saving "{self.definitions.key()}" JSON configuration. Duplicated entry.'
+                    )
                 result[key] = layer
-                result[key]['order'] = i
-                if self.definitions.key() == 'formFilterLayers':
-                    result[key]['provider'] = vector_layer.providerType()
+                result[key]["order"] = i
+                if self.definitions.key() == "formFilterLayers":
+                    result[key]["provider"] = vector_layer.providerType()
 
             return result
 
@@ -786,7 +795,7 @@ class TableManager:
         for key, value in data.items():
             if not key.startswith(self.definitions.key()):
                 continue
-            key_def = key[len(self.definitions.key()):]
+            key_def = key[len(self.definitions.key()) :]
             key_def = key_def[0].lower() + key_def[1:]
             definition = self.definitions.layer_config.get(key_def)
             if definition:
@@ -802,22 +811,22 @@ class TableManager:
         No keys will be removed.
         """
         new_data = {}
-        new_data['layers'] = []
+        new_data["layers"] = []
 
         def layer_from_order(layers, row):
             for a_layer in layers.values():
-                if a_layer['order'] == row:
+                if a_layer["order"] == row:
                     return a_layer
             return None
 
         order = []
         for layer in data.values():
-            order.append(layer.get('order'))
+            order.append(layer.get("order"))
 
         order.sort()
 
         for i in order:
-            new_data['layers'].append(layer_from_order(data, i))
+            new_data["layers"].append(layer_from_order(data, i))
 
         return new_data
 
@@ -826,33 +835,33 @@ class TableManager:
     def _from_json_legacy_capabilities(data):
         """Function used for the edition capabilities.
         ACL are stored in a sub list."""
-        for layer in data.get('layers'):
-            capabilities = layer.get('capabilities')
+        for layer in data.get("layers"):
+            capabilities = layer.get("capabilities")
             layer.update(capabilities)
-            layer.pop('capabilities')
-            layer.pop('geometryType')
+            layer.pop("capabilities")
+            layer.pop("geometryType")
         return data
 
     # TODO: type me !
     @staticmethod
     def _from_json_legacy_form_filter(data):
-        """ Read form filter and transform it if needed. """
-        for layer in data.get('layers'):
-            if layer.get('type') == 'numeric' and layer.get('field'):
+        """Read form filter and transform it if needed."""
+        for layer in data.get("layers"):
+            if layer.get("type") == "numeric" and layer.get("field"):
                 # We upgrade from < 3.7 to 3.7 format
-                layer['start_field'] = layer['field']
-                del layer['field']
+                layer["start_field"] = layer["field"]
+                del layer["field"]
 
-            if layer.get('type') == 'date':
-                if layer.get('min_date'):
+            if layer.get("type") == "date":
+                if layer.get("min_date"):
                     # We upgrade from < 3.7 to 3.7 format
-                    layer['start_field'] = layer['min_date']
-                    del layer['min_date']
+                    layer["start_field"] = layer["min_date"]
+                    del layer["min_date"]
 
-                if layer.get('end_date'):
+                if layer.get("end_date"):
                     # We upgrade from < 3.7 to 3.7 format
-                    layer['end_field'] = layer['end_date']
-                    del layer['end_date']
+                    layer["end_field"] = layer["end_date"]
+                    del layer["end_date"]
 
         return data
 
@@ -863,27 +872,27 @@ class TableManager:
         # Todo, we should read the definition file
         legacy = [
             {
-                'y_field': 'y_field',
-                'color': 'color',
-                'colorfield': 'colorfield',
-            }, {
-                'y2_field': 'y_field',
-                'color2': 'color',
-                'colorfield2': 'colorfield',
-            }
+                "y_field": "y_field",
+                "color": "color",
+                "colorfield": "colorfield",
+            },
+            {
+                "y2_field": "y_field",
+                "color2": "color",
+                "colorfield2": "colorfield",
+            },
         ]
 
-        for layer in data.get('layers'):
-
-            if layer.get('traces'):
+        for layer in data.get("layers"):
+            if layer.get("traces"):
                 # Already in the new format, we do nothing.
                 continue
 
             # Remove unused parameter
-            if layer.get('has_y2_field'):
-                del layer['has_y2_field']
+            if layer.get("has_y2_field"):
+                del layer["has_y2_field"]
 
-            layer['traces'] = []
+            layer["traces"] = []
             for trace in legacy:
                 one_trace = {}
                 for key in trace:
@@ -894,11 +903,11 @@ class TableManager:
                         del layer[key]
 
                 if one_trace:
-                    y_field = one_trace.get('y_field')
-                    missing_field = y_field is None or y_field == ''
+                    y_field = one_trace.get("y_field")
+                    missing_field = y_field is None or y_field == ""
                     if not missing_field:
                         # We skip if Y field is missing
-                        layer['traces'].append(one_trace)
+                        layer["traces"].append(one_trace)
 
         return data
 
@@ -908,51 +917,55 @@ class TableManager:
         :param data: The data for the given table to read from the CFG file : layers and general configuration
         """
         if self.definitions.key() in (
-            'locateByLayer',
-            'loginFilteredLayers',
-            'tooltipLayers',
-            'attributeLayers',
-            'editionLayers',
-            'timemanagerLayers',
-            'formFilterLayers',
-            'datavizLayers',
+            "locateByLayer",
+            "loginFilteredLayers",
+            "tooltipLayers",
+            "attributeLayers",
+            "editionLayers",
+            "timemanagerLayers",
+            "formFilterLayers",
+            "datavizLayers",
         ):
             data = self._from_json_legacy_order(data)
 
-        if self.definitions.key() == 'editionLayers':
+        if self.definitions.key() == "editionLayers":
             data = self._from_json_legacy_capabilities(data)
 
-        if self.definitions.key() == 'datavizLayers':
+        if self.definitions.key() == "datavizLayers":
             data = self._from_json_legacy_dataviz(data)
 
-        if self.definitions.key() == 'formFilterLayers':
+        if self.definitions.key() == "formFilterLayers":
             data = self._from_json_legacy_form_filter(data)
 
-        config = data.get('config')
+        config = data.get("config")
         config: dict | None
         if config:
             settings = []
             widget_type = None
-            Setting = namedtuple('Setting', ['widget', 'type', 'value'])
+            Setting = namedtuple("Setting", ["widget", "type", "value"])
             for config_key, value in config.items():
                 if config_key not in self.definitions.general_config:
                     continue
 
-                widget = self.definitions.general_config[config_key].get('widget')
+                widget = self.definitions.general_config[config_key].get("widget")
                 if widget is None:
                     # In tests, we don't have this dialog with general config
                     continue
 
-                widget_type = self.definitions.general_config[config_key]['type']
+                widget_type = self.definitions.general_config[config_key]["type"]
                 if widget_type == InputType.Layer:
                     vector_layer = self.project.mapLayer(value)
                     if not vector_layer or not vector_layer.isValid():
                         LOGGER.warning(
                             f'In Lizmap configuration file, section "{self.definitions.key()}" with key {config_key}, the layer with ID "{value}" is '
-                            'invalid or does not exist. Skipping that layer.')
+                            "invalid or does not exist. Skipping that layer."
+                        )
                     else:
                         settings.insert(0, Setting(widget, widget_type, vector_layer))
-                elif widget_type in (InputType.Field, InputType.PrimaryKeyField) or widget_type in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
+                elif widget_type in (InputType.Field, InputType.PrimaryKeyField) or widget_type in (
+                    InputType.CheckBox,
+                    InputType.CheckBoxAsDropdown,
+                ):
                     settings.append(Setting(widget, widget_type, value))
                 else:
                     raise InputTypeError(f'InputType global "{widget_type}" not implemented')
@@ -986,68 +999,78 @@ class TableManager:
             valid_layer = True
 
             for key, definition in self.definitions.layer_config.items():
-                if definition.get('plural'):
+                if definition.get("plural"):
                     continue
 
                 value = layer.get(key)
                 # The value can be equal to "False".
                 # https://github.com/3liz/lizmap-plugin/issues/629
                 if value or isinstance(value, bool):
-                    if definition['type'] == InputType.Layer:
+                    if definition["type"] == InputType.Layer:
                         vector_layer = self.project.mapLayer(value)
                         if not vector_layer or not vector_layer.isValid():
                             # A layer temporary not available will be found in the project, but "not valid".
                             # Some metadata like CRS was still imported from the QGS file, but not fields
                             LOGGER.warning(
                                 f'In Lizmap configuration file, section "{self.definitions.key()}", the layer with ID "{value}" is invalid or does '
-                                'not exist. Trying to keep configuration.')
+                                "not exist. Trying to keep configuration."
+                            )
                             # Let's try to keep the configuration
                             # valid_layer = False
                         layer_data[key] = value
-                    elif definition['type'] == InputType.Layers \
-                        or definition['type'] in (InputType.Field, InputType.PrimaryKeyField) \
-                        or definition['type'] == InputType.Fields \
-                        or definition['type'] == InputType.Color:
+                    elif (
+                        definition["type"] == InputType.Layers
+                        or definition["type"] in (InputType.Field, InputType.PrimaryKeyField)
+                        or definition["type"] == InputType.Fields
+                        or definition["type"] == InputType.Color
+                    ):
                         layer_data[key] = value
-                    elif definition['type'] in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
+                    elif definition["type"] in (InputType.CheckBox, InputType.CheckBoxAsDropdown):
                         layer_data[key] = as_boolean(value)
-                    elif definition['type'] == InputType.File or definition['type'] == InputType.Json:
+                    elif definition["type"] == InputType.File or definition["type"] == InputType.Json:
                         layer_data[key] = value
-                    elif definition['type'] == InputType.List:
-                        items = definition.get('items')
-                        multiple_selection = definition.get('multiple_selection', False)
+                    elif definition["type"] == InputType.List:
+                        items = definition.get("items")
+                        multiple_selection = definition.get("multiple_selection", False)
                         if multiple_selection:
-                            layer_data[key] = ''
+                            layer_data[key] = ""
                             for single_value in value:
                                 for item_enum in items:
-                                    if item_enum.value['data'] == single_value:
+                                    if item_enum.value["data"] == single_value:
                                         layer_data[key] += single_value
                         else:
                             # Single value
                             if items:
                                 for item_enum in items:
-                                    if item_enum.value['data'] == value:
+                                    if item_enum.value["data"] == value:
                                         break
                                 else:
-                                    default_list_value = definition.get('default').value['data']
-                                    msg = (
-                                        f'Error with value = "{value}" in list "{key}", set default to {default_list_value}'
-                                    )
+                                    default_list_value = definition.get("default").value["data"]
+                                    msg = f'Error with value = "{value}" in list "{key}", set default to {default_list_value}'
                                     LOGGER.warning(msg)
                                     value = default_list_value
                             layer_data[key] = value
-                    elif definition['type'] == InputType.SpinBox or definition['type'] == InputType.Text or definition['type'] == InputType.MultiLine or definition['type'] == InputType.HtmlWysiwyg or definition['type'] == InputType.Collection:
+                    elif (
+                        definition["type"] == InputType.SpinBox
+                        or definition["type"] == InputType.Text
+                        or definition["type"] == InputType.MultiLine
+                        or definition["type"] == InputType.HtmlWysiwyg
+                        or definition["type"] == InputType.Collection
+                    ):
                         layer_data[key] = value
                     else:
-                        raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")
+                        raise InputTypeError(f'InputType "{definition["type"]}" not implemented')
                 else:
-                    default_value = definition.get('default')
+                    default_value = definition.get("default")
                     if default_value is not None and not callable(default_value):
-                        if self.definitions.key() == 'datavizLayers' and layer_data['type'] == 'box'\
-                                and key == 'aggregation':
-                            layer_data[key] = AggregationType.No.value['data']
-                        elif definition['type'] == InputType.List and default_value != '':
-                            layer_data[key] = default_value.value['data']
+                        if (
+                            self.definitions.key() == "datavizLayers"
+                            and layer_data["type"] == "box"
+                            and key == "aggregation"
+                        ):
+                            layer_data[key] = AggregationType.No.value["data"]
+                        elif definition["type"] == InputType.List and default_value != "":
+                            layer_data[key] = default_value.value["data"]
                         else:
                             layer_data[key] = default_value
                     elif default_value is not None and callable(default_value):
@@ -1057,7 +1080,8 @@ class TableManager:
                         # raise InvalidCfgFile(')
                         LOGGER.warning(
                             f'In Lizmap configuration file, section "{self.definitions.key()}", one layer is missing the key "{key}" which is '
-                            'mandatory. Skipping that layer.')
+                            "mandatory. Skipping that layer."
+                        )
                         valid_layer = False
                         continue
 
@@ -1070,17 +1094,18 @@ class TableManager:
                 continue
 
             # For editing, keep only PostgreSQL, follow up about #364, #361
-            if self.definitions.key() == 'editionLayers' and not as_boolean(os.getenv("CI")):
+            if self.definitions.key() == "editionLayers" and not as_boolean(os.getenv("CI")):
                 if not vector_layer:
                     # Lizmap plugin can now read incomplete configuration
                     continue
 
                 # In CI, we still want to test this layer, sorry.
-                if vector_layer.dataProvider().name() != 'postgres':
+                if vector_layer.dataProvider().name() != "postgres":
                     LOGGER.warning(
                         f"The layer for editing {vector_layer.id()} is not stored in PostgreSQL. Now, only PostgreSQL layers "
                         "are supported for editing capabilities. Removing this layer from the "
-                        "configuration.")
+                        "configuration."
+                    )
                     valid_layer = False
 
             if valid_layer:
@@ -1089,16 +1114,16 @@ class TableManager:
                 self._edit_row(row, layer_data)
 
     def wfs_fields_used(self) -> dict[str, list[str]]:
-        """ List of layers and fields used in the table, needed in WFS. """
+        """List of layers and fields used in the table, needed in WFS."""
         # Loop over the table definitions to fetch layers and fields columns
         index_layer = None
         index_fields = []
         index_list_fields = []
         index_traces = None
         for i, key in enumerate(self.keys):
-            widget_type = self.definitions.layer_config[key]['type']
+            widget_type = self.definitions.layer_config[key]["type"]
 
-            if not self.definitions.layer_config[key].get('wfs_required', False):
+            if not self.definitions.layer_config[key].get("wfs_required", False):
                 continue
 
             if widget_type == InputType.Layer:
@@ -1122,7 +1147,7 @@ class TableManager:
             if layer_id not in layers:
                 layers[layer_id] = []
 
-            if self.definitions.key() == 'editionLayers':
+            if self.definitions.key() == "editionLayers":
                 # For editing capabilities, the PK is not asked in the UI
                 # We add it on the fly to check if the PK is published in the WFS
                 # At this step, there must be a primary key set, because the layer must be stored in PostgreSQL
@@ -1146,7 +1171,7 @@ class TableManager:
                 if not field_text:
                     # Some field input are not required
                     continue
-                for f in field_text.split(','):
+                for f in field_text.split(","):
                     if f in layers[layer_id]:
                         continue
                     layers[layer_id].append(f)
@@ -1155,7 +1180,7 @@ class TableManager:
                 cell = self.table.item(row, index_traces)
                 field_json = cell.data(Qt.ItemDataRole.UserRole)
                 for trace in field_json:
-                    fields = ('y_field', 'z_field', 'colorfield')
+                    fields = ("y_field", "z_field", "colorfield")
                     for f in fields:
                         field_content = trace.get(f)
                         if field_content:

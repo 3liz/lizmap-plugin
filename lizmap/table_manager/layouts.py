@@ -1,4 +1,5 @@
-""" Table manager for layouts. """
+"""Table manager for layouts."""
+
 from __future__ import annotations
 
 import logging
@@ -22,8 +23,7 @@ LOGGER = logging.getLogger(plugin_name())
 
 
 class TableManagerLayouts(TableManager):
-
-    """ Table manager for layouts. """
+    """Table manager for layouts."""
 
     def __init__(
         self,
@@ -49,19 +49,19 @@ class TableManagerLayouts(TableManager):
 
     @staticmethod
     def label_dictionary_list() -> str:
-        """ The label in the CFG file prefixing the list. """
+        """The label in the CFG file prefixing the list."""
         return "list"
 
     def load_qgis_layouts(self, data: dict):
-        """ Load QGIS layouts into the table. """
+        """Load QGIS layouts into the table."""
         LOGGER.debug("Loading all layouts from the QGIS project :")
         tmp_layout_cfg = {}
         if data:
             for layout in data.get(self.label_dictionary_list()):
                 tmp = dict(layout)
                 # Remove the name of the layout, it's now the key of the dictionary
-                del tmp['layout']
-                tmp_layout_cfg[layout.get('layout')] = tmp
+                del tmp["layout"]
+                tmp_layout_cfg[layout.get("layout")] = tmp
 
         # Previous print from <= LWC 3.6 was activated or not
         # Do not break pre-existing format
@@ -69,7 +69,8 @@ class TableManagerLayouts(TableManager):
             current_version = self.parent.current_lwc_version()
             if current_version:
                 legacy_print_checkbox = (
-                        self.parent.cbActivatePrint.isChecked() or current_version <= LwcVersions.Lizmap_3_6)
+                    self.parent.cbActivatePrint.isChecked() or current_version <= LwcVersions.Lizmap_3_6
+                )
             else:
                 legacy_print_checkbox = False
         else:
@@ -77,13 +78,12 @@ class TableManagerLayouts(TableManager):
 
         # Build a lookup of QGIS layouts by name
         qgis_layouts_by_name = {
-            layout.name(): layout
-            for layout in QgsProject.instance().layoutManager().printLayouts()
+            layout.name(): layout for layout in QgsProject.instance().layoutManager().printLayouts()
         }
 
         # Determine the display order: use saved order from config, then append any new layouts
         if data and data.get(self.label_dictionary_list()):
-            cfg_order = [item.get('layout') for item in data.get(self.label_dictionary_list())]
+            cfg_order = [item.get("layout") for item in data.get(self.label_dictionary_list())]
             # Keep only names that still exist in the project
             ordered_names = [name for name in cfg_order if name in qgis_layouts_by_name]
             # Append new layouts not in the saved config
@@ -104,28 +104,27 @@ class TableManagerLayouts(TableManager):
             json = {}
 
             # We fill with the layout name
-            json['layout'] = layout.name()
+            json["layout"] = layout.name()
 
             # We first fill with None or default values from definitions
             for key, values in self.definitions.layer_config.items():
-
-                if key == 'layout':
+                if key == "layout":
                     continue
 
                 json[key] = None
-                default = values.get('default')
+                default = values.get("default")
                 if isinstance(default, Enum):
-                    default = default.value['data']
+                    default = default.value["data"]
 
                 if default is not None:
                     # Be careful, default can an empty string...
                     json[key] = default
 
-                if legacy_print_checkbox and key == 'dpi_available':
-                    json['dpi_available'] = ('100', '200', '300')
+                if legacy_print_checkbox and key == "dpi_available":
+                    json["dpi_available"] = ("100", "200", "300")
 
-                if legacy_print_checkbox and key == 'formats_available':
-                    json['formats_available'] = ('pdf', 'png', 'jpeg', 'svg')
+                if legacy_print_checkbox and key == "formats_available":
+                    json["formats_available"] = ("pdf", "png", "jpeg", "svg")
 
             # Then we override by the CFG file
             if layout.name() in tmp_layout_cfg:
@@ -135,7 +134,7 @@ class TableManagerLayouts(TableManager):
             self._edit_row(row, json)
 
     def layout_renamed(self, layout: QgsMasterLayoutInterface, new_name: str):
-        """ When a layout has been renamed in the project. """
+        """When a layout has been renamed in the project."""
         # The 'layout' has already the new name !
         # Shame, I need to make a diff to find which one was it...
         _ = layout
@@ -181,7 +180,7 @@ class TableManagerLayouts(TableManager):
                 break
 
     def layout_removed(self, name: str):
-        """ When a layout has been removed from the project. """
+        """When a layout has been removed from the project."""
         # A layout removed is the same behavior as a layer deleted in other tables.
         # We only need to make it as a list.
         self.layers_has_been_deleted([name])

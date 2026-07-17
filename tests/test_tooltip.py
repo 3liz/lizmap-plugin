@@ -1,4 +1,5 @@
 """Test tooltip."""
+
 import re
 
 from pathlib import Path
@@ -104,7 +105,7 @@ class TestToolTip(TestCase):
         expression = QgsExpression().replaceExpressionText(template, sub_context)
         expression = re.sub(r"\s+", " ", expression).strip()
 
-        expected = '''<div class="control-group ">
+        expected = """<div class="control-group ">
             <label
              id="dd_jforms_view_edition_field_a_label"
               class="control-label jforms-label"
@@ -115,7 +116,7 @@ class TestToolTip(TestCase):
                 id="dd_jforms_view_edition_field_a"
                 class="jforms-control-input"
                 >foo </span>
-            </div></div>'''
+            </div></div>"""
 
         expected = re.sub(r"\s+", " ", expected).strip()
 
@@ -195,7 +196,7 @@ class TestToolTip(TestCase):
         expression = QgsExpression().replaceExpressionText(template, sub_context)
         expression = re.sub(r"\s+", " ", expression).strip()
 
-        expected = '''<div class="control-group ">
+        expected = """<div class="control-group ">
             <label
                 id="dd_jforms_view_edition_is_ok_label"
                 class="control-label jforms-label"
@@ -205,7 +206,7 @@ class TestToolTip(TestCase):
                 <span
                     id="dd_jforms_view_edition_is_ok"
                     class="jforms-control-input" >true </span>
-            </div></div>'''
+            </div></div>"""
 
         expected = re.sub(r"\s+", " ", expected).strip()
 
@@ -237,7 +238,8 @@ class TestToolTip(TestCase):
             ]
         }
         expression = Tooltip._generate_value_map(widget_config, "field_a")
-        expected = dedent("""
+        expected = dedent(
+            """
             map_get(
                 hstore_to_map('"a"=>"A","b"=>"B"'),
                 replace("field_a", '\\'', '’')
@@ -254,7 +256,8 @@ class TestToolTip(TestCase):
             }
         }
         expression = Tooltip._generate_value_map(widget_config, "field_a")
-        expected = dedent("""
+        expected = dedent(
+            """
             map_get(
                 hstore_to_map('"a"=>"A","b"=>"B"'),
                 replace("field_a", '\\'', '’')
@@ -284,7 +287,8 @@ class TestToolTip(TestCase):
             ]
         }
         expression = Tooltip._generate_value_map(widget_config, "field_a")
-        expected = dedent("""
+        expected = dedent(
+            """
             map_get(
                 hstore_to_map('"a"=>"L’eau c’est bon","b"=>"B"'),
                 replace("field_a", '\\'', '’')
@@ -299,7 +303,8 @@ class TestToolTip(TestCase):
             "display_format": "yyyy",
         }
         expression = Tooltip._generate_date(widget_config, "field_a")
-        expected = dedent("""
+        expected = dedent(
+            """
             format_date(
                 "field_a",
                 'yyyy'
@@ -347,7 +352,8 @@ class TestToolTip(TestCase):
     def test_text_widget(self):
         """Test to check the text widget."""
         expression = Tooltip._generate_text_label("a label", "a text widget")
-        expected = dedent("""
+        expected = dedent(
+            """
             <p><strong>a label</strong>
             <div class="field">a text widget</div>
             </p>

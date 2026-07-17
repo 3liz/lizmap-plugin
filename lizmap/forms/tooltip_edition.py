@@ -1,4 +1,5 @@
 """Dialog for tooltip edition."""
+
 from __future__ import annotations
 
 from qgis.core import QgsMapLayerProxyModel, QgsWkbTypes
@@ -12,12 +13,12 @@ from lizmap.forms.base_edition_dialog import BaseEditionDialog
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui, resources_path
 
-CLASS = load_ui('ui_form_tooltip.ui')
+CLASS = load_ui("ui_form_tooltip.ui")
 
 
 class ToolTipEditionDialog(BaseEditionDialog, CLASS):
-
-    def __init__(self,
+    def __init__(
+        self,
         parent: QWidget | None = None,
         unicity: dict[str, str] | None = None,
         lwc_version: LwcVersions | None = None,
@@ -25,19 +26,19 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = ToolTipDefinitions()
-        self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('fields', self.fields)
-        self.config.add_layer_widget('template', self.html_template)
-        self.config.add_layer_widget('displayGeom', self.display_geometry)
-        self.config.add_layer_widget('colorGeom', self.color)
-        self.config.add_layer_widget('displayLayerStyle', self.display_layer_style)
+        self.config.add_layer_widget("layerId", self.layer)
+        self.config.add_layer_widget("fields", self.fields)
+        self.config.add_layer_widget("template", self.html_template)
+        self.config.add_layer_widget("displayGeom", self.display_geometry)
+        self.config.add_layer_widget("colorGeom", self.color)
+        self.config.add_layer_widget("displayLayerStyle", self.display_layer_style)
 
-        self.config.add_layer_label('layerId', self.label_layer)
-        self.config.add_layer_label('fields', self.label_fields)
-        self.config.add_layer_label('template', self.label_html_template)
-        self.config.add_layer_label('displayGeom', self.label_display_geometry)
-        self.config.add_layer_label('colorGeom', self.label_color)
-        self.config.add_layer_label('displayLayerStyle', self.label_display_layer_style)
+        self.config.add_layer_label("layerId", self.label_layer)
+        self.config.add_layer_label("fields", self.label_fields)
+        self.config.add_layer_label("template", self.label_html_template)
+        self.config.add_layer_label("displayGeom", self.label_display_geometry)
+        self.config.add_layer_label("colorGeom", self.label_color)
+        self.config.add_layer_label("displayLayerStyle", self.label_display_layer_style)
 
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
@@ -68,24 +69,24 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         self.check_layer_wfs()
 
     def check_layer_wfs(self):
-        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        """When the layer has changed in the combobox, check if the layer is published as WFS."""
         layer = self.layer.currentLayer()
         if not layer:
-            self.show_error(tr('A layer is mandatory.'))
+            self.show_error(tr("A layer is mandatory."))
             return
 
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
 
     def post_load_form(self):
-        """ When the data has been loaded, check which tab to display. """
+        """When the data has been loaded, check which tab to display."""
         if self.fields.selection():
             self.tab.setCurrentIndex(0)
         else:
             self.tab.setCurrentIndex(1)
 
     def generate_table_clicked(self):
-        """ Template about HTML table. """
+        """Template about HTML table."""
         layer = self.layer.currentLayer()
         if not layer:
             return
@@ -97,9 +98,9 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         if self.html_template.html_content():
             box = QMessageBox(self)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')))
-            box.setWindowTitle(tr('Replace existing HTML with the template'))
-            box.setText(tr('This will erase your previous HTML.'))
+            box.setWindowIcon(QIcon(resources_path("icons", "icon.png")))
+            box.setWindowTitle(tr("Replace existing HTML with the template"))
+            box.setText(tr("This will erase your previous HTML."))
             box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             box.setDefaultButton(QMessageBox.StandardButton.No)
             result = box.exec()
@@ -112,7 +113,7 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
     def enable_color(self):
         if self.display_geometry.isChecked():
             self.color.setEnabled(True)
-            self.color.setColor(QColor('blue'))
+            self.color.setColor(QColor("blue"))
             if self.display_layer_style.isChecked():
                 self.display_layer_style.setChecked(False)
         else:
@@ -133,19 +134,16 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         if not_in_wfs:
             return not_in_wfs
 
-        if self.fields.selection() and self.html_template.html_content() != '':
+        if self.fields.selection() and self.html_template.html_content() != "":
             return tr("It's not possible to use both 'fields' and 'HTML template'. Please choose only one.")
 
         if not self.fields.selection() and not self.html_template.html_content():
-            return tr('Either an HTML template or a field must be set.')
+            return tr("Either an HTML template or a field must be set.")
 
         # Allow display layer style only for point
         # LWC 3.10
         # Could be changed in future version
         if self.display_layer_style.isChecked() and layer.geometryType() != QgsWkbTypes.PointGeometry:
-            return tr(
-                "At present, the option 'Display layer feature'"
-                " is only available for point layers."
-            )
+            return tr("At present, the option 'Display layer feature' is only available for point layers.")
 
         return None

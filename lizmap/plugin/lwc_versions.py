@@ -1,4 +1,5 @@
 """Configure dialog depending on the LWC version"""
+
 from __future__ import annotations
 
 import json

@@ -7,10 +7,10 @@ import functools
 
 from importlib import resources
 from typing import (
-    cast,
-    Optional,
     TYPE_CHECKING,
+    Optional,
     TypeVar,
+    cast,
 )
 
 if TYPE_CHECKING:

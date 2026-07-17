@@ -1,4 +1,5 @@
 """Dialog for attribute table edition."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -23,7 +24,6 @@ CLASS = load_ui("ui_form_attribute_table.ui")
 
 
 class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
-
     def __init__(
         self,
         parent: LizmapDialog | None = None,
@@ -33,25 +33,25 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = AttributeTableDefinitions()
-        self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('primaryKey', self.primary_key)
-        self.config.add_layer_widget('hiddenFields', self.fields_to_hide)
-        self.config.add_layer_widget('export_enabled', self.export_enabled)
-        self.config.add_layer_widget('export_allowed_groups', self.allowed_groups)
-        self.config.add_layer_widget('pivot', self.pivot_table)
-        self.config.add_layer_widget('hideAsChild', self.hide_subpanels)
-        self.config.add_layer_widget('hideLayer', self.hide_layer)
-        self.config.add_layer_widget('custom_config', self.has_custom_config)
+        self.config.add_layer_widget("layerId", self.layer)
+        self.config.add_layer_widget("primaryKey", self.primary_key)
+        self.config.add_layer_widget("hiddenFields", self.fields_to_hide)
+        self.config.add_layer_widget("export_enabled", self.export_enabled)
+        self.config.add_layer_widget("export_allowed_groups", self.allowed_groups)
+        self.config.add_layer_widget("pivot", self.pivot_table)
+        self.config.add_layer_widget("hideAsChild", self.hide_subpanels)
+        self.config.add_layer_widget("hideLayer", self.hide_layer)
+        self.config.add_layer_widget("custom_config", self.has_custom_config)
 
-        self.config.add_layer_label('layerId', self.label_layer)
-        self.config.add_layer_label('primaryKey', self.label_primary_key)
-        self.config.add_layer_label('hiddenFields', self.label_fields_to_hide)
-        self.config.add_layer_label('export_enabled', self.label_export_enabled)
-        self.config.add_layer_label('export_allowed_groups', self.label_export_allowed_groups)
-        self.config.add_layer_label('pivot', self.label_pivot_table)
-        self.config.add_layer_label('hideAsChild', self.label_hide_subpanels)
-        self.config.add_layer_label('hideLayer', self.label_hide_layer)
-        self.config.add_layer_label('custom_config', self.label_has_custom_config)
+        self.config.add_layer_label("layerId", self.label_layer)
+        self.config.add_layer_label("primaryKey", self.label_primary_key)
+        self.config.add_layer_label("hiddenFields", self.label_fields_to_hide)
+        self.config.add_layer_label("export_enabled", self.label_export_enabled)
+        self.config.add_layer_label("export_allowed_groups", self.label_export_allowed_groups)
+        self.config.add_layer_label("pivot", self.label_pivot_table)
+        self.config.add_layer_label("hideAsChild", self.label_hide_subpanels)
+        self.config.add_layer_label("hideLayer", self.label_hide_layer)
+        self.config.add_layer_label("custom_config", self.label_has_custom_config)
 
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.check_layer_wfs)
@@ -66,8 +66,8 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
 
         # Wizard ACL group
         self.export_enabled.stateChanged.connect(self.allowed_groups.setEnabled)
-        icon = QIcon(resources_path('icons', 'user_group.svg'))
-        self.button_wizard_group.setText('')
+        icon = QIcon(resources_path("icons", "user_group.svg"))
+        self.button_wizard_group.setText("")
         self.button_wizard_group.setIcon(icon)
         self.button_wizard_group.clicked.connect(self.open_wizard_group)
         self.button_wizard_group.setToolTip(tr("Open the group wizard"))
@@ -77,17 +77,17 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
 
     # TODO: Type me !
     def check_layer_wfs(self):
-        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        """When the layer has changed in the combobox, check if the layer is published as WFS."""
         layer = self.layer.currentLayer()
         if not layer:
-            self.show_error(tr('A layer is mandatory.'))
+            self.show_error(tr("A layer is mandatory."))
             return
 
         not_in_wfs = self.is_layer_in_wfs(layer)
         self.show_error(not_in_wfs)
 
     def open_wizard_group(self):
-        """ When the user clicks on the group wizard. """
+        """When the user clicks on the group wizard."""
         layer = self.layer.currentLayer()
         if not layer:
             return
@@ -114,6 +114,6 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
             return not_in_wfs
 
         if not self.primary_key.currentField():
-            return tr('Primary key field is mandatory.')
+            return tr("Primary key field is mandatory.")
 
         return None

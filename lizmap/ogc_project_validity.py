@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2023, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 import collections
 import logging
@@ -22,27 +22,26 @@ from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.toolbelt.layer import layer_property, set_layer_property
 from lizmap.toolbelt.strings import random_string, unaccent
 
-LOGGER = logging.getLogger('Lizmap')
+LOGGER = logging.getLogger("Lizmap")
 
 
 class OgcProjectValidity:
-
-    """ To make a QGIS project valid according to OGC standards. """
+    """To make a QGIS project valid according to OGC standards."""
 
     def __init__(self, project: QgsProject):
-        """ Constructor. """
+        """Constructor."""
         self.project = project
         self.new_shortnames_added = []
 
     def add_shortnames(self):
-        """ Add shortnames on all layers and groups. """
+        """Add shortnames on all layers and groups."""
         existing, duplicated = self.existing_shortnames()
         layer_tree = self.project.layerTreeRoot()
         self._add_all_shortnames(layer_tree, existing, duplicated)
         LOGGER.info(f"New shortnames added : {len(self.new_shortnames_added)}")
 
     def _add_all_shortnames(self, layer_tree: QgsLayerTreeNode, existing_shortnames: list, duplicated: list):
-        """ Recursive function to add shortnames. """
+        """Recursive function to add shortnames."""
         for child in layer_tree.children():
             # noinspection PyArgumentList
             if QgsLayerTree.isLayer(child):
@@ -77,16 +76,16 @@ class OgcProjectValidity:
                 self._add_all_shortnames(child, existing_shortnames, duplicated)
 
     def existing_shortnames(self) -> tuple[list[str], list[str]]:
-        """ Fetch all existing shortnames in the project. """
+        """Fetch all existing shortnames in the project."""
         layer_tree = self.project.layerTreeRoot()
         existing = self._read_all_shortnames(layer_tree, [])
-        LOGGER.info('Existing shortnames detected before in project : ' + ', '.join(existing))
+        LOGGER.info("Existing shortnames detected before in project : " + ", ".join(existing))
 
         duplicated = [item for item, count in collections.Counter(existing).items() if count > 1]
         return existing, duplicated
 
     def _read_all_shortnames(self, group: QgsLayerTreeNode, existing_shortnames: list[str]) -> list[str]:
-        """ Recursive function to fetch all shortnames. """
+        """Recursive function to fetch all shortnames."""
 
         for child in group.children():
             # noinspection PyArgumentList
@@ -112,7 +111,7 @@ class OgcProjectValidity:
         return existing_shortnames
 
     def set_project_short_name(self):
-        """ Check and set the project short name. """
+        """Check and set the project short name."""
         # Inspired by QgsProjectServerValidator::validate()
         existing, _ = self.existing_shortnames()
         root_layer_name = self.project.readEntry("WMSRootName", "/", "")[0]
@@ -123,35 +122,35 @@ class OgcProjectValidity:
         if not root_layer_name:
             root_layer_name = self.project.baseName()
 
-        project_short_name = self.short_name(root_layer_name, existing, 'p')
+        project_short_name = self.short_name(root_layer_name, existing, "p")
         LOGGER.info(f"Setting a project shortname : {project_short_name}")
         self.project.writeEntry("WMSRootName", "/", project_short_name)
 
     @classmethod
-    def short_name(cls, layer_name: str, existing: list[str], prefix: str = 'l') -> str:
-        """ Generate a layer short name.
+    def short_name(cls, layer_name: str, existing: list[str], prefix: str = "l") -> str:
+        """Generate a layer short name.
 
         The default prefix is 'l' for layer.
         """
         layer_name = unaccent(layer_name)
         # Inspired by QgsMapLayer::generateId()
         # https://github.com/qgis/QGIS/blob/master/src/core/qgsmaplayer.cpp#L2181
-        layer_short_name = re.sub(r'[^a-zA-Z0-9_-]', '_', layer_name)
+        layer_short_name = re.sub(r"[^a-zA-Z0-9_-]", "_", layer_name)
 
-        layer_short_name = layer_short_name.strip('_-')
+        layer_short_name = layer_short_name.strip("_-")
 
         if len(layer_short_name) == 0:
             # No more chars left, let's add some
             layer_short_name = random_string(5)
 
         if layer_short_name[0].isdigit():
-            layer_short_name = f'{prefix}_{layer_short_name}'
+            layer_short_name = f"{prefix}_{layer_short_name}"
 
         if layer_short_name not in existing:
             return layer_short_name
 
         def increment(name, i, existing_list):
-            tmp_name = f'{name}_{i}'
+            tmp_name = f"{name}_{i}"
             if tmp_name not in existing_list:
                 return tmp_name
             return increment(name, i + 1, existing_list)

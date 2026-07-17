@@ -77,7 +77,7 @@ class BaseLayersManager(LizmapProtocol):
     def check_visibility_crs_3857(self):
         version = self.current_lwc_version()
         if version is None:
-            raise AssertionError('Current Lizmap Web Client is unknown')
+            raise AssertionError("Current Lizmap Web Client is unknown")
 
         check_visibility_crs_3857(
             self.dlg,
