@@ -114,6 +114,12 @@ class LayerTreeManager(LizmapProtocol):
         self.dlg.layer_tree.itemCollapsed.connect(self._on_layer_tree_group_state_changed)
         self.dlg.layer_search_input.textChanged.connect(self._on_layer_search_changed)
 
+        # Per-layer "exclude from single WMS" checkbox is only relevant when the
+        # project-level "Load layers as a single WMS layer" option is enabled.
+        self.dlg.checkbox_wms_single_request_all_layers.toggled.connect(
+            self._update_exclude_from_single_wms_enabled
+        )
+
         # Group helper
         self.dlg.add_group_hidden.setToolTip(
             tr(
@@ -526,6 +532,9 @@ class LayerTreeManager(LizmapProtocol):
                                     # Raise TypeError if the object was not connected
                                     self.dlg.cbExternalWms.toggled.disconnect(self.external_wms_toggled)
 
+                    if key == "excludeFromSingleWMS":
+                        self._update_exclude_from_single_wms_enabled()
+
             layer = self._current_selected_layer()  # It can be a layer or a group
 
             # Disable popup configuration for groups and raster
@@ -633,6 +642,16 @@ class LayerTreeManager(LizmapProtocol):
     def external_wms_toggled(self):
         """Disable the format combobox is the checkbox third party WMS is checked."""
         self.dlg.liImageFormat.setEnabled(not self.dlg.cbExternalWms.isChecked())
+
+    def _update_exclude_from_single_wms_enabled(self, *_args):
+        """Enable the per-layer "exclude from single WMS" checkbox only when the
+        project-level "Load layers as a single WMS layer" option is enabled.
+
+        The user's per-layer choice is preserved when disabled — only the widget's
+        enabled state changes, not its checked state.
+        """
+        project_option_enabled = self.dlg.checkbox_wms_single_request_all_layers.isChecked()
+        self.dlg.cbExcludeFromSingleWMS.setEnabled(project_option_enabled)
 
     def enable_popup_source_button(self):
         """Enable or not the "Configure" button according to the popup source."""

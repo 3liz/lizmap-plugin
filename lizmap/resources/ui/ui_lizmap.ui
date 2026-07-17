@@ -2257,6 +2257,43 @@ This is different to the map maximum extent (defined in QGIS project properties,
                           </layout>
                          </item>
                          <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_exclude_single_wms">
+                           <item>
+                            <widget class="QCheckBox" name="cbExcludeFromSingleWMS">
+                             <property name="toolTip">
+                              <string>When the project-level option &quot;Load layers as a single WMS layer&quot; is enabled, exclude this layer from the bundled request. The layer will be requested individually (directly from its WMS server if &quot;Get images directly from WMS Server&quot; is checked). Only available when the project-level option is enabled.</string>
+                             </property>
+                             <property name="text">
+                              <string/>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_exclude_from_single_wms">
+                             <property name="text">
+                              <string>Exclude this layer from the single WMS request stack</string>
+                             </property>
+                             <property name="wordWrap">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_exclude_single_wms">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
                           <widget class="QCheckBox" name="cbSingleTile">
                            <property name="toolTip">
                             <string>If Lizmap must call this layer as a single tile. This is incompatible with server tile cache.</string>
@@ -6120,6 +6157,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   <tabstop>liImageFormat</tabstop>
   <tabstop>inClientCacheExpiration</tabstop>
   <tabstop>cbExternalWms</tabstop>
+  <tabstop>cbExcludeFromSingleWMS</tabstop>
   <tabstop>cbSingleTile</tabstop>
   <tabstop>checkbox_server_cache</tabstop>
   <tabstop>inCacheExpiration</tabstop>
