@@ -3,6 +3,7 @@
 This module provides the ScalesManager class which handles map scale
 operations using the delegate pattern.
 """
+
 from __future__ import annotations
 
 import contextlib

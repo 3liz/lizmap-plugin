@@ -1,17 +1,16 @@
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2023, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 from qgis.PyQt.QtGui import QPixmap
 from qgis.PyQt.QtWidgets import QHBoxLayout, QLabel, QSizePolicy, QWidget
 
 
 class WarningWidget(QWidget):
-
-    """ Widget to show a warning sign with a text. """
+    """Widget to show a warning sign with a text."""
 
     def __init__(self, *args, **kwargs):
-        """ Constructor. """
+        """Constructor."""
         super().__init__(*args, **kwargs)
 
         layout = QHBoxLayout(self)
@@ -33,5 +32,5 @@ class WarningWidget(QWidget):
         self.setLayout(layout)
 
     def set_text(self, text: str):
-        """ Set text in the label. """
+        """Set text in the label."""
         self.text_widget.setText(text)

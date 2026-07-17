@@ -1,4 +1,5 @@
 """Dialog for filter by polygon."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -17,11 +18,10 @@ if TYPE_CHECKING:
     from lizmap.definitions.definitions import LwcVersions
     from lizmap.dialogs.main import LizmapDialog
 
-CLASS = load_ui('ui_form_filter_by_polygon.ui')
+CLASS = load_ui("ui_form_filter_by_polygon.ui")
 
 
 class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
-
     def __init__(
         self,
         parent: LizmapDialog | None = None,
@@ -31,16 +31,16 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = FilterByPolygonDefinitions()
-        self.config.add_layer_widget('layer', self.layer)
-        self.config.add_layer_widget('primary_key', self.primary_key)
-        self.config.add_layer_widget('filter_mode', self.filter_mode)
-        self.config.add_layer_widget('spatial_relationship', self.spatial_relationship_mode)
-        self.config.add_layer_widget('use_centroid', self.checkbox_use_centroid)
+        self.config.add_layer_widget("layer", self.layer)
+        self.config.add_layer_widget("primary_key", self.primary_key)
+        self.config.add_layer_widget("filter_mode", self.filter_mode)
+        self.config.add_layer_widget("spatial_relationship", self.spatial_relationship_mode)
+        self.config.add_layer_widget("use_centroid", self.checkbox_use_centroid)
 
-        self.config.add_layer_label('layer', self.label_layer)
-        self.config.add_layer_label('primary_key', self.label_primary_key)
-        self.config.add_layer_label('filter_mode', self.label_filter_mode)
-        self.config.add_layer_label('spatial_relationship', self.label_spatial_relationship)
+        self.config.add_layer_label("layer", self.label_layer)
+        self.config.add_layer_label("primary_key", self.label_primary_key)
+        self.config.add_layer_label("filter_mode", self.label_filter_mode)
+        self.config.add_layer_label("spatial_relationship", self.label_spatial_relationship)
 
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         self.layer.layerChanged.connect(self.primary_key.setLayer)
@@ -55,16 +55,16 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
     def validate(self) -> str | None:
         layer = self.layer.currentLayer()
         if not layer:
-            return tr('A layer is mandatory.')
+            return tr("A layer is mandatory.")
 
         mode = self.filter_mode.currentData()
-        if mode == FilterMode.Editing.value['data'] and layer.providerType() != 'postgres':
-            return '{}\n{}'.format(
+        if mode == FilterMode.Editing.value["data"] and layer.providerType() != "postgres":
+            return "{}\n{}".format(
                 tr('The mode is set on "Editing only" but the layer is not stored in PostgreSQL.'),
-                tr('PostgreSQL is the only type of layer supported with editing capabilities.'),
+                tr("PostgreSQL is the only type of layer supported with editing capabilities."),
             )
 
-        if layer.providerType() == 'postgres' and self.checkbox_use_centroid.isChecked():
+        if layer.providerType() == "postgres" and self.checkbox_use_centroid.isChecked():
             has_index, message = self.config.has_spatial_centroid_index(layer)
             if not has_index:
                 return message
@@ -74,6 +74,6 @@ class FilterByPolygonEditionDialog(BaseEditionDialog, CLASS):
             return upstream
 
         if not self.primary_key.currentField():
-            return tr('Field is mandatory.')
+            return tr("Field is mandatory.")
 
         return None

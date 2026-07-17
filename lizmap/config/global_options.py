@@ -227,21 +227,21 @@ globalOptionDefinitions = {
             "preserving their native format instead of converting to PNG."
         ),
     },
-    'group_popup_by_layer': {
-        'wType': 'checkbox',
-        'type': 'boolean',
-        'default': False,
-        'use_proper_boolean': True,
-        'tooltip': tr(
+    "group_popup_by_layer": {
+        "wType": "checkbox",
+        "type": "boolean",
+        "default": False,
+        "use_proper_boolean": True,
+        "tooltip": tr(
             "When enabled, results will be displayed grouped by layer, and can be viewed individually."
         ),
     },
-    'short_link_permalink': {
-        'wType': 'checkbox',
-        'type': 'boolean',
-        'default': False,
-        'use_proper_boolean': True,
-        'tooltip': tr(
+    "short_link_permalink": {
+        "wType": "checkbox",
+        "type": "boolean",
+        "default": False,
+        "use_proper_boolean": True,
+        "tooltip": tr(
             "Handle the permalink with an encoded short hash rather "
             "than a full hash containing all the information in plain text"
         ),
@@ -322,8 +322,7 @@ globalOptionDefinitions = {
         "type": "string",
         "default": "",
         "tooltip": tr(
-            "Comma-separated list of Lizmap group IDs allowed to export DXF. "
-            "If empty, all users can export."
+            "Comma-separated list of Lizmap group IDs allowed to export DXF. If empty, all users can export."
         ),
         "always_export": True,
     },

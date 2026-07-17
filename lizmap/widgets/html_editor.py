@@ -19,6 +19,7 @@ WEBKIT_AVAILABLE = False
 try:
     # Prefer QWebEngine (modern)
     from qgis.PyQt.QtWebEngineWidgets import QWebEngineView
+
     WebView = QWebEngineView
     WEBKIT_AVAILABLE = True
     WEB_ENGINE = True
@@ -27,6 +28,7 @@ except ModuleNotFoundError:
         # Fallback to legacy QtWebKit
         from qgis.PyQt.QtWebKit import QWebSettings
         from qgis.PyQt.QtWebKitWidgets import QWebView
+
         WebView = QWebView
         WEBKIT_AVAILABLE = True
         WEB_ENGINE = False
@@ -41,32 +43,31 @@ if as_boolean(os.getenv("CI")):
     # Failing in Pycharm when launching tests, maybe because of the QApplication ?
     WEBKIT_AVAILABLE = False
 
-FORM_CLASS = load_ui('ui_html_editor.ui')
+FORM_CLASS = load_ui("ui_html_editor.ui")
 
-LOGGER = logging.getLogger('Lizmap')
+LOGGER = logging.getLogger("Lizmap")
 
 # RegEx defined in QgsExpression.replaceExpressionText
 # This function replaces each expression between [% and %] in the string
 # with the result of its evaluation with the specified context.
-QGIS_EXPRESSION_TEXT = re.compile(r'\[%(.*?)%]', re.MULTILINE | re.DOTALL)
+QGIS_EXPRESSION_TEXT = re.compile(r"\[%(.*?)%]", re.MULTILINE | re.DOTALL)
 
 
 def expression_from_qgis_to_html(match):
-    """ Method to escape QGIS expression to be displayed in HTML. """
+    """Method to escape QGIS expression to be displayed in HTML."""
     if not match:
-        return ''
+        return ""
     return escape(match.group())
 
 
 def expression_from_html_to_qgis(match: re.Match) -> str:
-    """ Method to unescape QGIS expression to be used in QGIS. """
+    """Method to unescape QGIS expression to be used in QGIS."""
     if not match:
-        return ''
+        return ""
     return unescape(match.group())
 
 
 class HtmlEditorWidget(QWidget, FORM_CLASS):
-
     def __init__(self, parent):
         # noinspection PyArgumentList
         QWidget.__init__(self, parent=parent)
@@ -91,22 +92,22 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
         if not WEBKIT_AVAILABLE:
             return
 
-        self.add_field_expression.setText('')
+        self.add_field_expression.setText("")
         self.add_field_expression.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
-        self.add_field_expression.setToolTip(tr('Add the current expression in the HTML'))
+        self.add_field_expression.setToolTip(tr("Add the current expression in the HTML"))
 
-        self.add_expression.setText('')
+        self.add_expression.setText("")
         self.add_expression.setIcon(QIcon(QgsApplication.iconPath("mActionAddExpression.svg")))
-        self.add_expression.setToolTip(tr('Open the expression builder'))
+        self.add_expression.setToolTip(tr("Open the expression builder"))
 
         self.add_field_expression.clicked.connect(self.add_expression_field_in_html)
         self.add_expression.clicked.connect(self.add_expression_in_html)
 
-        with open(resources_path('html', 'html_editor.html'), encoding='utf8') as f:
+        with open(resources_path("html", "html_editor.html"), encoding="utf8") as f:
             html_content = f.read()
 
         # noinspection PyArgumentList
-        base_url = QUrl.fromLocalFile(resources_path('html', 'html_editor.html'))
+        base_url = QUrl.fromLocalFile(resources_path("html", "html_editor.html"))
         self.web_view.setHtml(html_content, base_url)
 
         if not WEB_ENGINE and WebView:
@@ -117,46 +118,50 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             self.web_view.settings().setAttribute(QWebSettings.DnsPrefetchEnabled, True)
 
     def enable_expression(self):
-        """ Enable the expression widget without any layer. """
+        """Enable the expression widget without any layer."""
         self.stacked_expression.setVisible(True)
         self.stacked_expression.setCurrentWidget(self.page_expression)
 
     def set_layer(self, layer: QgsVectorLayer):
-        """ Enable the field expression widget. """
+        """Enable the field expression widget."""
         self.field_expression_widget.setLayer(layer)
         self.stacked_expression.setVisible(True)
         self.stacked_expression.setCurrentWidget(self.page_expression_layer)
 
     def html_content(self) -> str:
-        """ Returns the content as an HTML string. """
+        """Returns the content as an HTML string."""
         if WEBKIT_AVAILABLE:
-            html_content = self._js('tEditor.getHtml();')
+            html_content = self._js("tEditor.getHtml();")
         else:
             html_content = self.web_view.text()
 
         # NOTE: html_content may be None
-        return QGIS_EXPRESSION_TEXT.sub(
-            expression_from_html_to_qgis,
-            html_content,
-        ) if html_content else ""
+        return (
+            QGIS_EXPRESSION_TEXT.sub(
+                expression_from_html_to_qgis,
+                html_content,
+            )
+            if html_content
+            else ""
+        )
 
     def set_html_content(self, content: str):
-        """ Set the HTML in the editor. """
+        """Set the HTML in the editor."""
         html_content = QGIS_EXPRESSION_TEXT.sub(expression_from_qgis_to_html, content)
         if WEBKIT_AVAILABLE:
-            self._js(f'tEditor.setHtml({json.dumps(html_content)});')
+            self._js(f"tEditor.setHtml({json.dumps(html_content)});")
         else:
             self.web_view.setText(html_content)
 
     def _insert_qgis_expression(self, text: str):
-        """ Insert text at the current cursor position. """
+        """Insert text at the current cursor position."""
         LOGGER.debug(f"Adding expression '{text}' in the HTML")
-        self.insert_text(f'[% {text} %]')
+        self.insert_text(f"[% {text} %]")
 
     def insert_text(self, text: str):
-        """ Insert text at the current cursor position. """
+        """Insert text at the current cursor position."""
         if WEBKIT_AVAILABLE:
-            self._js(f'tEditor.insertText(`{text}`);')
+            self._js(f"tEditor.insertText(`{text}`);")
         else:
             self.web_view.insertText(text)
 
@@ -166,11 +171,11 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
     #     return self._js('tEditor.getSelectedText();')
 
     def add_expression_field_in_html(self):
-        """ To add the pre-defined expression from the widget in the HTML editor. """
+        """To add the pre-defined expression from the widget in the HTML editor."""
         self._insert_qgis_expression(self.field_expression_widget.expression())
 
     def add_expression_in_html(self):
-        """ Open the expression builder dialog without any layer set. """
+        """Open the expression builder dialog without any layer set."""
         dialog = QgsExpressionBuilderDialog(None)
         if not dialog.exec():
             return
@@ -183,12 +188,12 @@ class HtmlEditorWidget(QWidget, FORM_CLASS):
             result_container = {}
 
             def _callback(result):
-                result_container['value'] = result
+                result_container["value"] = result
                 loop.quit()
 
             self.web_view.page().runJavaScript(command, _callback)
             loop.exec_()
-            return result_container.get('value')
+            return result_container.get("value")
 
         if WEBKIT_AVAILABLE:  # legacy QWebView
             return self.web_view.page().currentFrame().evaluateJavaScript(command)

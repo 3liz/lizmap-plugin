@@ -11,14 +11,13 @@ from lizmap.toolbelt.resources import resources_path
 
 
 class LogPanel:
-
     def __init__(self, widget: QTextEdit):
         self.widget = widget
-        css_path = resources_path('css', 'log.css')
-        with open(css_path, encoding='utf8') as f:
+        css_path = resources_path("css", "log.css")
+        with open(css_path, encoding="utf8") as f:
             css = f.read()
         self.widget.document().setDefaultStyleSheet(css)
-        self.html = ''
+        self.html = ""
 
     def append_html(self, new: str):
         self.html += new
@@ -27,26 +26,26 @@ class LogPanel:
         self.widget.setHtml(self.html)
 
     def separator(self):
-        """ Add a horizontal separator. """
+        """Add a horizontal separator."""
         # TODO, check for a proper HTML
-        self.widget.append('=' * 20)
+        self.widget.append("=" * 20)
 
     def append(
-            self,
-            msg: str,
-            style: Html | None = None,
-            abort: bool = False,
-            time: bool = False,
-            level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
+        self,
+        msg: str,
+        style: Html | None = None,
+        abort: bool = False,
+        time: bool = False,
+        level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
     ):
-        """ Append text to the log. """
+        """Append text to the log."""
         if abort:
             sys.stdout = sys.stderr
 
         if time:
             now = QDateTime.currentDateTime()
             now_str = now.toString(QLocale().timeFormat(QLocale.FormatType.ShortFormat))
-            msg = now_str + ' : ' + msg
+            msg = now_str + " : " + msg
 
         if level == Qgis.MessageLevel.Warning:
             # byte_array = QByteArray()
@@ -59,43 +58,44 @@ class LogPanel:
             pass
 
         if style:
-            output = ''
+            output = ""
             if style in (Html.H1, Html.H2, Html.H3):
-                output += '<br>'
+                output += "<br>"
             if level == Qgis.MessageLevel.Warning:
                 output += f'<{style.value} style="color: orange">{msg}</{style.value}>'
             elif level == Qgis.MessageLevel.Critical:
                 output += f'<{style.value} style="color: red">{msg}</{style.value}>'
             else:
-                output += f'<{style.value}>{msg}</{style.value}>'
+                output += f"<{style.value}>{msg}</{style.value}>"
             msg = output
 
         self.append_html(msg)
 
     def start_table(self):
-        self.append_html("<table class=\"tabular-view\" width=\"100%\">")
+        self.append_html('<table class="tabular-view" width="100%">')
 
     def end_table(self):
         self.append_html("</table>")
 
     def add_row(self, index):
-        row_class = ''
+        row_class = ""
         if index % 2:
-            row_class = "class=\"odd-row\""
+            row_class = 'class="odd-row"'
         self.append_html(f"<tr {row_class}>")
 
     def end_row(self):
         self.append_html("</tr>")
 
     def clear(self):
-        """ Clear the content of the text area log. """
+        """Clear the content of the text area log."""
         self.widget.clear()
-        self.html = ''
+        self.html = ""
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """ For manual tests. """
     from qgis.PyQt.QtWidgets import QApplication, QDialog, QHBoxLayout
+
     app = QApplication(sys.argv)
     dialog = QDialog()
     layout = QHBoxLayout()

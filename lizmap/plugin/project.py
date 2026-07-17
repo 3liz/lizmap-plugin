@@ -1,4 +1,5 @@
 """Project management"""
+
 from __future__ import annotations
 
 import contextlib
@@ -445,8 +446,11 @@ class ProjectManager(LizmapProtocol):
                         input_value = str(input_value)
 
                 # Add value to the option
-                if item["type"] == "boolean" and not ambiguous_to_bool(input_value) \
-                    and not item.get("always_export"):
+                if (
+                    item["type"] == "boolean"
+                    and not ambiguous_to_bool(input_value)
+                    and not item.get("always_export")
+                ):
                     continue
 
                 # Empty list or string
@@ -775,9 +779,11 @@ class ProjectManager(LizmapProtocol):
             ):
                 layer_options["popupSource"] = "auto"
 
-            if layer_options.get("geometryType") in ("point", "line", "polygon") \
-                and layer_options.get("popupSource") == "lizmap" \
-                and ambiguous_to_bool(layer_options.get("popup")):
+            if (
+                layer_options.get("geometryType") in ("point", "line", "polygon")
+                and layer_options.get("popupSource") == "lizmap"
+                and ambiguous_to_bool(layer_options.get("popup"))
+            ):
                 QMessageBox.warning(
                     self.dlg,
                     tr("Deprecated feature"),

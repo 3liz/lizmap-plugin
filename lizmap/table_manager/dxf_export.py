@@ -1,4 +1,5 @@
-""" Table manager for DXF export. """
+"""Table manager for DXF export."""
+
 from __future__ import annotations
 
 from qgis.core import QgsProject, QgsVectorLayer
@@ -10,22 +11,21 @@ from lizmap.widgets.project_tools import is_layer_published_wfs
 
 
 class TableManagerDxfExport:
-
-    """ Simple table manager for DXF export - just shows WFS layers with checkboxes. """
+    """Simple table manager for DXF export - just shows WFS layers with checkboxes."""
 
     def __init__(self, table):
-        """ Constructor. """
+        """Constructor."""
         self.table = table
 
         # Setup table columns
         self.table.setColumnCount(2)
-        self.table.setHorizontalHeaderLabels(['Layer', 'Enabled for DXF Export'])
+        self.table.setHorizontalHeaderLabels(["Layer", "Enabled for DXF Export"])
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setSelectionBehavior(self.table.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(self.table.SelectionMode.SingleSelection)
 
     def load_wfs_layers(self, data: dict):
-        """ Load all WFS-enabled layers into the table with checkboxes.
+        """Load all WFS-enabled layers into the table with checkboxes.
 
         Reads dxfExportEnabled from each layer's configuration in the layers section.
         The 'data' parameter contains the full CFG including the layers section.
@@ -35,15 +35,17 @@ class TableManagerDxfExport:
         self.table.setRowCount(0)
 
         # If no config data at all, keep table empty
-        if not data or not data.get('layers'):
+        if not data or not data.get("layers"):
             return
 
         # Extract layer-specific DXF settings from layers configuration
-        layers_config = data.get('layers', {})
+        layers_config = data.get("layers", {})
         enabled_layers = {}
         for layer_data in layers_config.values():
-            layer_id = layer_data.get('id')
-            enabled = ambiguous_to_bool(layer_data.get('dxfExportEnabled', True))  # Default to enabled, convert to bool
+            layer_id = layer_data.get("id")
+            enabled = ambiguous_to_bool(
+                layer_data.get("dxfExportEnabled", True)
+            )  # Default to enabled, convert to bool
             if layer_id:
                 enabled_layers[layer_id] = enabled
 
@@ -78,7 +80,7 @@ class TableManagerDxfExport:
             row += 1
 
     def to_json(self):
-        """ Export table data to JSON format for CFG file. """
+        """Export table data to JSON format for CFG file."""
         layers = []
 
         for row in range(self.table.rowCount()):
@@ -89,32 +91,27 @@ class TableManagerDxfExport:
                 layer_id = name_item.data(Qt.ItemDataRole.UserRole)
                 enabled = checkbox_item.checkState() == Qt.CheckState.Checked
 
-                layers.append({
-                    'layerId': layer_id,
-                    'enabled': enabled
-                })
+                layers.append({"layerId": layer_id, "enabled": enabled})
 
-        return {
-            'layers': layers
-        }
+        return {"layers": layers}
 
     def truncate(self):
-        """ Clear the table. """
+        """Clear the table."""
         self.table.setRowCount(0)
 
     def set_lwc_version(self, version):
-        """ Set LWC version - no-op for DXF export as we don't have version-specific features. """
+        """Set LWC version - no-op for DXF export as we don't have version-specific features."""
 
     def use_single_row(self):
-        """ Return False since we use multiple rows for WFS layers. """
+        """Return False since we use multiple rows for WFS layers."""
         return False
 
     def wfs_fields_used(self):
-        """ Return empty dict since DXF export uses entire layers, not specific fields. """
+        """Return empty dict since DXF export uses entire layers, not specific fields."""
         return {}
 
     def populate_from_project(self):
-        """ Populate table with all WFS layers from the current project.
+        """Populate table with all WFS layers from the current project.
 
         This is called when the user enables DXF export to show available WFS layers.
         """

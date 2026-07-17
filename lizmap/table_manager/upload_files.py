@@ -1,6 +1,6 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2024, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 from os.path import relpath
 from pathlib import Path
@@ -14,9 +14,8 @@ from lizmap.widgets.table_files import TableFiles
 
 
 class TableFilesManager:
-
     def __init__(self, parent: QDialog, table: TableFiles, button_scan_files: QPushButton):
-        """ Constructor. """
+        """Constructor."""
         self.parent = parent
         self.table = table
         self.button_scan = button_scan_files
@@ -24,7 +23,7 @@ class TableFilesManager:
         self.button_scan.clicked.connect(self.scan_files)
 
     def scan_files(self):
-        """ Scan all files"""
+        """Scan all files"""
         self.table.setRowCount(0)
 
         unique_files = []
@@ -36,13 +35,12 @@ class TableFilesManager:
         # Qgis.versionInt() 32200 :
         # Use QgsOgrProviderMetadata::sidecarFilesForUri
         for layer in self.parent.project.mapLayers().values():
-
             components = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
-            if 'path' not in components:
+            if "path" not in components:
                 # The layer is not file base.
                 continue
 
-            layer_path = Path(components['path'])
+            layer_path = Path(components["path"])
             try:
                 if not layer_path.exists():
                     # Let's skip, QGIS is already warning this layer
@@ -66,7 +64,7 @@ class TableFilesManager:
                 # We can't compute a relative path, but the user didn't enable the safety check, so we must still skip
                 continue
 
-            if '..' in relative_path:
+            if ".." in relative_path:
                 # Not supported for now
                 continue
 
@@ -74,7 +72,7 @@ class TableFilesManager:
                 # Not supported for now
                 continue
 
-            if layer_path.suffix.lower().replace('.', '') not in UPLOAD_EXTENSIONS:
+            if layer_path.suffix.lower().replace(".", "") not in UPLOAD_EXTENSIONS:
                 # Not supported for now
                 continue
 

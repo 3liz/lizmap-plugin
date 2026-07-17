@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-__copyright__ = 'Copyright 2022, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2022, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 import logging
 
@@ -17,15 +17,14 @@ from lizmap.server_lwc import ServerManager
 from lizmap.toolbelt.plugin import plugin_date
 from lizmap.toolbelt.version import version
 
-Plugin = namedtuple('Plugin', ['name', 'version', 'date', 'template'])
+Plugin = namedtuple("Plugin", ["name", "version", "date", "template"])
 
 DAYS_BEFORE_OUTDATED = 60
 
-LOGGER = logging.getLogger('Lizmap')
+LOGGER = logging.getLogger("Lizmap")
 
 
 class QgisPluginManager:
-
     def __init__(self):
         plugin_manager = instance()
         plugin_manager.exportPluginsToManager()
@@ -34,11 +33,11 @@ class QgisPluginManager:
         #     repositories.requestFetching(key)
 
         plugins = {
-            'cadastre': 'https://github.com/3liz/QgisCadastrePlugin/releases/tag/{tag}',
-            'lizmap': 'https://github.com/3liz/lizmap-plugin/releases/tag/{tag}',
-            'lizmap_server': 'https://github.com/3liz/qgis-lizmap-server-plugin/releases/tag/{tag}',
-            'wfsOutputExtension': 'https://github.com/3liz/qgis-wfsOutputExtension/releases/tag/{tag}',
-            'atlasprint': 'https://github.com/3liz/qgis-atlasprint/releases/tag/{tag}',
+            "cadastre": "https://github.com/3liz/QgisCadastrePlugin/releases/tag/{tag}",
+            "lizmap": "https://github.com/3liz/lizmap-plugin/releases/tag/{tag}",
+            "lizmap_server": "https://github.com/3liz/qgis-lizmap-server-plugin/releases/tag/{tag}",
+            "wfsOutputExtension": "https://github.com/3liz/qgis-wfsOutputExtension/releases/tag/{tag}",
+            "atlasprint": "https://github.com/3liz/qgis-atlasprint/releases/tag/{tag}",
         }
         self.metadata = {}
         for plugin, url in plugins.items():
@@ -47,36 +46,32 @@ class QgisPluginManager:
                 if not plugin_metadata:
                     continue
 
-                name = plugin_metadata['name']
-                latest_stable_version = plugin_metadata['version_available']
+                name = plugin_metadata["name"]
+                latest_stable_version = plugin_metadata["version_available"]
                 latest_stable_date = QDateTime.fromString(
-                    plugin_metadata['update_date'],
-                    Qt.DateFormat.ISODateWithMs
+                    plugin_metadata["update_date"], Qt.DateFormat.ISODateWithMs
                 )
-                date_string = latest_stable_date.toString(QLocale().dateFormat(QLocale.FormatType.ShortFormat))
+                date_string = latest_stable_date.toString(
+                    QLocale().dateFormat(QLocale.FormatType.ShortFormat)
+                )
 
-                template = (
-                    '{name} <a href="{url}">'
-                    '{tag}   -    {date}'
-                    '</a>'
-                )
+                template = '{name} <a href="{url}">{tag}   -    {date}</a>'
                 tag_url = url.format(tag=latest_stable_version)
                 self.metadata[name] = Plugin(
                     name=name,
                     version=latest_stable_version,
                     date=latest_stable_date,
-                    template=template.format(name=name, url=tag_url, tag=latest_stable_version, date=date_string)
+                    template=template.format(
+                        name=name, url=tag_url, tag=latest_stable_version, date=date_string
+                    ),
                 )
             except KeyError:
                 self.metadata[plugin] = Plugin(
-                    name=plugin,
-                    version=None,
-                    date=QDate(),
-                    template=f'{plugin} - Unknown'
+                    name=plugin, version=None, date=QDate(), template=f"{plugin} - Unknown"
                 )
 
     def current_plugin_needs_update(self) -> bool | None:
-        """ Return if the plugin is less than a few days late. """
+        """Return if the plugin is less than a few days late."""
         current_version = version()
         if current_version in DEV_VERSION_PREFIX:
             # We trust developers
@@ -85,13 +80,13 @@ class QgisPluginManager:
 
         current_version = ServerManager.split_lizmap_version(current_version)
 
-        if 'Lizmap' not in self.metadata:
+        if "Lizmap" not in self.metadata:
             # No QGIS plugin manager, nothing we can do now...
             LOGGER.debug("Version checker : NO QPM, nothing we can do now...")
             return False
 
-        latest_version = self.metadata['Lizmap'].version
-        if latest_version is None or latest_version == '':
+        latest_version = self.metadata["Lizmap"].version
+        if latest_version is None or latest_version == "":
             LOGGER.debug("Version checker : NO QPM, nothing we can do now...")
             return False
 
@@ -102,15 +97,15 @@ class QgisPluginManager:
             LOGGER.warning(
                 "Version checker : running a higher version than on plugins.qgis.org : "
                 "current {current} >= latest {latest}".format(
-                    current='.'.join([str(i) for i in current_version]),
-                    latest='.'.join([str(i) for i in latest_version])
+                    current=".".join([str(i) for i in current_version]),
+                    latest=".".join([str(i) for i in latest_version]),
                 )
             )
             return False
 
         # Not the latest version at this stage
 
-        latest_date = self.metadata['Lizmap'].date
+        latest_date = self.metadata["Lizmap"].date
         current_plugin_date = plugin_date()
 
         if not latest_date.isValid() or not current_plugin_date.isValid():
@@ -125,16 +120,16 @@ class QgisPluginManager:
         return must_update
 
     def lizmap_version(self):
-        return self.metadata['Lizmap'].template
+        return self.metadata["Lizmap"].template
 
     def lizmap_server_version(self):
-        return self.metadata['Lizmap server'].template
+        return self.metadata["Lizmap server"].template
 
     def cadastre_version(self):
-        return self.metadata['cadastre'].template
+        return self.metadata["cadastre"].template
 
     def wfs_output_extension_version(self):
-        return self.metadata['wfsOutputExtension'].template
+        return self.metadata["wfsOutputExtension"].template
 
     def atlas_print_version(self):
-        return self.metadata['atlasprint'].template
+        return self.metadata["atlasprint"].template

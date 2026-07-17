@@ -1,4 +1,4 @@
-"""Online help definitions. """
+"""Online help definitions."""
 
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QLocale, QUrl
@@ -8,39 +8,40 @@ from lizmap.definitions.lizmap_cloud import (
     CLOUD_ONLINE_URL,
 )
 
-DOMAIN = 'https://docs.lizmap.com'
-VERSION = 'current'
-ONLINE_HELP_LANGUAGES = ('en', 'es', 'it', 'ja', 'pt', 'fi', 'fr')
+DOMAIN = "https://docs.lizmap.com"
+VERSION = "current"
+ONLINE_HELP_LANGUAGES = ("en", "es", "it", "ja", "pt", "fi", "fr")
 
 
 def current_locale() -> str:
-    """ Get the main language, with 2 characters only. """
+    """Get the main language, with 2 characters only."""
     locale = QgsSettings().value("locale/userLocale", QLocale().name())
     return locale[0:2]
 
 
-def online_cloud_help(page: str = '') -> QUrl:
-    """ Online help URL according to locale and version. """
+def online_cloud_help(page: str = "") -> QUrl:
+    """Online help URL according to locale and version."""
     locale = current_locale()
     if locale not in CLOUD_ONLINE_LANGUAGES:
-        locale = 'en'
+        locale = "en"
     return QUrl(f"{CLOUD_ONLINE_URL}/{locale}/{page}")
 
 
-def online_lwc_help(page: str = '', version: str = VERSION) -> QUrl:
-    """ Online help URL according to locale and version. """
+def online_lwc_help(page: str = "", version: str = VERSION) -> QUrl:
+    """Online help URL according to locale and version."""
     locale = current_locale()
     if locale not in ONLINE_HELP_LANGUAGES:
-        locale = 'en'
+        locale = "en"
 
     if page is None:
-        page = ''
+        page = ""
 
     # noinspection PyArgumentList
     return QUrl(f"{DOMAIN}/{version}/{locale}/{page}")
 
 
 # When editing this mapping, it must be done in the definition/corresponding.py file
+
 
 class Panels:
     Information = 0
@@ -69,45 +70,43 @@ class Panels:
 
 
 MAPPING_INDEX_DOC = {
-    Panels.Information: 'publish/lizmap_plugin/information.html',
-    Panels.MapOptions: 'publish/lizmap_plugin/map_options.html',
-    Panels.Layers: 'publish/lizmap_plugin/layers.html',
-    Panels.Basemap: 'publish/lizmap_plugin/basemap.html',
-    Panels.AttributeTable: 'publish/lizmap_plugin/attribute_table.html',
-    Panels.Editing: 'publish/lizmap_plugin/editing.html',
+    Panels.Information: "publish/lizmap_plugin/information.html",
+    Panels.MapOptions: "publish/lizmap_plugin/map_options.html",
+    Panels.Layers: "publish/lizmap_plugin/layers.html",
+    Panels.Basemap: "publish/lizmap_plugin/basemap.html",
+    Panels.AttributeTable: "publish/lizmap_plugin/attribute_table.html",
+    Panels.Editing: "publish/lizmap_plugin/editing.html",
     Panels.Layouts: None,  # Layouts
-    Panels.FormFiltering: 'publish/lizmap_plugin/form_filtering.html',
-    Panels.Dataviz: 'publish/lizmap_plugin/dataviz.html',
-    Panels.FilteredLayers: 'publish/lizmap_plugin/filtered_layers_login.html',
-    Panels.Actions: 'publish/lizmap_plugin/actions.html',
-    Panels.TimeManager: 'publish/lizmap_plugin/time_manager.html',
-    Panels.Atlas: 'publish/lizmap_plugin/atlas.html',
+    Panels.FormFiltering: "publish/lizmap_plugin/form_filtering.html",
+    Panels.Dataviz: "publish/lizmap_plugin/dataviz.html",
+    Panels.FilteredLayers: "publish/lizmap_plugin/filtered_layers_login.html",
+    Panels.Actions: "publish/lizmap_plugin/actions.html",
+    Panels.TimeManager: "publish/lizmap_plugin/time_manager.html",
+    Panels.Atlas: "publish/lizmap_plugin/atlas.html",
     Panels.Panoramax: None,
-    Panels.LocateByLayer: 'publish/lizmap_plugin/locate_by_layer.html',
-    Panels.ToolTip: 'publish/lizmap_plugin/tooltip.html',
+    Panels.LocateByLayer: "publish/lizmap_plugin/locate_by_layer.html",
+    Panels.ToolTip: "publish/lizmap_plugin/tooltip.html",
     Panels.Checks: None,  # Log/checks
     Panels.AutoFix: None,  # Auto-fix
     Panels.Settings: None,  # Settings
     Panels.Upload: None,
     Panels.Training: None,
-    Panels.DxfExport: 'publish/lizmap_plugin/dxf_export.html',
-    Panels.Portfolios: 'publish/lizmap_plugin/portfolio.html',
+    Panels.DxfExport: "publish/lizmap_plugin/dxf_export.html",
+    Panels.Portfolios: "publish/lizmap_plugin/portfolio.html",
 }
 
 
 def pg_service_help() -> QUrl:
-    """ Open the QGIS.org documentation about PG Service. """
+    """Open the QGIS.org documentation about PG Service."""
     # The QGIS documentation is better than the PostgreSQL doc :/
-    return _qgis_help('user_manual/managing_data_source/opening_data.html#postgresql-service-connection-file')
+    return _qgis_help("user_manual/managing_data_source/opening_data.html#postgresql-service-connection-file")
 
 
 def qgis_theme_help() -> QUrl:
-    """ Open the theme help page. """
-    return _qgis_help('user_manual/introduction/general_tools.html#map-themes')
+    """Open the theme help page."""
+    return _qgis_help("user_manual/introduction/general_tools.html#map-themes")
 
 
 def _qgis_help(page: str) -> QUrl:
-    """ Open a QGIS help page. """
-    return QUrl(
-        f"https://docs.qgis.org/latest/{current_locale()}/docs/{page}"
-    )
+    """Open a QGIS help page."""
+    return QUrl(f"https://docs.qgis.org/latest/{current_locale()}/docs/{page}")

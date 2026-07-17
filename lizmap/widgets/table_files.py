@@ -1,6 +1,6 @@
-__copyright__ = 'Copyright 2024, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2024, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 from functools import partial
 from pathlib import Path
@@ -23,15 +23,15 @@ from lizmap.widgets.check_project import Header
 
 
 class Headers:
-    """ List of headers in the table. """
+    """List of headers in the table."""
 
     def __init__(self):
         self.members = []
-        self.name = Header('name', tr('Name'), tr("Name of file"))
-        self.relative_path = Header('path', tr('Relative path'), tr("Relative path"))
-        self.date_time = Header('date_time', tr('Date time'), tr("Date time on the server"))
-        self.size = Header('size', tr('Size'), tr('Size on the server'))
-        self.actions = Header('action', tr('Actions'), tr('Actions on the layer'))
+        self.name = Header("name", tr("Name"), tr("Name of file"))
+        self.relative_path = Header("path", tr("Relative path"), tr("Relative path"))
+        self.date_time = Header("date_time", tr("Date time"), tr("Date time on the server"))
+        self.size = Header("size", tr("Size"), tr("Size on the server"))
+        self.actions = Header("action", tr("Actions"), tr("Actions on the layer"))
         self.members.append(self.name)
         self.members.append(self.relative_path)
         self.members.append(self.date_time)
@@ -40,17 +40,16 @@ class Headers:
 
 
 class TableFiles(QTableWidget):
-
-    """ Subclassing of QTableWidget in the plugin. """
+    """Subclassing of QTableWidget in the plugin."""
 
     # noinspection PyUnresolvedReferences
     ABSOLUTE_PATH = Qt.ItemDataRole.UserRole
     RELATIVE_PATH = ABSOLUTE_PATH + 1
 
-    val_Changed = pyqtSignal(int, str, name='valChanged')
+    val_Changed = pyqtSignal(int, str, name="valChanged")
 
     def setup(self):
-        """ Setting up parameters. """
+        """Setting up parameters."""
         # Do not use the constructor __init__, it's not working. Maybe because of UI files ?
 
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -70,7 +69,7 @@ class TableFiles(QTableWidget):
             self.setHorizontalHeaderItem(i, column)
 
     def add_file(self, file_path: Path, icon: QIcon):
-        """ Add a file in the table. """
+        """Add a file in the table."""
         row = self.rowCount()
         self.setRowCount(row + 1)
 
@@ -106,9 +105,9 @@ class TableFiles(QTableWidget):
 
         # Actions
         remove_button = QToolButton()
-        remove_button.setText('')
+        remove_button.setText("")
         remove_button.setIcon(QIcon(":/images/themes/default/mActionDeleteSelected.svg"))
-        remove_button.setToolTip(tr('Remove the remote file'))
+        remove_button.setToolTip(tr("Remove the remote file"))
         remove_button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
         remove_button.clicked.connect(partial(self.button_remove_layer, row))
 
@@ -126,4 +125,4 @@ class TableFiles(QTableWidget):
         self.setItem(row, 3, cell)
 
     def button_remove_layer(self, index: int):
-        self.val_Changed.emit(index, 'using-slider')
+        self.val_Changed.emit(index, "using-slider")

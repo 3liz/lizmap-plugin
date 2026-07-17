@@ -1,4 +1,5 @@
 """Layer tree panel configuration"""
+
 from __future__ import annotations
 
 import contextlib
@@ -297,9 +298,11 @@ class LayerTreeManager(LizmapProtocol):
                 # override only for ui widgets
                 if item.get("widget"):
                     if key in json_layers[json_key]:
-                        if key == "legend_image_option" \
-                            and "noLegendImage" in json_layers[json_key] \
-                            and myDic[item_key].get("legend_image_option"):
+                        if (
+                            key == "legend_image_option"
+                            and "noLegendImage" in json_layers[json_key]
+                            and myDic[item_key].get("legend_image_option")
+                        ):
                             # The key is already set before with noLegendImage
                             logger.info(
                                 "Skip key legend_image_option because it has been set "
@@ -494,8 +497,11 @@ class LayerTreeManager(LizmapProtocol):
                             else:
                                 is_enabled = selected_item[key]
                             self.layer_options_list[children]["widget"].setEnabled(is_enabled)
-                            if not is_enabled and self.layer_options_list[children]["wType"] == "checkbox" \
-                                and self.layer_options_list[children]["widget"].isChecked():
+                            if (
+                                not is_enabled
+                                and self.layer_options_list[children]["wType"] == "checkbox"
+                                and self.layer_options_list[children]["widget"].isChecked()
+                            ):
                                 self.layer_options_list[children]["widget"].setChecked(False)
 
                     elif val["wType"] == "list":
@@ -799,8 +805,11 @@ class LayerTreeManager(LizmapProtocol):
                 else:
                     is_enabled = checked
                 self.layer_options_list[children]["widget"].setEnabled(is_enabled)
-                if not is_enabled and self.layer_options_list[children]["wType"] == "checkbox" \
-                    and self.layer_options_list[children]["widget"].isChecked():
+                if (
+                    not is_enabled
+                    and self.layer_options_list[children]["wType"] == "checkbox"
+                    and self.layer_options_list[children]["widget"].isChecked()
+                ):
                     self.layer_options_list[children]["widget"].setChecked(False)
         elif layer_option["wType"] == "list":
             # New way with data, label, tooltip and icon

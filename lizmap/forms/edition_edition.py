@@ -24,11 +24,10 @@ if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
 
 
-CLASS = load_ui('ui_form_edition.ui')
+CLASS = load_ui("ui_form_edition.ui")
 
 
 class EditionLayerDialog(BaseEditionDialog, CLASS):
-
     def __init__(
         self,
         parent: LizmapDialog | None = None,
@@ -38,45 +37,43 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
         self.config = EditionDefinitions()
-        self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('createFeature', self.create_feature)
-        self.config.add_layer_widget('allow_without_geom', self.without_geom)
-        self.config.add_layer_widget('modifyAttribute', self.edit_attributes)
-        self.config.add_layer_widget('modifyGeometry', self.edit_geometry)
-        self.config.add_layer_widget('deleteFeature', self.delete_feature)
-        self.config.add_layer_widget('acl', self.allowed_groups)
-        self.config.add_layer_widget('snap_layers', self.layers)
-        self.config.add_layer_widget('snap_vertices', self.snap_node)
-        self.config.add_layer_widget('snap_segments', self.snap_segments)
-        self.config.add_layer_widget('snap_intersections', self.snap_intersection)
-        self.config.add_layer_widget('snap_vertices_tolerance', self.vertices_tolerance)
-        self.config.add_layer_widget('snap_segments_tolerance', self.segments_tolerance)
-        self.config.add_layer_widget('snap_intersections_tolerance', self.intersections_tolerance)
-        self.config.add_layer_widget('snap_on_start', self.snap_on_start)
-        self.config.add_layer_widget('provider', self.provider)
+        self.config.add_layer_widget("layerId", self.layer)
+        self.config.add_layer_widget("createFeature", self.create_feature)
+        self.config.add_layer_widget("allow_without_geom", self.without_geom)
+        self.config.add_layer_widget("modifyAttribute", self.edit_attributes)
+        self.config.add_layer_widget("modifyGeometry", self.edit_geometry)
+        self.config.add_layer_widget("deleteFeature", self.delete_feature)
+        self.config.add_layer_widget("acl", self.allowed_groups)
+        self.config.add_layer_widget("snap_layers", self.layers)
+        self.config.add_layer_widget("snap_vertices", self.snap_node)
+        self.config.add_layer_widget("snap_segments", self.snap_segments)
+        self.config.add_layer_widget("snap_intersections", self.snap_intersection)
+        self.config.add_layer_widget("snap_vertices_tolerance", self.vertices_tolerance)
+        self.config.add_layer_widget("snap_segments_tolerance", self.segments_tolerance)
+        self.config.add_layer_widget("snap_intersections_tolerance", self.intersections_tolerance)
+        self.config.add_layer_widget("snap_on_start", self.snap_on_start)
+        self.config.add_layer_widget("provider", self.provider)
 
-        self.config.add_layer_label('layerId', self.label_layer)
-        self.config.add_layer_label('createFeature', self.label_create)
-        self.config.add_layer_label('allow_without_geom', self.label_without_geom)
-        self.config.add_layer_label('modifyAttribute', self.label_edit_attributes)
-        self.config.add_layer_label('modifyGeometry', self.label_edit_geometry)
-        self.config.add_layer_label('deleteFeature', self.label_delete)
-        self.config.add_layer_label('acl', self.label_allowed_groups)
-        self.config.add_layer_label('snap_layers', self.label_layers_snapping)
-        self.config.add_layer_label('snap_on_start', self.label_snap_on_start)
-        self.config.add_layer_label('provider', self.label_provider)
+        self.config.add_layer_label("layerId", self.label_layer)
+        self.config.add_layer_label("createFeature", self.label_create)
+        self.config.add_layer_label("allow_without_geom", self.label_without_geom)
+        self.config.add_layer_label("modifyAttribute", self.label_edit_attributes)
+        self.config.add_layer_label("modifyGeometry", self.label_edit_geometry)
+        self.config.add_layer_label("deleteFeature", self.label_delete)
+        self.config.add_layer_label("acl", self.label_allowed_groups)
+        self.config.add_layer_label("snap_layers", self.label_layers_snapping)
+        self.config.add_layer_label("snap_on_start", self.label_snap_on_start)
+        self.config.add_layer_label("provider", self.label_provider)
 
         self.layer.layerChanged.connect(self.layer_changed)
         self.layer.layerChanged.connect(self.check_layer_wfs)
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
         providers = QgsProviderRegistry.instance().providerList()
-        providers.remove('postgres')
+        providers.remove("postgres")
         self.layer.setExcludedProviders(providers)
         self.layers.set_project(QgsProject.instance())
 
-        self.lwc_versions[LwcVersions.Lizmap_3_4] = [
-            self.group_box_snapping
-        ]
+        self.lwc_versions[LwcVersions.Lizmap_3_4] = [self.group_box_snapping]
         self.lwc_versions[LwcVersions.Lizmap_3_6] = [
             self.button_wizard_group,
         ]
@@ -86,8 +83,8 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         ]
 
         # Wizard ACL group
-        icon = QIcon(resources_path('icons', 'user_group.svg'))
-        self.button_wizard_group.setText('')
+        icon = QIcon(resources_path("icons", "user_group.svg"))
+        self.button_wizard_group.setText("")
         self.button_wizard_group.setIcon(icon)
         self.button_wizard_group.clicked.connect(self.open_wizard_group)
         self.button_wizard_group.setToolTip(tr("Open the group wizard"))
@@ -100,10 +97,10 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         self.layer_changed()
 
     def check_layer_wfs(self):
-        """ When the layer has changed in the combobox, check if the layer is published as WFS. """
+        """When the layer has changed in the combobox, check if the layer is published as WFS."""
         layer = self.layer.currentLayer()
         if not layer:
-            self.show_error(tr('A layer is mandatory.'))
+            self.show_error(tr("A layer is mandatory."))
             return
 
         not_in_wfs = self.is_layer_in_wfs(layer)
@@ -135,7 +132,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
             self.group_box_snapping.setEnabled(False)
 
     def open_wizard_group(self):
-        """ When the user clicks on the group wizard. """
+        """When the user clicks on the group wizard."""
         layer = self.layer.currentLayer()
         if not layer:
             return
@@ -146,7 +143,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
     def validate(self) -> str | None:
         layer = self.layer.currentLayer()
         if not layer:
-            return tr('A layer is mandatory.')
+            return tr("A layer is mandatory.")
 
         upstream = super().validate()
         if upstream:
@@ -161,7 +158,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         modify_geometry = self.edit_geometry.isChecked()
         delete_feature = self.delete_feature.isChecked()
         if not create_feature and not modify_attribute and not modify_geometry and not delete_feature:
-            return tr('At least one action is mandatory.')
+            return tr("At least one action is mandatory.")
 
         # Check Z or M values which will be lost when editing
         geometry_type = layer.wkbType()
@@ -172,17 +169,19 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         if (has_z_values or has_m_values) and modify_geometry:
             QMessageBox.warning(
                 self,
-                tr('Editing Z/M Values'),
-                tr('Be careful, editing this layer with Lizmap will set the Z and M to 0.'),
+                tr("Editing Z/M Values"),
+                tr("Be careful, editing this layer with Lizmap will set the Z and M to 0."),
             )
 
-        has_snap = self.snap_node.isChecked() or self.snap_segments.isChecked() or self.snap_intersection.isChecked()
+        has_snap = (
+            self.snap_node.isChecked() or self.snap_segments.isChecked() or self.snap_intersection.isChecked()
+        )
         layers = self.layers.selection()
         if len(layers) == 0 and has_snap:
-            return tr('One snapping checkbox is checked, so at least one layer is mandatory in the list.')
+            return tr("One snapping checkbox is checked, so at least one layer is mandatory in the list.")
 
         if len(layers) > 0 and not has_snap:
-            return tr('One layer is selected in the list, so at least one snapping mode is mandatory.')
+            return tr("One layer is selected in the list, so at least one snapping mode is mandatory.")
 
         missing_layers = []
         for layer in layers:
@@ -192,6 +191,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
             missing_layers = [QgsProject.instance().mapLayer(layer_id).name() for layer_id in missing_layers]
             return tr(
                 'The layer "{}" for the snapping must be checked in the "WFS Capabilities"\n'
-                ' option of the QGIS Server tab in the "Project Properties" dialog.').format(', '.join(missing_layers))
+                ' option of the QGIS Server tab in the "Project Properties" dialog.'
+            ).format(", ".join(missing_layers))
 
         return None

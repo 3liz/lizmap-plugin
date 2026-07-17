@@ -1,4 +1,5 @@
 """Tools to work with resource files."""
+
 from __future__ import annotations
 
 import configparser
@@ -7,6 +8,8 @@ import functools
 from importlib import resources
 from typing import (
     TYPE_CHECKING,
+    Optional,
+    TypeVar,
     cast,
 )
 
@@ -82,3 +85,21 @@ def load_ui(*args) -> type:
 
     ui_class, _ = uic.loadUiType(resources_path("ui", *args))
     return ui_class
+
+
+#
+# Used for type reduction for value returned by QGIS
+#
+# When using typed informations from pyQGIS, function/methods returning
+# pointer in C++ use return type as  `T|None` in Python.
+#
+# This leads to a considerable amount of useless errors from Mypy and undefined
+# behavior if the return values is indeed None.
+#
+T = TypeVar("T")
+
+
+def _N(value: Optional[T]) -> T:
+    if value is None:
+        raise AssertionError("Unexpected None value")
+    return value

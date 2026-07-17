@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-__copyright__ = 'Copyright 2023, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2023, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 import re
 
@@ -26,23 +26,23 @@ right_click_step = tr(
 
 
 def is_lizmap_cloud(metadata: dict) -> bool:
-    """ Return True if the metadata is coming from Lizmap Cloud. """
+    """Return True if the metadata is coming from Lizmap Cloud."""
     if not metadata:
         # Mainly in tests?
         return False
 
-    return metadata.get('hosting', '') == CLOUD_DOMAIN
+    return metadata.get("hosting", "") == CLOUD_DOMAIN
 
 
 def webdav_properties(metadata: dict) -> dict:
-    """ Check if the server has some WebDAV capabilities. """
+    """Check if the server has some WebDAV capabilities."""
     if not metadata:
         return {}
-    return metadata.get('webdav', {})
+    return metadata.get("webdav", {})
 
 
 def webdav_url(metadata: dict) -> str | None:
-    """ Return the WebDAV URL according to metadata. """
+    """Return the WebDAV URL according to metadata."""
     webdav = webdav_properties(metadata)
     if not webdav:
         return None
@@ -50,7 +50,7 @@ def webdav_url(metadata: dict) -> str | None:
 
 
 def check_project_ssl_postgis(project: QgsProject) -> tuple[list[SourceLayer], str]:
-    """ Check if the project is not using SSL on some PostGIS layers which are on a Lizmap Cloud database. """
+    """Check if the project is not using SSL on some PostGIS layers which are on a Lizmap Cloud database."""
     layer_error: list[SourceLayer] = []
     for layer in project.mapLayers().values():
         if not is_vector_pg(layer):
@@ -73,14 +73,16 @@ def check_project_ssl_postgis(project: QgsProject) -> tuple[list[SourceLayer], s
 
     more = edit_connection_title + " "
     more += edit_connection + " "
-    more += '<br>'
+    more += "<br>"
     more += right_click_step + " "
-    more += tr("This right-click step in the legend is not required if use the button to fix the project.") + " "
+    more += (
+        tr("This right-click step in the legend is not required if use the button to fix the project.") + " "
+    )
     return layer_error, more
 
 
 def fix_ssl(project: QgsProject, force: bool = True) -> int:
-    """ Fix PostgreSQL layers about SSL. """
+    """Fix PostgreSQL layers about SSL."""
     count = 0
     for layer in project.mapLayers().values():
         if not is_vector_pg(layer):
@@ -104,18 +106,17 @@ def fix_ssl(project: QgsProject, force: bool = True) -> int:
 
 
 def _update_ssl(
-        uri: QgsDataSourceUri,
-        mode: QgsDataSourceUri.SslMode = QgsDataSourceUri.SslMode.SslPrefer,
-        force: bool = False,
-        ) -> QgsDataSourceUri:
-    """ Update SSL connection for a given URI. """
+    uri: QgsDataSourceUri,
+    mode: QgsDataSourceUri.SslMode = QgsDataSourceUri.SslMode.SslPrefer,
+    force: bool = False,
+) -> QgsDataSourceUri:
+    """Update SSL connection for a given URI."""
     current_ssl = QgsDataSourceUri.encodeSslMode(uri.sslMode())
     replaced = re.sub(
-        rf"sslmode=({current_ssl})",
-        f"sslmode={QgsDataSourceUri.encodeSslMode(mode)}",
-        uri.uri(True))
+        rf"sslmode=({current_ssl})", f"sslmode={QgsDataSourceUri.encodeSslMode(mode)}", uri.uri(True)
+    )
 
     if force and "sslmode" not in replaced:
-        replaced = f'sslmode={QgsDataSourceUri.encodeSslMode(mode)} {replaced}'
+        replaced = f"sslmode={QgsDataSourceUri.encodeSslMode(mode)} {replaced}"
 
     return QgsDataSourceUri(replaced)

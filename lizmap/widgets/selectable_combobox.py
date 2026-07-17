@@ -12,7 +12,6 @@ __revision__ = "$Format:%H$"
 
 
 class CheckableComboBox:
-
     """Basic QCombobox with selectable items."""
 
     def __init__(self, combobox, select_all=None):

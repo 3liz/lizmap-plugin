@@ -1,5 +1,3 @@
-
-
 import psycopg
 import pytest
 
@@ -80,11 +78,7 @@ class TestSql(TestCase):
         )
         return uri
 
-    def _create_views(
-        self,
-        table_name: str,
-        cursor: psycopg.Cursor,
-        connection: psycopg.Connection):
+    def _create_views(self, table_name: str, cursor: psycopg.Cursor, connection: psycopg.Connection):
         """Helper to create views."""
         sql = (
             f"CREATE VIEW {self.schema}.view_{table_name} AS SELECT * FROM {self.schema}.{table_name};"

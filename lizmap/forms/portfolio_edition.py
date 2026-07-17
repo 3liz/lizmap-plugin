@@ -28,11 +28,10 @@ if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
 
 
-CLASS = load_ui('ui_form_portfolio.ui')
+CLASS = load_ui("ui_form_portfolio.ui")
 
 
 class PortfolioEditionDialog(BaseEditionDialog, CLASS):
-
     def __init__(
         self,
         parent: LizmapDialog | None = None,
@@ -44,31 +43,31 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
         self.parent = parent
         self._drawing_geometry = None
         self.config = PortfolioDefinitions()
-        self.config.add_layer_widget('title', self.title)
-        self.config.add_layer_widget('description', self.text_description)
-        self.config.add_layer_widget('drawing_geometry', self.drawing_geometry)
-        self.config.add_layer_widget('folios', self.folios)
+        self.config.add_layer_widget("title", self.title)
+        self.config.add_layer_widget("description", self.text_description)
+        self.config.add_layer_widget("drawing_geometry", self.drawing_geometry)
+        self.config.add_layer_widget("folios", self.folios)
 
-        self.config.add_layer_label('title', self.label_title)
-        self.config.add_layer_label('description', self.label_description)
-        self.config.add_layer_label('drawing_geometry', self.label_drawing_geometry)
-        self.config.add_layer_label('folios', self.label_folios)
+        self.config.add_layer_label("title", self.label_title)
+        self.config.add_layer_label("description", self.label_description)
+        self.config.add_layer_label("drawing_geometry", self.label_drawing_geometry)
+        self.config.add_layer_label("folios", self.label_folios)
 
         # noinspection PyCallByClass,PyArgumentList
-        self.add_folio.setText('')
-        self.add_folio.setIcon(QIcon(QgsApplication.iconPath('symbologyAdd.svg')))
-        self.add_folio.setToolTip(tr('Add a new folio to the portfolio.'))
-        self.remove_folio.setText('')
-        self.remove_folio.setIcon(QIcon(QgsApplication.iconPath('symbologyRemove.svg')))
-        self.remove_folio.setToolTip(tr('Remove the selected folio from the portfolio.'))
+        self.add_folio.setText("")
+        self.add_folio.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
+        self.add_folio.setToolTip(tr("Add a new folio to the portfolio."))
+        self.remove_folio.setText("")
+        self.remove_folio.setIcon(QIcon(QgsApplication.iconPath("symbologyRemove.svg")))
+        self.remove_folio.setToolTip(tr("Remove the selected folio from the portfolio."))
 
         # Set folios table
-        items = self.config.layer_config['folios']['items']
+        items = self.config.layer_config["folios"]["items"]
         self.folios.setColumnCount(len(items))
         for i, item in enumerate(items):
             sub_definition = self.config.layer_config[item]
-            column = QTableWidgetItem(sub_definition['header'])
-            column.setToolTip(sub_definition['tooltip'])
+            column = QTableWidgetItem(sub_definition["header"])
+            column.setToolTip(sub_definition["tooltip"])
             self.folios.setHorizontalHeaderItem(i, column)
         header = self.folios.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
@@ -91,25 +90,25 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
         collection = []
         rows = self.folios.rowCount()
 
-        collection_definition = self.config.layer_config['folios']
+        collection_definition = self.config.layer_config["folios"]
         for row in range(rows):
             folio_data = {}
-            for i, sub_key in enumerate(collection_definition['items']):
+            for i, sub_key in enumerate(collection_definition["items"]):
                 # Get the item
                 item = self.folios.item(row, i)
 
                 if item is None:
                     if saved:
-                        raise CellError(f'Cell is not initialized ({row}, {i})')
+                        raise CellError(f"Cell is not initialized ({row}, {i})")
                     continue
 
                 cell = item.data(Qt.ItemDataRole.UserRole)
-                if cell is None or cell == '':
+                if cell is None or cell == "":
                     # Safeguard
                     # Do not put if not item, it might be False or 0
-                    if saved and sub_key in ['layout', 'theme', 'zoom_method']:
+                    if saved and sub_key in ["layout", "theme", "zoom_method"]:
                         # raise exception for required cell
-                        raise CellError(f'Cell has no data ({row}, {i})')
+                        raise CellError(f"Cell has no data ({row}, {i})")
                     continue
 
                 folio_data[sub_key] = cell
@@ -147,28 +146,28 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
 
     def _edit_folio_row(self, row, data):
         """Internal function to edit a row."""
-        for i, key in enumerate(self.config.layer_config['folios']['items']):
+        for i, key in enumerate(self.config.layer_config["folios"]["items"]):
             cell = QTableWidgetItem()
 
             value = data.get(key)
             if not value and value != 0:
-                cell.setText('')
-                cell.setData(Qt.ItemDataRole.UserRole, '')
+                cell.setText("")
+                cell.setData(Qt.ItemDataRole.UserRole, "")
                 self.folios.setItem(row, i, cell)
                 continue
 
-            input_type = self.config.layer_config[key]['type']
+            input_type = self.config.layer_config[key]["type"]
             if input_type == InputType.List:
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
-                items = self.config.layer_config[key].get('items')
+                items = self.config.layer_config[key].get("items")
                 if items:
                     # Display label from Python enum
                     for item_enum in items:
-                        if item_enum.value['data'] != value:
+                        if item_enum.value["data"] != value:
                             continue
-                        cell.setText(item_enum.value['label'])
+                        cell.setText(item_enum.value["label"])
                         break
                 else:
                     # Some settings are a list, but not using a Python enum yet
@@ -179,10 +178,10 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
                 # Format scale value
-                cell.setText(f'1:{value}')
+                cell.setText(f"1:{value}")
 
             elif input_type == InputType.SpinBox:
-                cell.setText(f'{value}')
+                cell.setText(f"{value}")
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
 
@@ -207,23 +206,24 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
         if current_geometry == self._drawing_geometry:
             return
 
-        if (current_geometry == GeometryType.Point.value['data']
-            or self._drawing_geometry == GeometryType.Point.value['data']) \
-            and self.folios.rowCount() > 0:
+        if (
+            current_geometry == GeometryType.Point.value["data"]
+            or self._drawing_geometry == GeometryType.Point.value["data"]
+        ) and self.folios.rowCount() > 0:
             box = QMessageBox(self.parent)
             box.setIcon(QMessageBox.Icon.Question)
-            box.setWindowIcon(QIcon(resources_path('icons', 'icon.png')))
+            box.setWindowIcon(QIcon(resources_path("icons", "icon.png")))
             box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             box.setDefaultButton(QMessageBox.StandardButton.Yes)
-            box.setWindowTitle(tr('Change the geometry'))
-            box.setText(tr('Are you sure to change the geometry?\nIt will clear the folios table.'))
+            box.setWindowTitle(tr("Change the geometry"))
+            box.setText(tr("Are you sure to change the geometry?\nIt will clear the folios table."))
 
             result = box.exec()
             if result == QMessageBox.StandardButton.No:
                 for item_type in GeometryType:
-                    if item_type.value['data'] != self._drawing_geometry:
+                    if item_type.value["data"] != self._drawing_geometry:
                         continue
-                    self.drawing_geometry.setCurrentText(item_type.value['label'])
+                    self.drawing_geometry.setCurrentText(item_type.value["label"])
                     break
                 return
 
@@ -239,9 +239,9 @@ class PortfolioEditionDialog(BaseEditionDialog, CLASS):
             return upstream
 
         if not self.title.text():
-            return tr('The title is mandatory')
+            return tr("The title is mandatory")
 
         if self.folios.rowCount() == 0:
-            return tr('At least one folio has to be configured')
+            return tr("At least one folio has to be configured")
 
         return None

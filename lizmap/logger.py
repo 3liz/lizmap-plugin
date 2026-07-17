@@ -2,7 +2,7 @@ import functools
 import logging
 import time
 
-LOGGER = logging.getLogger('Lizmap')
+LOGGER = logging.getLogger("Lizmap")
 DEBUG = True
 
 # Re-export
@@ -15,7 +15,8 @@ critical = LOGGER.critical
 
 
 def log_function(func):
-    """ Decorator to log function. """
+    """Decorator to log function."""
+
     @functools.wraps(func)
     def log_function_core(*args, **kwargs):
         LOGGER.info(f"Calling function {func.__name__}")
@@ -27,7 +28,7 @@ def log_function(func):
 
 
 def profiling(func):
-    """ Decorator to make some profiling. """
+    """Decorator to make some profiling."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -41,7 +42,7 @@ def profiling(func):
 
 
 def log_output_value(func):
-    """ Decorator to log the output of the function. """
+    """Decorator to log the output of the function."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

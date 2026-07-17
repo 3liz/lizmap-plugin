@@ -71,7 +71,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertEqual("500000", lizmap.dlg.maximum_scale.text())
         self.assertEqual("5000, 250000, 500000", lizmap.dlg.list_map_scales.text())
 
-        self.assertEqual("disabled", lizmap.layerList.get("legend_disabled_layer_id").get("legend_image_option"))
+        self.assertEqual(
+            "disabled", lizmap.layerList.get("legend_disabled_layer_id").get("legend_image_option")
+        )
 
         self.assertEqual(
             "expand_at_startup",
@@ -79,7 +81,8 @@ class TestUiLizmapDialog(TestCase):
         )
 
         self.assertEqual(
-            "hide_at_startup", lizmap.layerList.get("legend_hidden_startup_layer_id").get("legend_image_option")
+            "hide_at_startup",
+            lizmap.layerList.get("legend_hidden_startup_layer_id").get("legend_image_option"),
         )
 
         # For LWC 3.6

@@ -1,4 +1,5 @@
 """Dialog for editing a trace in the dataviz window."""
+
 from collections import OrderedDict
 
 from qgis.PyQt.QtGui import QColor
@@ -9,16 +10,15 @@ from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
-__copyright__ = 'Copyright 2020, 3Liz'
-__license__ = 'GPL version 3'
-__email__ = 'info@3liz.org'
+__copyright__ = "Copyright 2020, 3Liz"
+__license__ = "GPL version 3"
+__email__ = "info@3liz.org"
 
 
-CLASS = load_ui('ui_trace.ui')
+CLASS = load_ui("ui_trace.ui")
 
 
 class TraceDatavizEditionDialog(QDialog, CLASS):
-
     def __init__(self, parent, layer, graph, uniques):
         super().__init__(parent)
         self.config = DatavizDefinitions()
@@ -26,20 +26,20 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self._layer = layer
         self.uniques = uniques
         self.setupUi(self)
-        self.setWindowTitle(tr('Dataviz Trace'))
+        self.setWindowTitle(tr("Dataviz Trace"))
 
         self.y_field.setLayer(self._layer)
         self.color_field.setLayer(self._layer)
         self.z_field.setLayer(self._layer)
 
-        self.config.add_layer_widget('y_field', self.y_field)
-        self.config.add_layer_widget('colorfield', self.color_field)
-        self.config.add_layer_widget('color', self.color)
-        self.config.add_layer_widget('z_field', self.z_field)
+        self.config.add_layer_widget("y_field", self.y_field)
+        self.config.add_layer_widget("colorfield", self.color_field)
+        self.config.add_layer_widget("color", self.color)
+        self.config.add_layer_widget("z_field", self.z_field)
 
-        self.config.add_layer_label('y_field', self.label_y_field)
-        self.config.add_layer_label('colorfield', self.label_color)
-        self.config.add_layer_label('z_field', self.label_z_field)
+        self.config.add_layer_label("y_field", self.label_y_field)
+        self.config.add_layer_label("colorfield", self.label_color)
+        self.config.add_layer_label("z_field", self.label_z_field)
 
         self.y_field.setAllowEmptyFieldName(False)
         self.z_field.setAllowEmptyFieldName(True)
@@ -49,8 +49,8 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.button_box.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(self.accept)
         self.error.setVisible(False)
 
-        color_definition = self.config.layer_config['color']
-        self.color.setDefaultColor(QColor(color_definition['default']))
+        color_definition = self.config.layer_config["color"]
+        self.color.setDefaultColor(QColor(color_definition["default"]))
         self.color.setToDefaultColor()
 
         self.color_field.setAllowEmptyFieldName(True)
@@ -76,7 +76,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
 
     def check_y_color_field(self):
         """Enable or disable the color input."""
-        if self.color_field.currentField() == '':
+        if self.color_field.currentField() == "":
             self.color.setToDefaultColor()
             self.color.setEnabled(True)
         else:
@@ -85,10 +85,10 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
 
     def validate(self):
         y_field = self.y_field.currentField()
-        if y_field == '':
-            return tr('Y field is required.')
+        if y_field == "":
+            return tr("Y field is required.")
         if y_field in self.uniques:
-            return tr('This Y field is already existing.')
+            return tr("This Y field is already existing.")
         return None
 
     def accept(self):
@@ -103,35 +103,35 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         """Save the form into a dictionary."""
         data = OrderedDict()
 
-        for key in self.config.layer_config['traces']['items']:
+        for key in self.config.layer_config["traces"]["items"]:
             definition = self.config.layer_config[key]
-            if definition['type'] == InputType.Field:
-                value = definition['widget'].currentField()
-            elif definition['type'] == InputType.Color:
-                widget = definition['widget']
+            if definition["type"] == InputType.Field:
+                value = definition["widget"].currentField()
+            elif definition["type"] == InputType.Color:
+                widget = definition["widget"]
                 if widget.isNull():
-                    value = ''
+                    value = ""
                 else:
                     value = widget.color().name()
             else:
-                raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")
+                raise InputTypeError(f'InputType "{definition["type"]}" not implemented')
 
             data[key] = value
         return data
 
     def load_form(self, data: OrderedDict) -> None:
         """Load a dictionary into the form."""
-        for key in self.config.layer_config['traces']['items']:
+        for key in self.config.layer_config["traces"]["items"]:
             definition = self.config.layer_config[key]
             value = data.get(key)
-            if definition['type'] == InputType.Field:
-                definition['widget'].setField(value)
-            elif definition['type'] == InputType.Color:
+            if definition["type"] == InputType.Field:
+                definition["widget"].setField(value)
+            elif definition["type"] == InputType.Color:
                 color = QColor(value)
                 if color.isValid():
-                    definition['widget'].setDefaultColor(color)
-                    definition['widget'].setColor(color)
+                    definition["widget"].setDefaultColor(color)
+                    definition["widget"].setColor(color)
                 else:
-                    definition['widget'].setToNull()
+                    definition["widget"].setToNull()
             else:
-                raise InputTypeError(f"InputType \"{definition['type']}\" not implemented")
+                raise InputTypeError(f'InputType "{definition["type"]}" not implemented')

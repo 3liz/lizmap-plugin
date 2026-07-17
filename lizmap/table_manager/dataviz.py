@@ -1,4 +1,5 @@
-""" Table manager for dataviz. """
+"""Table manager for dataviz."""
+
 from __future__ import annotations
 
 import json
@@ -44,15 +45,15 @@ LOGGER = logging.getLogger(plugin_name())
 
 
 class TableManagerDataviz(TableManager):
-
-    """ Table manager for dataviz.
+    """Table manager for dataviz.
 
     Note, this subclass is coming way later than the actual implementation of TableManager.
     There are a lot of lines of code in TableManager related to only the dataviz.
     """
 
     def __init__(
-        self, parent: LizmapDialog,
+        self,
+        parent: LizmapDialog,
         definitions: BaseDefinitions,
         edition: QDialog | None,
         table: QWidget,
@@ -60,7 +61,9 @@ class TableManagerDataviz(TableManager):
         up_button: QAbstractButton,
         down_button: QAbstractButton,
     ):
-        TableManager.__init__(self, parent, definitions, edition, table, None, edit_button, up_button, down_button)
+        TableManager.__init__(
+            self, parent, definitions, edition, table, None, edit_button, up_button, down_button
+        )
 
         label = tr(
             "This plot is a preview, using the <b>data</b> and the <b>project</b> currently stored "
@@ -73,31 +76,36 @@ class TableManagerDataviz(TableManager):
         self.parent.dataviz_feature_picker.setShowBrowserButtons(True)
         self.parent.dataviz_feature_picker.featureChanged.connect(self.preview_dataviz_dialog)
 
-        self.parent.enable_dataviz_preview.setText('')
+        self.parent.enable_dataviz_preview.setText("")
         self.parent.enable_dataviz_preview.setCheckable(True)
         self.parent.enable_dataviz_preview.setChecked(True)
         self.toggle_preview()
         self.parent.enable_dataviz_preview.clicked.connect(self.toggle_preview)
 
     def toggle_preview(self):
-        """ When the toggle preview button is pressed. """
+        """When the toggle preview button is pressed."""
         if self.parent.enable_dataviz_preview.isChecked():
-            self.parent.enable_dataviz_preview.setIcon(QIcon(":images/themes/default/mActionShowAllLayers.svg"))
-            self.parent.enable_dataviz_preview.setToolTip(tr(
-                "The preview of plots is currently activated. Click on a plot to have its preview."))
+            self.parent.enable_dataviz_preview.setIcon(
+                QIcon(":images/themes/default/mActionShowAllLayers.svg")
+            )
+            self.parent.enable_dataviz_preview.setToolTip(
+                tr("The preview of plots is currently activated. Click on a plot to have its preview.")
+            )
         else:
-            self.parent.enable_dataviz_preview.setIcon(QIcon(":images/themes/default/mActionHideAllLayers.svg"))
+            self.parent.enable_dataviz_preview.setIcon(
+                QIcon(":images/themes/default/mActionHideAllLayers.svg")
+            )
             self.parent.enable_dataviz_preview.setToolTip(tr("The preview of plots is currently disabled."))
         self.preview_dataviz_dialog()
 
     def display_error(self, error_text: str):
-        """ Display an error message and change the tab. """
+        """Display an error message and change the tab."""
         self.parent.dataviz_error_message.setText(error_text)
         self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.error_content)
         QCoreApplication.processEvents()
 
     def preview_dataviz_dialog(self):
-        """ Open a new dialog with a preview of the dataviz. """
+        """Open a new dialog with a preview of the dataviz."""
         if isinstance(self.parent.dataviz_viewer, QLabel):
             # QtWebkit not available
             self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
@@ -110,7 +118,7 @@ class TableManagerDataviz(TableManager):
 
         self.parent.dataviz_feature_picker.setVisible(False)
         # Not an error, just a message...
-        self.display_error(tr('Loading preview' + '…'))
+        self.display_error(tr("Loading preview" + "…"))
 
         # Try to display a GIF instead of the text
         # html_content = "<body><center><img src=\"{}\"></center><body>".format(resources_path('icons/loading.gif'))
@@ -135,21 +143,24 @@ class TableManagerDataviz(TableManager):
             return
 
         if not self.parent.enable_dataviz_preview.isChecked():
-            self.display_error(tr('Dataviz preview is disabled.'))
+            self.display_error(tr("Dataviz preview is disabled."))
             return
 
         data = self.to_json()
         row = str(selection[0].row())
         if row not in data:
-            self.display_error(tr(
-                'The selected plot was not fully loaded in the Lizmap plugin. '
-                'It\'s not possible to have a preview for this plot.'))
+            self.display_error(
+                tr(
+                    "The selected plot was not fully loaded in the Lizmap plugin. "
+                    "It's not possible to have a preview for this plot."
+                )
+            )
             return
 
         plot_config = data[row]
 
-        if plot_config['type'] == GraphType.HtmlTemplate.value['data']:
-            self.display_error(tr('It\'s not possible to have a preview for an HTML plot.'))
+        if plot_config["type"] == GraphType.HtmlTemplate.value["data"]:
+            self.display_error(tr("It's not possible to have a preview for an HTML plot."))
             return
 
         server = self.parent.current_server_info(ServerComboData.ServerUrl.value)
@@ -160,7 +171,7 @@ class TableManagerDataviz(TableManager):
         repository = self.parent.repository_combo.currentData()
         if not repository:
             # Shouldn't happen, but maybe we have changed the server somehow ?
-            self.display_error(tr('No repository selected.'))
+            self.display_error(tr("No repository selected."))
             return
 
         repository_label = self.parent.repository_combo.currentText()
@@ -171,11 +182,13 @@ class TableManagerDataviz(TableManager):
             "project": project,
             "plot_config": plot_config,
         }
-        if as_boolean(plot_config.get('popup_display_child_plot')):
-            self.parent.dataviz_feature_picker.setAllowNull(not as_boolean(plot_config.get('only_show_child')))
-            expression_filter = self.dataviz_expression_filter(plot_config['layerId'])
+        if as_boolean(plot_config.get("popup_display_child_plot")):
+            self.parent.dataviz_feature_picker.setAllowNull(
+                not as_boolean(plot_config.get("only_show_child"))
+            )
+            expression_filter = self.dataviz_expression_filter(plot_config["layerId"])
             if expression_filter:
-                json_data['exp_filter'] = expression_filter
+                json_data["exp_filter"] = expression_filter
 
         json_object = json.dumps(json_data, indent=4)
 
@@ -199,46 +212,53 @@ class TableManagerDataviz(TableManager):
         request = QgsBlockingNetworkRequest()
         request.setAuthCfg(auth_id)
 
-        doc = QJsonDocument.fromJson(json_object.encode('utf8'))
+        doc = QJsonDocument.fromJson(json_object.encode("utf8"))
 
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             error = request.post(network_request, QByteArray(doc.toJson()))
 
         if error != QgsBlockingNetworkRequest.ErrorCode.NoError:
             if error == QgsBlockingNetworkRequest.ErrorCode.NetworkError:
-                message = tr('Network error : {}').format(server)
+                message = tr("Network error : {}").format(server)
             elif error == QgsBlockingNetworkRequest.ErrorCode.TimeoutError:
-                message = tr('Timeout error : {}').format(server)
+                message = tr("Timeout error : {}").format(server)
             elif error == QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError:
                 # Customized error from the server about the request
                 # We should have a JSON
                 response = request.reply().content()
                 try:
-                    json_response = json.loads(response.data().decode('utf-8'))
+                    json_response = json.loads(response.data().decode("utf-8"))
                 except json.JSONDecodeError:
                     message = tr(
-                        'Not possible to decode the response from the server, please check the content of the '
-                        'response.'
+                        "Not possible to decode the response from the server, please check the content of the "
+                        "response."
                     )
                 else:
-                    errors = json_response.get('errors')
+                    errors = json_response.get("errors")
                     if errors:
                         # Message from the server
-                        message = '<b>{}</b><br><br>{}'.format(errors.get('title'), errors.get('detail'))
-                    elif json_response.get('errorMessage'):
+                        message = "<b>{}</b><br><br>{}".format(errors.get("title"), errors.get("detail"))
+                    elif json_response.get("errorMessage"):
                         # Error from nginx or apache?
-                        message = '<b>{}</b><br><br>{}'.format(
-                            json_response.get('errorMessage'), json_response.get('errorCode'))
+                        message = "<b>{}</b><br><br>{}".format(
+                            json_response.get("errorMessage"), json_response.get("errorCode")
+                        )
 
                 # Let's add some more context to help
-                message += '<br><br>' + tr("Given context for the request") + ' : <br>'
-                message += '<b>' + tr('Server') + '</b> : ' + server + '<br>'
+                message += "<br><br>" + tr("Given context for the request") + " : <br>"
+                message += "<b>" + tr("Server") + "</b> : " + server + "<br>"
                 message += (
-                        '<b>' + tr('Repository') + '</b> : ' + repository
-                        + ', <b>' + tr('alias') + '</b> : ' + repository_label
+                    "<b>"
+                    + tr("Repository")
+                    + "</b> : "
+                    + repository
+                    + ", <b>"
+                    + tr("alias")
+                    + "</b> : "
+                    + repository_label
                 )
-                message += '<br>'
-                message += '<b>' + tr('Project') + '</b> : ' + project + '.qgs'
+                message += "<br>"
+                message += "<b>" + tr("Project") + "</b> : " + project + ".qgs"
             else:
                 message = tr("Unknown error : code {}").format(error)
 
@@ -246,45 +266,47 @@ class TableManagerDataviz(TableManager):
             return
 
         response = request.reply().content()
-        json_response = json.loads(response.data().decode('utf-8'))
+        json_response = json.loads(response.data().decode("utf-8"))
 
-        if json_response.get('errors'):
+        if json_response.get("errors"):
             # Looks like we are on LWC < 3.6.1
             # Shouldn't happen as well because of a previous check
-            self.display_error(json_response.get('errors').get('title', 'Unknown error'))
+            self.display_error(json_response.get("errors").get("title", "Unknown error"))
             return
 
-        if not json_response.get('data'):
+        if not json_response.get("data"):
             # Shouldn't happen ...
             self.display_error("Unknown error")
             return
 
         # Here, we are all good, we can finally display the plot.
 
-        with open(resources_path('html', 'dataviz.html'), encoding='utf8') as f:
+        with open(resources_path("html", "dataviz.html"), encoding="utf8") as f:
             html_template = f.read()
 
         html_content = html_template.format(
-            plot_data=json.dumps(json_response['data']),
-            plot_layout=json.dumps(json_response['layout']),
-            plot_user_layout=json.dumps(plot_config.get('layout', '')),
-            plot_config=json.dumps({
-                "showLink": False,
-                "scrollZoom": False,
-                "locale": locale,
-                "responsive": True,
-            }),
-            plotly=merge_strings(server, json_response['plotly']['script']),
-            locale=merge_strings(server, json_response['plotly']['locale']),
+            plot_data=json.dumps(json_response["data"]),
+            plot_layout=json.dumps(json_response["layout"]),
+            plot_user_layout=json.dumps(plot_config.get("layout", "")),
+            plot_config=json.dumps(
+                {
+                    "showLink": False,
+                    "scrollZoom": False,
+                    "locale": locale,
+                    "responsive": True,
+                }
+            ),
+            plotly=merge_strings(server, json_response["plotly"]["script"]),
+            locale=merge_strings(server, json_response["plotly"]["locale"]),
         )
-        base_url = QUrl.fromLocalFile(resources_path('images', 'non_existing_file.png'))
+        base_url = QUrl.fromLocalFile(resources_path("images", "non_existing_file.png"))
         self.parent.dataviz_viewer.setHtml(html_content, base_url)
 
         # Only when we are all good, we display the final tab
         self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
 
     def dataviz_expression_filter(self, layer_id: str) -> str | None:
-        """ Return the expression filter if possible. """
+        """Return the expression filter if possible."""
         project = QgsProject.instance()
         layer = project.mapLayer(layer_id)
         if not layer:

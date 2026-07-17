@@ -1,4 +1,5 @@
 """Dialog for DXF export edition."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -15,11 +16,10 @@ if TYPE_CHECKING:
 
     from lizmap.definitions.definitions import LwcVersions
 
-CLASS = load_ui('ui_form_dxf_export.ui')
+CLASS = load_ui("ui_form_dxf_export.ui")
 
 
 class DxfExportEditionDialog(BaseEditionDialog, CLASS):
-
     def __init__(
         self,
         parent: QWidget | None = None,
@@ -31,11 +31,11 @@ class DxfExportEditionDialog(BaseEditionDialog, CLASS):
         self.config = DxfExportDefinitions()
 
         # Layer configuration
-        self.config.add_layer_widget('layerId', self.layer)
-        self.config.add_layer_widget('enabled', self.enabled)
+        self.config.add_layer_widget("layerId", self.layer)
+        self.config.add_layer_widget("enabled", self.enabled)
 
-        self.config.add_layer_label('layerId', self.label_layer)
-        self.config.add_layer_label('enabled', self.label_enabled)
+        self.config.add_layer_label("layerId", self.label_layer)
+        self.config.add_layer_label("enabled", self.label_enabled)
 
         # Set layer filter to only show vector layers
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
@@ -48,7 +48,7 @@ class DxfExportEditionDialog(BaseEditionDialog, CLASS):
         """When the layer has changed in the combobox, check if the layer is published as WFS."""
         layer = self.layer.currentLayer()
         if not layer:
-            self.show_error(tr('A layer is mandatory.'))
+            self.show_error(tr("A layer is mandatory."))
             return
 
         not_in_wfs = self.is_layer_in_wfs(layer)
