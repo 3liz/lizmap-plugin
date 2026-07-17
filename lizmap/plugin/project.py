@@ -79,6 +79,7 @@ from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legen
     project_safeguards_checks,
     project_tos_layers,
     project_trust_layer_metadata,
+    set_project_trust_layer_metadata,
     simplify_provider_side,
     trailing_layer_group_name,
     use_estimated_metadata,
@@ -1270,7 +1271,7 @@ class ProjectManager(LizmapProtocol):
 
         if not self.dlg.mOptionsListWidget.item(Panels.Training).isHidden():
             # Make the life easier a little bit for short workshops.
-            project_trust_layer_metadata(self.project, True)
+            set_project_trust_layer_metadata(self.project)
         elif not project_trust_layer_metadata(self.project):
             self.dlg.check_results.add_error(Error(Path(self.project.fileName()).name, checks.TrustProject))
             self.dlg.enabled_trust_project(True)

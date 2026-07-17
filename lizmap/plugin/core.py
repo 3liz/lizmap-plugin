@@ -87,7 +87,7 @@ from lizmap.forms.portfolio_edition import PortfolioEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
 from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legend,
-    project_trust_layer_metadata,
+    set_project_trust_layer_metadata,
 )
 from lizmap.saas import is_lizmap_cloud
 from lizmap.table_manager.base import TableManager
@@ -1413,7 +1413,7 @@ class Lizmap(
         if not self.dlg.check_cfg_file_exists():
             # Convenient option for users, for new CFG file only : project trust,
             # and add geometry to GetFeatureInfo
-            project_trust_layer_metadata(self.project, True)
+            set_project_trust_layer_metadata(self.project)
             self.project.writeEntryBool("WMSAddWktGeometry", "/", True)
 
             new_project = NewConfigDialog()
