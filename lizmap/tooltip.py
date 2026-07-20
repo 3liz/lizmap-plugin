@@ -4,6 +4,7 @@
 # This file MUST BE an exact copy between
 # Desktop lizmap/tooltip.py
 # Server lizmap_server/tooltip.py
+# Except the CSS for LWC <= 3.7 and newer versions
 
 from __future__ import annotations
 
@@ -197,7 +198,7 @@ class Tooltip:
 
             if lvl > 1:
                 a += "\n" + SPACES * lvl + f'<fieldset class="{visibility}">'
-                a += "\n" + SPACES * lvl + f"<legend>{node.name()}</legend>"
+                a += "\n" + SPACES * lvl + f'<legend class="float-none">{node.name()}</legend>'
                 a += "\n" + SPACES * lvl + "<div>"
 
             # In case of root children
