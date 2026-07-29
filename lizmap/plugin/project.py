@@ -618,46 +618,50 @@ class ProjectManager(LizmapProtocol):
             # extent
             if layer:
                 extent = layer.extent()
-                if extent.isNull() or extent.isEmpty():
-                    logger.info(f"Layer '{layer.name()}' has null or empty extent.")
-                layer_options["extent"] = [
-                    extent.xMinimum(),
-                    extent.yMinimum(),
-                    extent.xMaximum(),
-                    extent.yMaximum(),
-                ]
-                if any(isnan(x) for x in layer_options["extent"]):
-                    if layer.isSpatial():
-                        # https://github.com/3liz/lizmap-plugin/issues/571
-                        if 33600 <= Qgis.versionInt() < 33603:
-                            msg = tr(
-                                "A bug has been identified with QGIS 3.36.0 to 3.36.2 included, "
-                                "please change."
-                            )
-                        else:
-                            msg = ""
-                        QMessageBox.warning(
-                            self.dlg,
-                            "Lizmap",
-                            msg
-                            + tr(
-                                'Please check your layer extent for "{}" with the ID "{}".'
-                                "The extent does not seem valid."
-                            ).format(layer.name(), layer.id())
-                            + "\n\n"
-                            + tr(
-                                "You can visit vector layer properties → Information tab → Information "
-                                "from provider → Extent."
-                            )
-                            + "\n\n"
-                            + tr(
-                                'Then in the "Source" tab, you can recompute the extent or check your '
-                                "logs in QGIS."
-                            )
-                            + "\n\n"
-                            + tr("The extent has been set to a default value 0,0,0,0."),
-                        )
+                if extent.isNull() or extent.isEmpty() or not extent.isFinite():
+                    # A valid but empty layer (e.g. a new PostgreSQL layer) reports a
+                    # null/non-finite extent. This is not an error, use a default silently.
+                    logger.info(f"Layer '{layer.name()}' has no valid extent, using 0,0,0,0.")
                     layer_options["extent"] = [0, 0, 0, 0]
+                else:
+                    layer_options["extent"] = [
+                        extent.xMinimum(),
+                        extent.yMinimum(),
+                        extent.xMaximum(),
+                        extent.yMaximum(),
+                    ]
+                    if any(isnan(x) for x in layer_options["extent"]):
+                        if layer.isSpatial():
+                            # https://github.com/3liz/lizmap-plugin/issues/571
+                            if 33600 <= Qgis.versionInt() < 33603:
+                                msg = tr(
+                                    "A bug has been identified with QGIS 3.36.0 to 3.36.2 included, "
+                                    "please change."
+                                )
+                            else:
+                                msg = ""
+                            QMessageBox.warning(
+                                self.dlg,
+                                "Lizmap",
+                                msg
+                                + tr(
+                                    'Please check your layer extent for "{}" with the ID "{}".'
+                                    "The extent does not seem valid."
+                                ).format(layer.name(), layer.id())
+                                + "\n\n"
+                                + tr(
+                                    "You can visit vector layer properties → Information tab → Information "
+                                    "from provider → Extent."
+                                )
+                                + "\n\n"
+                                + tr(
+                                    'Then in the "Source" tab, you can recompute the extent or check your '
+                                    "logs in QGIS."
+                                )
+                                + "\n\n"
+                                + tr("The extent has been set to a default value 0,0,0,0."),
+                            )
+                        layer_options["extent"] = [0, 0, 0, 0]
                 layer_options["crs"] = layer.crs().authid()
 
             # styles
