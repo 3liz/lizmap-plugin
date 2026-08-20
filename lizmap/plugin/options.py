@@ -135,6 +135,7 @@ def layer_options(
     layer_options_list["metatileSize"]["widget"] = dlg.inMetatileSize
     layer_options_list["clientCacheExpiration"]["widget"] = dlg.inClientCacheExpiration
     layer_options_list["externalWmsToggle"]["widget"] = dlg.cbExternalWms
+    layer_options_list["excludeFromSingleWMS"]["widget"] = dlg.cbExcludeFromSingleWMS
     layer_options_list["sourceRepository"]["widget"] = dlg.inSourceRepository
     layer_options_list["sourceProject"]["widget"] = dlg.inSourceProject
 

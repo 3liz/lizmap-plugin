@@ -37,6 +37,7 @@ class LayerOptionDefinitions(TypedDict):
     metatileSize: ModelItem
     clientCacheExpiration: ModelItem
     externalWmsToggle: ModelItem
+    excludeFromSingleWMS: ModelItem
     sourceRepository: ModelItem
     sourceProject: ModelItem
 
@@ -230,6 +231,12 @@ layerOptionDefinitions = {
     "metatileSize": {"wType": "text", "type": "string", "default": ""},
     "clientCacheExpiration": {"wType": "spinbox", "type": "integer", "default": 300},
     "externalWmsToggle": {"wType": "checkbox", "type": "boolean", "default": False},
+    "excludeFromSingleWMS": {
+        "wType": "checkbox",
+        "type": "boolean",
+        "default": False,
+        "min_version": LwcVersions.Lizmap_3_11,
+    },
     "sourceRepository": {"wType": "text", "type": "string", "default": "", "_api": False},
     "sourceProject": {"wType": "text", "type": "string", "default": "", "_api": False},
 }
