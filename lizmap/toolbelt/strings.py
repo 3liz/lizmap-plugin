@@ -1,4 +1,4 @@
-import random
+import secrets
 import string
 import unicodedata
 
@@ -20,7 +20,7 @@ def human_size(byte_size, units=None):
 
 def random_string(length: int = 5) -> str:
     """Generate a random string with the given length."""
-    return "".join(random.choice(string.ascii_lowercase) for _ in range(length))
+    return "".join(secrets.choice(string.ascii_lowercase) for _ in range(length))
 
 
 def path_to_url(file_path: Path) -> str:
