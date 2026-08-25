@@ -65,13 +65,16 @@ lint-fix:
 	@ $(UV_RUN) ruff check --fix $(LINT_TARGETS)
 
 format:
-	@ $(UV_RUN) ruff format $(LINT_TARGETS) 
+	@ $(UV_RUN) ruff format $(LINT_TARGETS)
 
 typecheck:
 	$(UV_RUN)  mypy $(PYTHON_MODULE)
 
 scan:
 	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
+
+scan-qgis:
+	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) --severity-level all
 
 
 check-uv-install:
