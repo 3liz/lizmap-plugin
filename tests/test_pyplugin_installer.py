@@ -21,3 +21,5 @@ class TestPyPluginInstaller(TestCase):
         # Ok, weird
         self.assertEqual(1, compareVersions("master", "1.0.0"))
         self.assertEqual(2, compareVersions("1.0.0", "master"))
+        self.assertEqual(1, compareVersions("next", "1.0.0"))
+        self.assertEqual(2, compareVersions("1.0.0", "next"))

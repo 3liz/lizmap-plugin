@@ -88,7 +88,6 @@ from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legen
 
 from ..saas import check_project_ssl_postgis, is_lizmap_cloud
 from ..toolbelt.convert import ambiguous_to_bool, as_boolean
-from ..toolbelt.git import next_git_tag
 from ..toolbelt.i18n import tr
 from ..toolbelt.layer import (
     get_layer_wms_parameters,
@@ -239,10 +238,9 @@ class ProjectManager(LizmapProtocol):
 
         logger.info(f"Writing Lizmap configuration file for LWC version {lwc_version.value}")
         current_version = self.global_options["metadata"]["lizmap_plugin_version"]["default"]
-        if self.is_dev_version:
-            next_version = next_git_tag()
-            if next_version != "next":
-                current_version = next_version
+        # if self.is_dev_version:
+        #     Update the current_version to the next version
+        #     It was provided by git and now removed
 
         target_status = self.dlg.server_combo.currentData(ServerComboData.LwcBranchStatus.value)
         if not target_status:
@@ -1295,7 +1293,7 @@ class ProjectManager(LizmapProtocol):
             if min_required_version:
                 current_version = version()
                 if current_version in DEV_VERSION_PREFIX:
-                    current_version = next_git_tag()
+                    current_version = "next"
                 min_required_version = qgis_version_info(min_required_version, increase_odd_number=False)
                 min_required_version = ".".join([str(i) for i in min_required_version])
                 if compareVersions(current_version, min_required_version) == 2:
