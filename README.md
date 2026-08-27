@@ -86,6 +86,24 @@ or from GitHub repository:
 
 *Please propose a PR to add yourself if you are missing*
 
+### Contributing
+
+Do not skips required QGIS plugins active rules https://plugins.qgis.org/docs/security-scanning/rules
+
+The following rules are required for QGIS Plugins security scanning:
+* The critical rules are:
+  B102, B103, B105, B106, B107, B111, B201, B202, B301, B302, B304, B305, B306, B307, B312, B321, B323,
+  B401, B402, B412, B413, B501, B502, B503, B505, B506, B507, B601, B602, B604, B605, B609, B610, B611,
+  B612, B613, B615, B701
+* The warning rules are:
+  B101, B104, B108, B110, B112, B101, B303, B308, B310, B311, B313, B314, B315, B316, B317, B318, B319,
+  B320, B324, B403, B405, B406, B407, B408, B409, B504, B508, B509, B603, B606, B607, B608, B614, B702,
+  B703, B704
+
+The following rules are deprecated but listed by QGIS Plugins:
+* B111: Deprecated since version 1.5.0: This plugin was removed
+* B320: The check for this call has been removed since version 1.8.1
+
 ### License
 
 Version: MPL 2.0/GPL 2.0/LGPL 2.1
