@@ -114,7 +114,6 @@ from lizmap.toolbelt.custom_logging import (
     add_logging_handler_once,
     setup_logger,
 )
-from lizmap.toolbelt.git import current_git_hash, next_git_tag
 from lizmap.toolbelt.i18n import setup_translation, tr
 from lizmap.toolbelt.layer import (
     layer_property,
@@ -563,7 +562,7 @@ class Lizmap(
         QgsApplication.messageLog().messageReceived.connect(write_log_message)
 
         self.dlg.setWindowTitle(
-            f"Lizmap branch {self.version}, commit {current_git_hash()}, next {next_git_tag()}"
+            f"Lizmap branch {self.version}, DEV"
         )
 
     def target_server_changed(self):
