@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.1 - 2026-08-27
+
+* Python: Remove git.py
+* Python: Replace random by secrests
+
 ## 5.0.0 - 2026-07-31
 
 * Update Panoramax configuration panel
