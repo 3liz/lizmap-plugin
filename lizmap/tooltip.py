@@ -281,6 +281,8 @@ class Tooltip:
 
     @staticmethod
     def _generate_field_name(name: str, fname: str, expression: str) -> str:
+        # Escape single quotes to avoid broken HTML output
+        escaped_name = name.replace("'", "''")
         return f'''
             [%
             concat(
@@ -292,14 +294,14 @@ class Tooltip:
                 END,
                 '">',
                 '    <label ',
-                '       id="dd_jforms_view_edition_{name}_label" ',
+                '       id="dd_jforms_view_edition_{escaped_name}_label" ',
                 '       class="control-label jforms-label" ',
-                '       for="dd_jforms_view_edition_{name}" >',
+                '       for="dd_jforms_view_edition_{escaped_name}" >',
                 '    {fname}',
                 '    </label>',
                 '    <div class="controls">',
                 '        <span ',
-                '            id="dd_jforms_view_edition_{name}" ',
+                '            id="dd_jforms_view_edition_{escaped_name}" ',
                 '            class="jforms-control-input" ',
                 '        >',
                             {expression},
@@ -385,7 +387,7 @@ class Tooltip:
                         '<a href="',
                         "{name}",
                         '" target="_blank">',
-                        base_file_name({name}),
+                        base_file_name("{name}"),
                         '</a>'
                     )'''
 

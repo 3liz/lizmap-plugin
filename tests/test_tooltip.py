@@ -397,7 +397,7 @@ class TestToolTip(TestCase):
                         '<a href="',
                         "field_a",
                         '" target="_blank">',
-                        base_file_name(field_a),
+                        base_file_name("field_a"),
                         '</a>'
                     )"""
         self.assertEqual(expected, expression)
