@@ -8,8 +8,8 @@ from pathlib import Path
 import pytest
 
 from qgis.core import QgsProject, QgsRasterLayer, QgsVectorLayer
+from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import Qt
-from qgis.testing.mocked import get_iface
 
 from lizmap.definitions.definitions import LwcVersions, PredefinedGroup
 from lizmap.plugin import Lizmap
@@ -27,11 +27,11 @@ def teardown(data: Path) -> None:
 
 
 class TestUiLizmapDialog(TestCase):
-    def test_ui_base(self, data: Path):
+    def test_ui_base(self, data: Path, qgis_iface: QgisInterface):
         """Test opening the Lizmap dialog with some basic checks."""
         project = QgsProject.instance()
         project.clear()
-        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
+        lizmap = Lizmap(qgis_iface, lwc_version=LwcVersions.latest())
 
         layer = QgsVectorLayer(str(data.joinpath("lines.geojson")), "lines", "ogr")
         project.addMapLayer(layer)
@@ -54,13 +54,13 @@ class TestUiLizmapDialog(TestCase):
         # lizmap.run()
         # lizmap.get_map_options()
 
-    def test_legend_options(self, data: Path):
+    def test_legend_options(self, data: Path, qgis_iface: QgisInterface):
         """Test about reading legend options."""
         project = QgsProject.instance()
         project.read(str(data.joinpath("legend_image_option.qgs")))
         self.assertEqual(3, len(project.mapLayers()))
 
-        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
+        lizmap = Lizmap(qgis_iface, lwc_version=LwcVersions.latest())
         # read_cfg_file will call "layers_config_file"
         config = lizmap.read_cfg_file(skip_tables=True)
         print("\n::test_legend_options::config", config)
@@ -113,6 +113,7 @@ class TestUiLizmapDialog(TestCase):
 
     def _setup_empty_project(
         self,
+        qgis_iface: QgisInterface,
         data: Path,
         lwc_version: LwcVersions = LwcVersions.latest(),
     ) -> Lizmap:
@@ -122,7 +123,7 @@ class TestUiLizmapDialog(TestCase):
         project.addMapLayer(layer)
         project.setFileName(temporary_file_path())
 
-        lizmap = Lizmap(get_iface(), lwc_version=lwc_version)
+        lizmap = Lizmap(qgis_iface, lwc_version=lwc_version)
         baselayers = lizmap._add_group_legend("baselayers", exclusive=True, parent=None, project=project)
         lizmap._add_group_legend(
             "project-background-color", exclusive=False, parent=baselayers, project=project
@@ -150,9 +151,9 @@ class TestUiLizmapDialog(TestCase):
 
         return lizmap
 
-    def test_lizmap_layer_properties(self, data: Path):
+    def test_lizmap_layer_properties(self, data: Path, qgis_iface: QgisInterface):
         """Test apply some properties in a layer in the dialog."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         # Click the layer
         item = lizmap.dlg.layer_tree.topLevelItem(0)
@@ -234,9 +235,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["layers"]["lines"].get("externalWmsToggle"))
         self.assertIsNone(output["layers"]["lines"].get("metatileSize"))
 
-    def test_default_options_values_3_6(self, data: Path):
+    def test_default_options_values_3_6(self, data: Path, qgis_iface: QgisInterface):
         """Test default options values."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_6, check_server=False, ignore_error=True)
 
@@ -309,9 +310,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("atlasShowAtStartup"))
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
 
-    def test_default_options_values_3_7(self, data: Path):
+    def test_default_options_values_3_7(self, data: Path, qgis_iface: QgisInterface):
         """Test default options values."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_7, check_server=False, ignore_error=True)
 
@@ -384,9 +385,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("atlasShowAtStartup"))
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
 
-    def test_default_options_values_3_8(self, data: Path):
+    def test_default_options_values_3_8(self, data: Path, qgis_iface: QgisInterface):
         """Test default options values."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_8, check_server=False, ignore_error=True)
 
@@ -459,9 +460,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("atlasShowAtStartup"))
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
 
-    def test_default_options_values_3_9(self, data: Path):
+    def test_default_options_values_3_9(self, data: Path, qgis_iface: QgisInterface):
         """Test default options values."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         output = lizmap.project_config_file(LwcVersions.Lizmap_3_9, check_server=False, ignore_error=True)
 
@@ -536,9 +537,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("atlasShowAtStartup"))
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
 
-    def test_default_options_latest(self, data: Path):
+    def test_default_options_latest(self, data: Path, qgis_iface: QgisInterface):
         """Test default options values."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
 
@@ -613,9 +614,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertIsNone(output["options"].get("atlasShowAtStartup"))
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
 
-    def test_max_scale_lwc_3_7(self, data: Path):
+    def test_max_scale_lwc_3_7(self, data: Path, qgis_iface: QgisInterface):
         """Test about maximum scale when zooming."""
-        lizmap = self._setup_empty_project(data, LwcVersions.Lizmap_3_6)
+        lizmap = self._setup_empty_project(qgis_iface, data, LwcVersions.Lizmap_3_6)
 
         self.assertEqual(5000.0, lizmap.dlg.max_scale_points.scale())
         self.assertEqual(5000.0, lizmap.dlg.max_scale_lines_polygons.scale())
@@ -635,9 +636,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertEqual(1000.0, output["options"]["max_scale_points"])
         self.assertIsNone(output["options"].get("max_scale_lines_polygons"))
 
-    def test_general_scales_properties_lwc_3_6(self, data: Path):
+    def test_general_scales_properties_lwc_3_6(self, data: Path, qgis_iface: QgisInterface):
         """Test some UI settings about general properties with LWC 3.6."""
-        lizmap = self._setup_empty_project(data, LwcVersions.Lizmap_3_6)
+        lizmap = self._setup_empty_project(qgis_iface, data, LwcVersions.Lizmap_3_6)
 
         # Check default values
         self.assertEqual("10000, 25000, 50000, 100000, 250000, 500000", lizmap.dlg.list_map_scales.text())
@@ -684,7 +685,7 @@ class TestUiLizmapDialog(TestCase):
         )
         self.assertListEqual(["cadastre", "urbanism"], output["options"].get("acl"))
 
-    def test_read_existing_lwc_3_6_to_3_7(self, data: Path):
+    def test_read_existing_lwc_3_6_to_3_7(self, data: Path, qgis_iface: QgisInterface):
         """Test to read a CFG 3.6 and to export it to 3.7 about scales."""
         # Checking CFG before opening the QGS file
         with data.joinpath("3857_project_lwc_3_6.qgs.cfg").open() as f:
@@ -695,7 +696,7 @@ class TestUiLizmapDialog(TestCase):
         project.read(str(data.joinpath("3857_project_lwc_3_6.qgs")))
         self.assertEqual(1, len(project.mapLayers()))
 
-        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.Lizmap_3_7)
+        lizmap = Lizmap(qgis_iface, lwc_version=LwcVersions.Lizmap_3_7)
         # read_cfg_file will call "layers_config_file"
         lizmap.read_cfg_file(skip_tables=True)
 
@@ -716,14 +717,14 @@ class TestUiLizmapDialog(TestCase):
         self.assertEqual(1000, output["options"]["minScale"])
         self.assertEqual(500000, output["options"]["maxScale"])
 
-    def test_read_existing_lwc_3_6_to_3_6(self, data: Path):
+    def test_read_existing_lwc_3_6_to_3_6(self, data: Path, qgis_iface: QgisInterface):
         """Test to read a CFG 3.6 and to export it to 3.6 about scales."""
         # Checking CFG before opening the QGS file
         project = QgsProject.instance()
         project.read(str(data.joinpath("3857_project_lwc_3_6.qgs")))
         self.assertEqual(1, len(project.mapLayers()))
 
-        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.Lizmap_3_6)
+        lizmap = Lizmap(qgis_iface, lwc_version=LwcVersions.Lizmap_3_6)
         # read_cfg_file will call "layers_config_file"
         lizmap.read_cfg_file(skip_tables=True)
 
@@ -744,9 +745,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertEqual(1000, output["options"]["minScale"])
         self.assertEqual(500000, output["options"]["maxScale"])
 
-    def test_atlas_auto_play_true_values(self, data: Path):
+    def test_atlas_auto_play_true_values(self, data: Path, qgis_iface: QgisInterface):
         """Test some UI settings about boolean values."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
@@ -766,9 +767,9 @@ class TestUiLizmapDialog(TestCase):
 
         self.assertIsNone(output["options"].get("atlasAutoPlay"))
 
-    def test_geolocation_values(self, data: Path):
+    def test_geolocation_values(self, data: Path, qgis_iface: QgisInterface):
         """Test geolocation UI settings."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         # Default geolocation checkboxes checked
         self.assertFalse(lizmap.dlg.groupbox_geolocation.isChecked())
@@ -802,9 +803,9 @@ class TestUiLizmapDialog(TestCase):
         self.assertFalse(output["options"].get("geolocationPrecision"))
         self.assertTrue(output["options"].get("geolocationDirection"))
 
-    def test_exclude_basemaps_from_single_wms_values(self, data: Path):
+    def test_exclude_basemaps_from_single_wms_values(self, data: Path, qgis_iface: QgisInterface):
         """Test exclude basemaps from single WMS UI settings."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         # Default checkbox states
         self.assertFalse(lizmap.dlg.checkbox_wms_single_request_all_layers.isChecked())
@@ -834,9 +835,9 @@ class TestUiLizmapDialog(TestCase):
         lizmap.dlg.checkbox_wms_single_request_all_layers.setChecked(False)
         self.assertFalse(lizmap.dlg.checkbox_exclude_basemaps_from_single_wms.isEnabled())
 
-    def test_group_popup_by_layer(self, data: Path):
+    def test_group_popup_by_layer(self, data: Path, qgis_iface: QgisInterface):
         """Test group popup by layer UI settings."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         # Default checkbox states
         self.assertFalse(lizmap.dlg.checkbox_group_popup_by_layer.isChecked())
@@ -855,9 +856,9 @@ class TestUiLizmapDialog(TestCase):
         # Group popup by layers option should be unchecked in output config file
         self.assertFalse(output["options"].get("group_popup_by_layer"))
 
-    def test_short_link_permalink(self, data: Path):
+    def test_short_link_permalink(self, data: Path,  qgis_iface: QgisInterface):
         """Test short link permalink UI settings."""
-        lizmap = self._setup_empty_project(data)
+        lizmap = self._setup_empty_project(qgis_iface, data)
 
         # Default checkbox states
         self.assertFalse(lizmap.dlg.checkbox_short_link_permalink.isChecked())

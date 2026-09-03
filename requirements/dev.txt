@@ -5,6 +5,7 @@ bandit==1.9.4
 certifi==2026.6.17
 charset-normalizer==3.4.7
 colorama==0.4.6 ; sys_platform == 'win32'
+coverage==7.16.0
 detect-secrets==1.5.0
 exceptiongroup==1.3.1 ; python_full_version < '3.11'
 idna==3.18
@@ -22,15 +23,17 @@ psycopg==3.3.4
 psycopg-binary==3.3.4 ; implementation_name != 'pypy'
 pygments==2.20.0
 pytest==9.1.1
+pytest-qgis==4.1.1
 python-dateutil==2.9.0.post0
 pyyaml==6.0.3
 requests==2.34.2
 rich==15.0.0
 ruff==0.15.20
+semver==3.0.4
 six==1.17.0
 stevedore==5.8.0 ; python_full_version < '3.11'
 stevedore==5.9.0 ; python_full_version >= '3.11'
-tomli==2.4.1 ; python_full_version < '3.11'
+tomli==2.4.1 ; python_full_version <= '3.11'
 typing-extensions==4.16.0
 tzdata==2026.2 ; sys_platform == 'win32'
 urllib3==2.7.0

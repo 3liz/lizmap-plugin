@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 
-from urllib.parse import urlsplit, parse_qsl
+from urllib.parse import parse_qsl
 
 from qgis.core import (
     Qgis,
