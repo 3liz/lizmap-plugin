@@ -2,15 +2,16 @@ __copyright__ = "Copyright 2024, 3Liz"
 __license__ = "GPL version 3"
 __email__ = "info@3liz.org"
 
-from os.path import relpath
 from pathlib import Path
 
 from qgis._core import QgsMapLayerModel
-from qgis.core import QgsProviderRegistry
 from qgis.PyQt.QtWidgets import QDialog, QPushButton
 
 from lizmap.definitions.lizmap_cloud import UPLOAD_EXTENSIONS, UPLOAD_MAX_SIZE
 from lizmap.widgets.table_files import TableFiles
+
+from .. import logger
+from ..toolbelt.layer_files import scan_layer_files
 
 
 class TableFilesManager:
@@ -26,75 +27,42 @@ class TableFilesManager:
         """Scan all files"""
         self.table.setRowCount(0)
 
-        unique_files = []
-        unique_icons = {}
+        project = self.parent.project
 
-        project_home = Path(self.parent.project.absolutePath())
+        project_home = Path(project.absolutePath())
         self.parent.label_current_folder.setText(f"<strong>{project_home}</strong>")
 
-        # Qgis.versionInt() 32200 :
-        # Use QgsOgrProviderMetadata::sidecarFilesForUri
-        for layer in self.parent.project.mapLayers().values():
-            components = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
-            if "path" not in components:
-                # The layer is not file base.
+        files = {}
+
+        for layer, layer_path, sidecar_files in scan_layer_files(project):
+            if layer_path in files:
+                # A layer can be used many times, with different filters
                 continue
 
-            layer_path = Path(components["path"])
-            try:
-                if not layer_path.exists():
-                    # Let's skip, QGIS is already warning this layer
-                    # Or the file might be a COG on Linux :
-                    # /vsicurl/https://demo.snap.lizmap.com/lizmap_3_8/cog/...
-                    continue
-            except OSError:
-                # Ticket https://github.com/3liz/lizmap-plugin/issues/541
-                # OSError: [WinError 123] La syntaxe du nom de fichier, de répertoire ou de volume est incorrecte:
-                # '\\vsicurl\\https:\\XXX.lizmap.com\\YYY\\cog\\ZZZ.tif'
-                continue
-
-            try:
-                relative_path = relpath(layer_path, project_home)
-            except ValueError:
-                # https://docs.python.org/3/library/os.path.html#os.path.relpath
-                # On Windows, ValueError is raised when path and start are on different drives.
-                # For instance, H: and C:
-
-                # Not sure what to do for now...
-                # We can't compute a relative path, but the user didn't enable the safety check, so we must still skip
-                continue
-
-            if ".." in relative_path:
-                # Not supported for now
-                continue
-
-            if layer_path.stat().st_size > UPLOAD_MAX_SIZE:
-                # Not supported for now
+            if not layer_path.is_relative_to(project_home):
+                # Discard files outside of project path
+                logger.warning(
+                    "%s is outside project path (%s) and will not be uploaded", layer_path, project_home
+                )
                 continue
 
             if layer_path.suffix.lower().replace(".", "") not in UPLOAD_EXTENSIONS:
                 # Not supported for now
+                logger.warning("%s is not supported for uploading", layer_path)
                 continue
 
-            if layer_path in unique_files:
-                # A layer can be used many times, with different filters
+            if layer_path.stat().st_size > UPLOAD_MAX_SIZE:
+                # Not supported for now
+                # FIXME: This must by dynamic and definitely not set in the client !!!!!
+                logger.warning("%s exceed the allowed UPLOAD_MAX_SIZE ", layer_path)
                 continue
 
-            # TODO check if number of sub-folder ?
+            if sidecar_files:
+                # FIXME: ATM sidecar files are not supported !!!!!
+                logger.warning("File %s has sidecars files: %s, this is not supported ATM")
 
-            # TODO switch the other method
-            # try:
-            #     relative_path = layer_path.relative_to(project_home)
-            # except ValueError:
-            #     # It shouldn't happen at this stage
-            #     continue
+            files[layer_path] = QgsMapLayerModel.iconForLayer(layer)
 
-            # print(type(relative_path))
-            # for dir_parent in relative_path.parents:
-            #     print(dir_parent)
-
-            unique_icons[layer_path] = QgsMapLayerModel.iconForLayer(layer)
-            # unique_files.append(layer_path)
-
-        for file_path, icon in unique_icons.items():
+        # Add to table
+        for file_path, icon in files.items():
             self.table.add_file(file_path, icon)
