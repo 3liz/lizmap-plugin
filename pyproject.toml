@@ -28,6 +28,7 @@ repository ="https://github.com/3liz/lizmap-plugin"
 
 [dependency-groups]
 dev = [
+    "coverage[toml]",
     {include-group = "tests"},
     {include-group = "lint"},
 ]
@@ -126,3 +127,20 @@ python_version = "3.9"
 [[tool.mypy.overrides]]
 module = "qgis.*"
 ignore_missing_imports = true
+
+
+#
+# Coverage
+#
+
+[tool.coverage.run]
+source = ["lizmap"]
+branch = true
+relative_files = true
+
+[tool.coverage.report]
+precision = 2
+exclude_lines = [
+ "if TYPE_CHECKING",
+ '\(Protocol\):$',
+]

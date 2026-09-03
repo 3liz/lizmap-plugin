@@ -51,4 +51,4 @@ tests/credentials.py
 **/symbology-style.db
 **/*.qgs.bak
 
-lizmap/plugin_refactoring
+.coverage

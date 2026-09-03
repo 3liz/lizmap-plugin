@@ -17,7 +17,7 @@ ifdef VIRTUAL_ENV
 # Always prefer active environment
 ACTIVE_VENV=--active
 endif
-UV_RUN=uv run $(ACTIVE_VENV)
+UV=uv run $(ACTIVE_VENV)
 endif
 
 
@@ -59,22 +59,22 @@ requirements/%.txt: uv.lock
 LINT_TARGETS=$(PYTHON_MODULE) tests $(EXTRA_LINT_TARGETS)
 
 lint:
-	@ $(UV_RUN) ruff check --output-format=concise $(LINT_TARGETS)
+	@ $(UV) ruff check --output-format=concise $(LINT_TARGETS)
 
 lint-fix:
-	@ $(UV_RUN) ruff check --fix $(LINT_TARGETS)
+	@ $(UV) ruff check --fix $(LINT_TARGETS)
 
 format:
-	@ $(UV_RUN) ruff format $(LINT_TARGETS)
+	@ $(UV) ruff format $(LINT_TARGETS)
 
 typecheck:
-	$(UV_RUN)  mypy $(PYTHON_MODULE)
+	$(UV)  mypy $(PYTHON_MODULE)
 
 scan:
-	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
+	@ $(UV) bandit -r $(PYTHON_MODULE) $(SCAN_OPTS)
 
 scan-qgis:
-	@ $(UV_RUN) bandit -r $(PYTHON_MODULE) --severity-level all
+	@ $(UV) bandit -r $(PYTHON_MODULE) --severity-level all
 
 
 check-uv-install:
@@ -88,7 +88,7 @@ check-uv-install:
 #
 
 test:
-	$(UV_RUN) pytest -v tests/
+	$(UV) pytest -v tests/
 
 #
 # Test using docker image
@@ -106,6 +106,19 @@ docker-test:
 		--abort-on-container-exit \
 		--exit-code-from qgis
 	cd .docker && docker compose down -v
+
+#
+# Coverage
+#
+
+# Run tests coverage
+covtest:
+	$(UV) coverage run -m pytest tests/
+
+
+coverage: covtest
+	@echo "Building coverage html"
+	@ $(UV) coverage html
 
 #
 # Code managment
