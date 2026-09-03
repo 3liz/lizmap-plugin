@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import os
-import urllib
+
+from urllib.parse import urlsplit, parse_qsl
 
 from qgis.core import (
     Qgis,
@@ -74,18 +75,20 @@ def get_layer_wms_parameters(layer):
     """
     Get WMS parameters for a raster WMS layers
     """
-    uri = layer.dataProvider().dataSourceUri()
-    # avoid WMTS layers (not supported yet in Lizmap Web Client)
-    if "wmts" in uri or "WMTS" in uri:
+    # NOTE: QGIS has no consistent way to encode/store uris: WMS is encoded
+    # as query string with host encoded as 'url' parameter !!!!!!!
+    query = layer.dataProvider().dataSourceUri()
+
+    wms_params = parse_qsl(query, keep_blank_values=True)
+
+    # Avoid WMTS layers (not supported yet in Lizmap Web Client)
+    # Look for the 'service' key
+    service_kv = next(((k,v) for k,v in wms_params if k.upper() == "SERVICE"), None)
+    if service_kv is not None and service_kv[1].upper() == "WMTS":
         return None
 
-    # Split WMS parameters
-    wms_params = dict([*p.split("="), ""][:2] for p in uri.split("&"))
-
-    # urldecode WMS url
-    wms_params["url"] = urllib.parse.unquote(wms_params["url"]).replace("&&", "&").replace("==", "=")
-
-    return wms_params
+    # Flatten parameters
+    return dict(wms_params)
 
 
 def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str:

@@ -2,8 +2,10 @@ import tempfile
 
 from pathlib import Path
 
-# from qgis.testing import start_app
-from qgis.core import QgsRasterLayer
+from qgis.core import (
+    QgsDataSourceUri,
+    QgsRasterLayer,
+)
 
 from lizmap.toolbelt.layer import get_layer_wms_parameters
 from lizmap.toolbelt.lizmap import sidecar_media_dirs
@@ -61,19 +63,20 @@ class TestToolBelt(TestCase):
 
     def test_wms_properties_wms(self):
         """Test external WMS."""
-        raster = QgsRasterLayer(
-            "contextualWMSLegend=0&"
-            "crs=EPSG:2056&"
-            "dpiMode=7&"
-            "featureCount=10&"
-            "format=image/jpeg&"
-            "layers=ch.swisstopo.pixelkarte-grau&"
-            "styles&"
-            "tilePixelRatio=0&"
-            "url=https://wms.geo.admin.ch/",
-            "wms",
-            "wms",
+
+        uri = (
+           "url=https://wms.geo.admin.ch/&"
+           "contextualWMSLegend=0&"
+           "crs=EPSG:2056&"
+           "dpiMode=7&"
+           "featureCount=10&"
+           "format=image/jpeg&"
+           "layers=ch.swisstopo.pixelkarte-grau&"
+           "styles&"
+           "tilePixelRatio=0"
         )
+
+        raster = QgsRasterLayer(uri, "wms", "wms")
         self.assertTrue(raster.isValid())
         self.assertEqual("wms", raster.providerType())
 
@@ -98,6 +101,7 @@ class TestToolBelt(TestCase):
             "layers=ORTHOIMAGERY.ORTHOPHOTOS&"
             "styles=normal&"
             "tileMatrixSet=PM&"
+            "service=wmts&"
             "url=https://data.geopf.fr/wmts?SERVICE%3DWMTS%26VERSION%3D1.0.0%26REQUEST%3DGetCapabilities",
             "wms",
             "wms",
