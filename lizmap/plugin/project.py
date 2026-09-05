@@ -620,7 +620,7 @@ class ProjectManager(LizmapProtocol):
                 # Default extent and CRS values
                 layer_options["extent"] = [0, 0, 0, 0]
                 layer_options["crs"] = ""
-                
+
                 if layer.isSpatial():
                     # only update for spatial layers
                     layer_options["crs"] = layer.crs().authid()
