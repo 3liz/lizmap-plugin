@@ -615,17 +615,25 @@ class ProjectManager(LizmapProtocol):
 
             # extent
             if layer:
-                extent = layer.extent()
-                if extent.isNull() or extent.isEmpty():
-                    logger.info(f"Layer '{layer.name()}' has null or empty extent.")
-                layer_options["extent"] = [
-                    extent.xMinimum(),
-                    extent.yMinimum(),
-                    extent.xMaximum(),
-                    extent.yMaximum(),
-                ]
-                if any(isnan(x) for x in layer_options["extent"]):
-                    if layer.isSpatial():
+                # Default extent and CRS values
+                layer_options["extent"] = [0, 0, 0, 0]
+                layer_options["crs"] = ""
+
+                if layer.isSpatial():
+                    # only update for spatial layers
+                    layer_options["crs"] = layer.crs().authid()
+                    # Check extent
+                    extent = layer.extent()
+                    if extent.isNull() or extent.isEmpty():
+                        logger.info(f"Layer '{layer.name()}' has null or empty extent.")
+                    if not extent.isNull() and not extent.isEmpty() and extent.isFinite():
+                        layer_options["extent"] = [
+                            extent.xMinimum(),
+                            extent.yMinimum(),
+                            extent.xMaximum(),
+                            extent.yMaximum(),
+                        ]
+                    if any(isnan(x) for x in layer_options["extent"]):
                         # https://github.com/3liz/lizmap-plugin/issues/571
                         if 33600 <= Qgis.versionInt() < 33603:
                             msg = tr(
@@ -655,8 +663,7 @@ class ProjectManager(LizmapProtocol):
                             + "\n\n"
                             + tr("The extent has been set to a default value 0,0,0,0."),
                         )
-                    layer_options["extent"] = [0, 0, 0, 0]
-                layer_options["crs"] = layer.crs().authid()
+                        layer_options["extent"] = [0, 0, 0, 0]
 
             # styles
             if isinstance(layer, QgsMapLayer):
