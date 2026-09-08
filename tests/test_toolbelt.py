@@ -3,7 +3,6 @@ import tempfile
 from pathlib import Path
 
 from qgis.core import (
-    QgsDataSourceUri,
     QgsRasterLayer,
 )
 
