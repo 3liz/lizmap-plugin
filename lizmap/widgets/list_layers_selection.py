@@ -22,7 +22,11 @@ class ListLayersSelection(QListWidget):
 
         self.clear()
 
-        for layer in self.project.mapLayers().values():
+        layers = sorted(
+            self.project.mapLayers().values(),
+            key=lambda layer: layer.name().lower(),
+        )
+        for layer in layers:
             if layer.type() != QgsMapLayer.LayerType.VectorLayer:
                 continue
 
