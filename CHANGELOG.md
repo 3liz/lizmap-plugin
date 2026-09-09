@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.2 - 2026-09-09
+
+* Python: Add tests coverage support
+* Python: Use sidecarFilesForUri with layer files scanning
+* Fix single quotes escaping to avoid broken HTML output
+* Only compute extent/CRS for spatial layers; fall back silently to 0,0,0,0 when the extent is null, empty or non-finite
+
 ## 5.0.1 - 2026-08-27
 
 * Python: Remove git.py
