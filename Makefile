@@ -2,7 +2,6 @@ SHELL:=bash
 
 PYTHON_MODULE=lizmap
 
-QGIS_VERSION ?= 3.40
 
 -include .localconfig.mk
 
@@ -31,13 +30,6 @@ REQUIREMENTS_GROUPS= \
 .PHONY: update-requirements
 
 REQUIREMENTS=$(patsubst %, requirements/%.txt, $(REQUIREMENTS_GROUPS))
-
-# Update only packaging dependencies
-# Waiting for https://github.com/astral-sh/uv/issues/13705
-update-packaging-dependencies::
-	uv lock -P qgis-plugin-package-ci -P qgis-plugin-transifex-ci
-
-update-packaging-dependencies:: update-requirements
 
 update-requirements: $(REQUIREMENTS)
 
@@ -77,12 +69,6 @@ scan-qgis:
 	@ $(UV) bandit -r $(PYTHON_MODULE) --severity-level all
 
 
-check-uv-install:
-	@which uv > /dev/null || { \
-		echo "You must install uv (https://docs.astral.sh/uv/)"; \
-		exit 1; \
-	}
-
 #
 # Tests
 #
@@ -93,19 +79,30 @@ test:
 #
 # Test using docker image
 #
-QGIS_IMAGE_REPOSITORY ?= qgis/qgis
+ifdef REGISTRY_URL
+REGISTRY_PREFIX=$(REGISTRY_URL)/
+else
+REGISTRY_PREFIX=3liz/
+endif
+
+QGIS_VERSION ?= 3.44
+QGIS_IMAGE_REPOSITORY ?=  ${REGISTRY_PREFIX}qgis-platform
+
 QGIS_IMAGE_TAG ?= $(QGIS_IMAGE_REPOSITORY):$(QGIS_VERSION)
 
 export QGIS_VERSION
 export QGIS_IMAGE_TAG
 export UID=$(shell id -u)
 export GID=$(shell id -g)
+
 docker-test:
-	cd .docker && docker compose up \
+	set -e; \
+	cd .docker; \
+	docker compose up \
 		--quiet-pull \
 		--abort-on-container-exit \
-		--exit-code-from qgis
-	cd .docker && docker compose down -v
+		--exit-code-from qgis; \
+	docker compose down -v;
 
 #
 # Coverage

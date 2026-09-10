@@ -33,7 +33,9 @@ dev = [
     {include-group = "lint"},
 ]
 tests = [
-    "pytest >= 5.3",
+    "pytest",
+    "pytest-qgis",
+    "semver",
     "webdavclient3",
     "psycopg[binary]",
 ]
@@ -69,7 +71,7 @@ minimum_translation = 25.0
 
 [tool.ruff]
 line-length = 110
-target-version = "py39"
+target-version = "py310"
 exclude = [
     ".venv",
     ".local",

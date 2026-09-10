@@ -503,7 +503,9 @@ dev = [
     { name = "mypy" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pytest" },
+    { name = "pytest-qgis" },
     { name = "ruff" },
+    { name = "semver" },
     { name = "vulture" },
     { name = "webdavclient3" },
 ]
@@ -520,6 +522,8 @@ packaging = [
 tests = [
     { name = "psycopg", extra = ["binary"] },
     { name = "pytest" },
+    { name = "pytest-qgis" },
+    { name = "semver" },
     { name = "webdavclient3" },
 ]
 
@@ -532,8 +536,10 @@ dev = [
     { name = "detect-secrets" },
     { name = "mypy" },
     { name = "psycopg", extras = ["binary"] },
-    { name = "pytest", specifier = ">=5.3" },
+    { name = "pytest" },
+    { name = "pytest-qgis" },
     { name = "ruff" },
+    { name = "semver" },
     { name = "vulture" },
     { name = "webdavclient3" },
 ]
@@ -547,7 +553,9 @@ lint = [
 packaging = [{ name = "qt-transifex", marker = "python_full_version >= '3.12'", git = "https://github.com/3liz/qt-transifex" }]
 tests = [
     { name = "psycopg", extras = ["binary"] },
-    { name = "pytest", specifier = ">=5.3" },
+    { name = "pytest" },
+    { name = "pytest-qgis" },
+    { name = "semver" },
     { name = "webdavclient3" },
 ]
 
@@ -1047,6 +1055,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-qgis"
+version = "4.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5e/b9/79eb97d5c30eb14b3a9c108e06436a7d982071fd473512e6ea28bc66fc64/pytest_qgis-4.1.1.tar.gz", hash = "sha256:c7f86f6cb7640a2f595e97fdbbd314450ad88461d1eb1a16c2bb599ad66f57a7", size = 29746, upload-time = "2026-08-04T12:32:40.164Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/de/77/b9e111799b2117346d3001eee9ef492a5305797a0ec59c0bd1e1206480f1/pytest_qgis-4.1.1-py3-none-any.whl", hash = "sha256:78ba6152280203748003e16e1e54e8939ae580d7a0767bb21078e41d166eb6c9", size = 31603, upload-time = "2026-08-04T12:32:39.045Z" },
+]
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 source = { registry = "https://pypi.org/simple" }
@@ -1305,6 +1325,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/10/9b/5f14927848d2fd4aa891fd88d883788c5a7baba561c7874732364045708c/ruff-0.15.20-py3-none-win32.whl", hash = "sha256:ed65ef510e43a137207e0f01cfcf998aeddb1aeeda5c9d35023e910284d7cf21", size = 10857322, upload-time = "2026-06-25T17:20:28.612Z" },
     { url = "https://files.pythonhosted.org/packages/fa/f0/fe47c501f9dea92a26d788ff98bb5d92ed4cb4c88792c5c88af6b697dc8e/ruff-0.15.20-py3-none-win_amd64.whl", hash = "sha256:a525c81c70fb0380344dd1d8745d8cc1c890b7fc94a58d5a07bd8eb9557b8415", size = 11993274, upload-time = "2026-06-25T17:20:31.871Z" },
     { url = "https://files.pythonhosted.org/packages/d7/2b/9555445e1201d92b3195f45cdb153a0b68f24e0a4273f6e3d5ab46e212bb/ruff-0.15.20-py3-none-win_arm64.whl", hash = "sha256:2f5b2a6d614e8700388806a14996c40fab2c47b819ef57d790a34878858ed9ca", size = 11343498, upload-time = "2026-06-25T17:20:35.03Z" },
+]
+
+[[package]]
+name = "semver"
+version = "3.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/d1/d3159231aec234a59dd7d601e9dd9fe96f3afff15efd33c1070019b26132/semver-3.0.4.tar.gz", hash = "sha256:afc7d8c584a5ed0a11033af086e8af226a9c0b206f313e0301f8dd7b6b589602", size = 269730, upload-time = "2025-01-24T13:19:27.617Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/24/4d91e05817e92e3a61c8a21e08fd0f390f5301f1c448b137c57c4bc6e543/semver-3.0.4-py3-none-any.whl", hash = "sha256:9c824d87ba7f7ab4a1890799cec8596f15c1241cb473404ea1cb0c55e4b04746", size = 17912, upload-time = "2025-01-24T13:19:24.949Z" },
 ]
 
 [[package]]

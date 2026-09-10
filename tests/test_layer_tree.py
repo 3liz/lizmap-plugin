@@ -3,7 +3,7 @@
 from pathlib import Path
 
 from qgis.core import Qgis, QgsProject, QgsVectorLayer
-from qgis.testing.mocked import get_iface
+from qgis.gui import QgisInterface
 
 from lizmap.definitions.definitions import LayerProperties, LwcVersions
 from lizmap.plugin import Lizmap
@@ -57,7 +57,7 @@ class TestLayerTree(TestCase):
         self.assertListEqual(string_to_list(" a "), ["a"])
         self.assertListEqual(string_to_list("a,b"), ["a", "b"])
 
-    def test_layer_metadata(self, data: Path):
+    def test_layer_metadata(self, data: Path, qgis_iface: QgisInterface):
         """Test metadata coming from layer or from Lizmap."""
         project = QgsProject.instance()
         layer_name = "lines"
@@ -68,7 +68,7 @@ class TestLayerTree(TestCase):
         lizmap_config_url = "https://lizmap.url"
         qgis_config_url = "https://qgis.url"
 
-        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
+        lizmap = Lizmap(qgis_iface, lwc_version=LwcVersions.latest())
 
         # New project so Lizmap is empty
         config = lizmap.layers_config_file()

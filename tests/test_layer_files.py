@@ -6,7 +6,6 @@ from zipfile import ZipFile
 import pytest
 
 from qgis.core import (
-    Qgis,
     QgsCoordinateTransformContext,
     QgsProject,
     QgsProviderRegistry,
@@ -273,11 +272,7 @@ def test_sidecar_files(project, shapefile):
     _, path, sidecar_files = results[0]
     assert path == shapefile
 
-    # Apparently no .prj file is generated with QGIS <= 3.34
-    if Qgis.versionInt() < 34000:
-        expected = {shapefile.with_suffix(suffix) for suffix in (".shx", ".dbf", ".cpg")}
-    else:
-        expected = {shapefile.with_suffix(suffix) for suffix in (".shx", ".dbf", ".prj", ".cpg")}
+    expected = {shapefile.with_suffix(suffix) for suffix in (".shx", ".dbf", ".prj", ".cpg")}
     assert set(sidecar_files) == expected
     # Only existing files must be returned, sidecarFilesForUri() returns candidates
     assert all(sidecar.is_file() for sidecar in sidecar_files)
