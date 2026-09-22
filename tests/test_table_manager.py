@@ -5,7 +5,12 @@ from pathlib import Path
 import pytest
 
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.PyQt.QtWidgets import QComboBox, QTableWidget, QTreeWidget
+from qgis.PyQt.QtWidgets import (
+    QComboBox,
+    QTableWidget,
+    QTableWidgetItem,
+    QTreeWidget,
+)
 
 from lizmap.definitions.atlas import AtlasDefinitions
 from lizmap.definitions.attribute_table import AttributeTableDefinitions
@@ -23,6 +28,11 @@ from lizmap.drag_drop_dataviz_manager import DragDropDatavizManager
 from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.layouts import TableManagerLayouts
+from lizmap.widgets.sortable_table import (
+    make_table_sortable,
+    reset_table_sort_indicator,
+    sort_table_by_column,
+)
 
 from .compat import TestCase
 
@@ -35,6 +45,42 @@ def layer(data: Path) -> None:
     QgsProject.instance().addMapLayer(layer)
     yield layer
     QgsProject.instance().clear()
+
+
+class TestSortableTable(TestCase):
+    def test_sortable_table_helper(self):
+        """Test the generic sortable table helper on a plain QTableWidget."""
+        table = QTableWidget()
+        table.setColumnCount(1)
+        table.setRowCount(3)
+        for row, text in enumerate(("banana", "apple", "cherry")):
+            table.setItem(row, 0, QTableWidgetItem(text))
+
+        make_table_sortable(table)
+
+        def column_values():
+            return [table.item(row, 0).text() for row in range(table.rowCount())]
+
+        # Populating does not sort, the insertion order is kept
+        self.assertEqual(column_values(), ["banana", "apple", "cherry"])
+
+        # First click sorts ascending
+        sort_table_by_column(table, 0)
+        self.assertEqual(column_values(), ["apple", "banana", "cherry"])
+        self.assertEqual(table.horizontalHeader().sortIndicatorSection(), 0)
+
+        # Second click on the same column reverses the order
+        sort_table_by_column(table, 0)
+        self.assertEqual(column_values(), ["cherry", "banana", "apple"])
+
+        # A negative column (e.g. clicking outside any section) is a no-op
+        sort_table_by_column(table, -1)
+        self.assertEqual(column_values(), ["cherry", "banana", "apple"])
+
+        # Resetting the indicator hides it, without changing the row order
+        reset_table_sort_indicator(table)
+        self.assertEqual(table.horizontalHeader().sortIndicatorSection(), -1)
+        self.assertEqual(column_values(), ["cherry", "banana", "apple"])
 
 
 class TestTableManager(TestCase):
@@ -1438,6 +1484,56 @@ class TestTableManager(TestCase):
         # We select first row and we edit it
         # table.selectRow(0)
         # self.assertEqual(table_manager.edit_existing_row(), QDialog.Accepted)
+
+    def test_sort_by_column(self, layer: QgsVectorLayer):
+        """Test sorting the table rows by clicking on a column header."""
+        table = QTableWidget()
+        definitions = AtlasDefinitions()
+        definitions._use_single_row = False
+        table_manager = TableManager(None, definitions, AtlasEditionDialog, table, None, None, None, None)
+
+        layer_1 = {
+            "layer": layer.id(),
+            "primaryKey": "id",
+            "displayLayerDescription": "False",
+            "featureLabel": "name",
+            "sortField": "name",
+            "highlightGeometry": "True",
+            "zoom": "center",
+            "duration": 5,
+            "displayPopup": "True",
+            "triggerFilter": "True",
+        }
+        layer_2 = dict(layer_1)
+        layer_2["sortField"] = "id"
+        table_manager.from_json({"layers": [layer_1, layer_2]})
+        self.assertEqual(table_manager.table.rowCount(), 2)
+
+        # The rows are displayed in their insertion order for now
+        data = table_manager.to_json(LwcVersions.latest())
+        self.assertDictEqual(data, {"layers": [layer_1, layer_2]})
+
+        column = table_manager.keys.index("sortField")
+
+        # First click on the header sorts ascending: "id" before "name"
+        table_manager.sort_by_column(column)
+        data = table_manager.to_json(LwcVersions.latest())
+        self.assertDictEqual(data, {"layers": [layer_2, layer_1]})
+
+        # Second click on the same header toggles to descending
+        table_manager.sort_by_column(column)
+        data = table_manager.to_json(LwcVersions.latest())
+        self.assertDictEqual(data, {"layers": [layer_1, layer_2]})
+
+        # The header sort indicator points to the sorted column
+        self.assertEqual(table.horizontalHeader().sortIndicatorSection(), column)
+
+        # A manual reorder resets the sort indicator
+        table.setCurrentCell(1, 0)
+        table_manager.move_layer_up()
+        self.assertEqual(table.horizontalHeader().sortIndicatorSection(), -1)
+        data = table_manager.to_json(LwcVersions.latest())
+        self.assertDictEqual(data, {"layers": [layer_2, layer_1]})
 
     def test_atlas_missing_json_parameter(self, layer: QgsVectorLayer):
         """Test if we can load CFG file with missing parameter."""

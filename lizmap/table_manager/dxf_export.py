@@ -8,6 +8,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 
 from lizmap.toolbelt.convert import ambiguous_to_bool
 from lizmap.widgets.project_tools import is_layer_published_wfs
+from lizmap.widgets.sortable_table import make_table_sortable
 
 
 class TableManagerDxfExport:
@@ -23,6 +24,9 @@ class TableManagerDxfExport:
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setSelectionBehavior(self.table.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(self.table.SelectionMode.SingleSelection)
+
+        # Allow sorting by clicking on a column header, like the QGIS attribute table.
+        make_table_sortable(self.table)
 
     def load_wfs_layers(self, data: dict):
         """Load all WFS-enabled layers into the table with checkboxes.
