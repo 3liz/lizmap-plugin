@@ -40,7 +40,8 @@ class LizmapProtocol(Protocol):
         name: str,
         attribution_url: str | None = None,
         attribution_name: str | None = None,
-    ): ...
+    ):
+        raise NotImplementedError("_add_base_layer")
 
 
 class BaseLayersManager(LizmapProtocol):
