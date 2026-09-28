@@ -9,11 +9,21 @@ from typing import (
     Protocol,
 )
 
-from lizmap.definitions.definitions import (
+from qgis.core import (
+    Qgis,
+    QgsLayerTreeGroup,
+    QgsProject,
+    QgsRasterLayer,
+)
+
+from ..definitions.definitions import (
+    GroupNames,
     IgnLayer,
     IgnLayers,
+    LayerProperties,
     LwcVersions,
 )
+from ..definitions.online_help import Panels
 
 if TYPE_CHECKING:
     from ..config import GlobalOptionsDefinitions
@@ -21,7 +31,9 @@ if TYPE_CHECKING:
 
 from .. import logger
 from ..toolbelt.i18n import tr
+from ..toolbelt.layer import set_layer_property
 from ..toolbelt.resources import load_icon
+from .layer_tree import LayerTreeManager
 
 
 class LizmapProtocol(Protocol):
@@ -95,6 +107,36 @@ class BaseLayersManager(LizmapProtocol):
         set_startup_baselayer_from_config(self.dlg)
 
     def configure_base_layers(self):
+
+        # Group helper
+        self.dlg.add_group_hidden.setToolTip(
+            tr(
+                "Add a group which will be hidden by default on Lizmap Web "
+                "Client. Some tables might be needed in the "
+                "QGIS projet but not needed for display on the map and in the legend."
+            )
+        )
+        self.dlg.add_group_baselayers.setToolTip(
+            tr(
+                'Add a group called "baselayers", you can organize your layers inside, '
+                "it will be displayed in a dropdown menu."
+            )
+        )
+        self.dlg.add_group_empty.setToolTip(
+            tr(
+                "Add a group which must stay empty. It will add an option in the base "
+                "layer dropdown menu and allow the default background color defined "
+                "in the project properties to be displayed."
+            )
+        )
+        self.dlg.add_group_overview.setToolTip(
+            tr("Add some layers in this group to make an overview map at a lower scale.")
+        )
+        self.dlg.add_group_hidden.clicked.connect(self.add_group_hidden)
+        self.dlg.add_group_baselayers.clicked.connect(self.add_group_baselayers)
+        self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
+        self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
+
         osm_icon = load_icon("osm-32-32.png")
         self.dlg.button_osm_mapnik.clicked.connect(partial(add_osm_mapnik, self))
         self.dlg.button_osm_mapnik.setIcon(osm_icon)
@@ -108,6 +150,97 @@ class BaseLayersManager(LizmapProtocol):
             partial(add_french_ign_layer, IgnLayers.IgnCadastre, self)
         )
 
+    def disable_legacy_empty_base_layer(self):
+        """Legacy checkbox until it's removed."""
+        # We suppose we are in LWC >= 3.7 otherwise the button is blue
+        if self.lwc_version >= LwcVersions.Lizmap_3_7:
+            self.dlg.cbAddEmptyBaselayer.setChecked(False)
+
+    def add_group_hidden(self):
+        """Add the hidden group."""
+        self._add_group_legend(GroupNames.Hidden)
+
+    def add_group_baselayers(self):
+        """Add the baselayers group."""
+        self._add_group_legend(GroupNames.BaseLayers)
+        self.disable_legacy_empty_base_layer()
+
+    def add_group_empty(self):
+        """Add the default background color."""
+        baselayers = self._add_group_legend(GroupNames.BaseLayers)
+        self._add_group_legend(GroupNames.BackgroundColor, parent=baselayers)
+        self.disable_legacy_empty_base_layer()
+
+    def add_group_overview(self):
+        """Add the overview group."""
+        label = "overview"
+        if self.lwc_version < LwcVersions.Lizmap_3_7:
+            label = "Overview"
+        self._add_group_legend(label, exclusive=False)
+
+    def _add_group_legend(
+        self,
+        label: str,
+        exclusive: bool = False,
+        parent: QgsLayerTreeGroup = None,
+        project: QgsProject = None,
+    ) -> QgsLayerTreeGroup:
+        """Add a group in the legend."""
+        if project is None:
+            project = self.project
+
+        if parent:
+            root_group = parent
+        else:
+            root_group = project.layerTreeRoot()
+
+        qgis_group = LayerTreeManager.existing_group(root_group, label)
+        if qgis_group:
+            return qgis_group
+
+        new_group = root_group.addGroup(label)
+        if exclusive:
+            new_group.setIsMutuallyExclusive(True, -1)
+        return new_group
+
+    def _add_base_layer(
+        self,
+        source: str,
+        name: str,
+        attribution_url: str | None = None,
+        attribution_name: str | None = None,
+    ):
+        """Add a base layer to the "baselayers" group."""
+        logger.info("start _add_base_layer")
+        self.add_group_baselayers()
+        logger.info("add_group_bselayers done")
+        raster = QgsRasterLayer(source, name, "wms")
+        self.project.addMapLayer(raster, False)  # False to not add it in the legend, only in the project
+
+        if attribution_url:
+            set_layer_property(raster, LayerProperties.AttributionUrl, attribution_url)
+            set_layer_property(raster, LayerProperties.DataUrl, attribution_url)
+        if attribution_name:
+            set_layer_property(raster, LayerProperties.Attribution, attribution_name)
+        root_group = self.project.layerTreeRoot()
+
+        groups = root_group.findGroups()
+        for qgis_group in groups:
+            qgis_group: QgsLayerTreeGroup
+            if qgis_group.name() == "baselayers":
+                node = qgis_group.addLayer(raster)
+                node.setExpanded(False)
+                break
+
+        self.dlg.display_message_bar(
+            tr("New layer"),
+            tr('Please close and reopen the dialog to display your layer in the tab "{tab_name}".').format(
+                tab_name=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
+            ),
+            Qgis.MessageLevel.Warning,
+        )
+
+
 
 def add_osm_mapnik(proto: LizmapProtocol):
     """Add the OSM mapnik base layer."""
@@ -119,6 +252,7 @@ def add_osm_mapnik(proto: LizmapProtocol):
 
 def add_osm_opentopomap(proto: LizmapProtocol):
     """Add the OSM OpenTopoMap base layer."""
+    logger.info("Start: Add the OSM OpenTopoMap base layer.")
     source = "type=xyz&url=https://tile.opentopomap.org/{z}/{x}/{y}.png"
     proto._add_base_layer(
         source,
