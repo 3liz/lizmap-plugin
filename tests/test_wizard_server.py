@@ -50,8 +50,11 @@ class TestWizardServer(TestCase):
     @pytest.mark.skipif(Qgis.versionInt() < 34000, reason="Require Qgis > 3.40")
     def test_server_creation_wrong_data(self):
         """Test to create a new server with wrong data only."""
+
         dialog = ServerWizard(None, [])
         dialog.show()
+
+        print("FUCK 1", flush=True)
 
         #
         # URL page

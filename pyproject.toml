@@ -32,7 +32,9 @@ dev = [
     {include-group = "lint"},
 ]
 tests = [
-    "pytest >= 5.3",
+    "pytest",
+    "pytest-qgis",
+    "semver",
     "webdavclient3",
     "psycopg[binary]",
 ]

@@ -13,6 +13,8 @@ python3 -m venv $VENV --system-site-package
 echo "Installing requirements..."
 $VENV/bin/pip install -q --no-cache -r requirements/tests.txt
 
+export PYTHONPATH="/usr/share/qgis/python/:$PYTHONPATH"
+
 cd tests && $VENV/bin/python -m pytest -v
 
 
