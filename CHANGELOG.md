@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.3 - 2026-09-30
+
+* Fix: Base layers management
+
 ## 5.0.2 - 2026-09-09
 
 * Python: Add tests coverage support
