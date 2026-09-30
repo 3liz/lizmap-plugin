@@ -22,7 +22,6 @@ from qgis.core import (
     QgsMapLayer,
     QgsMapLayerModel,
     QgsProject,
-    QgsRasterLayer,
     QgsSettings,
     QgsVectorLayer,
     QgsWkbTypes,
@@ -37,13 +36,11 @@ from qgis.PyQt.QtWidgets import (
 from .. import logger
 from ..definitions.definitions import (
     DURATION_WARNING_BAR,
-    GroupNames,
     Html,
     LayerProperties,
     LwcVersions,
     PredefinedGroup,
 )
-from ..definitions.online_help import Panels
 from ..toolbelt.convert import ambiguous_to_bool, as_boolean, cast_to_group, cast_to_layer
 from ..toolbelt.i18n import tr
 from ..toolbelt.layer import (
@@ -114,35 +111,6 @@ class LayerTreeManager(LizmapProtocol):
         self.dlg.layer_tree.itemExpanded.connect(self._on_layer_tree_group_state_changed)
         self.dlg.layer_tree.itemCollapsed.connect(self._on_layer_tree_group_state_changed)
         self.dlg.layer_search_input.textChanged.connect(self._on_layer_search_changed)
-
-        # Group helper
-        self.dlg.add_group_hidden.setToolTip(
-            tr(
-                "Add a group which will be hidden by default on Lizmap Web "
-                "Client. Some tables might be needed in the "
-                "QGIS projet but not needed for display on the map and in the legend."
-            )
-        )
-        self.dlg.add_group_baselayers.setToolTip(
-            tr(
-                'Add a group called "baselayers", you can organize your layers inside, '
-                "it will be displayed in a dropdown menu."
-            )
-        )
-        self.dlg.add_group_empty.setToolTip(
-            tr(
-                "Add a group which must stay empty. It will add an option in the base "
-                "layer dropdown menu and allow the default background color defined "
-                "in the project properties to be displayed."
-            )
-        )
-        self.dlg.add_group_overview.setToolTip(
-            tr("Add some layers in this group to make an overview map at a lower scale.")
-        )
-        self.dlg.add_group_hidden.clicked.connect(self.add_group_hidden)
-        self.dlg.add_group_baselayers.clicked.connect(self.add_group_baselayers)
-        self.dlg.add_group_empty.clicked.connect(self.add_group_empty)
-        self.dlg.add_group_overview.clicked.connect(self.add_group_overview)
 
     # Called by LizmapDialog.initGui()
     def layer_tree_init_gui(self):
@@ -537,7 +505,6 @@ class LayerTreeManager(LizmapProtocol):
             # Disable popup configuration for groups and raster
             # Disable QGIS popup for layer without geom
             is_vector = isinstance(layer, QgsVectorLayer)
-            # is_raster = isinstance(layer, QgsRasterLayer)
             # noinspection PyUnresolvedReferences
             has_geom = is_vector and layer.wkbType() != QgsWkbTypes.Type.NoGeometry
             self.dlg.btConfigurePopup.setEnabled(has_geom)
@@ -846,59 +813,6 @@ class LayerTreeManager(LizmapProtocol):
         if key == "abstract":
             set_layer_property(layer, LayerProperties.Abstract, self._layerList[layer_or_group][key])
 
-    def disable_legacy_empty_base_layer(self):
-        """Legacy checkbox until it's removed."""
-        # We suppose we are in LWC >= 3.7 otherwise the button is blue
-        if self.lwc_version >= LwcVersions.Lizmap_3_7:
-            self.dlg.cbAddEmptyBaselayer.setChecked(False)
-
-    def add_group_hidden(self):
-        """Add the hidden group."""
-        self._add_group_legend(GroupNames.Hidden)
-
-    def add_group_baselayers(self):
-        """Add the baselayers group."""
-        self._add_group_legend(GroupNames.BaseLayers)
-        self.disable_legacy_empty_base_layer()
-
-    def add_group_empty(self):
-        """Add the default background color."""
-        baselayers = self._add_group_legend(GroupNames.BaseLayers)
-        self._add_group_legend(GroupNames.BackgroundColor, parent=baselayers)
-        self.disable_legacy_empty_base_layer()
-
-    def add_group_overview(self):
-        """Add the overview group."""
-        label = "overview"
-        if self.lwc_version < LwcVersions.Lizmap_3_7:
-            label = "Overview"
-        self._add_group_legend(label, exclusive=False)
-
-    def _add_group_legend(
-        self,
-        label: str,
-        exclusive: bool = False,
-        parent: QgsLayerTreeGroup = None,
-        project: QgsProject = None,
-    ) -> QgsLayerTreeGroup:
-        """Add a group in the legend."""
-        if project is None:
-            project = self.project
-
-        if parent:
-            root_group = parent
-        else:
-            root_group = project.layerTreeRoot()
-
-        qgis_group = self.existing_group(root_group, label)
-        if qgis_group:
-            return qgis_group
-
-        new_group = root_group.addGroup(label)
-        if exclusive:
-            new_group.setIsMutuallyExclusive(True, -1)
-        return new_group
-
     @staticmethod
     def existing_group(
         root_group: QgsLayerTree,
@@ -932,38 +846,3 @@ class LayerTreeManager(LizmapProtocol):
                 return i if index else qgis_group
 
         return None
-
-    def _add_base_layer(
-        self,
-        source: str,
-        name: str,
-        attribution_url: str | None = None,
-        attribution_name: str | None = None,
-    ):
-        """Add a base layer to the "baselayers" group."""
-        self.add_group_baselayers()
-        raster = QgsRasterLayer(source, name, "wms")
-        self.project.addMapLayer(raster, False)  # False to not add it in the legend, only in the project
-
-        if attribution_url:
-            set_layer_property(raster, LayerProperties.AttributionUrl, attribution_url)
-            set_layer_property(raster, LayerProperties.DataUrl, attribution_url)
-        if attribution_name:
-            set_layer_property(raster, LayerProperties.Attribution, attribution_name)
-        root_group = self.project.layerTreeRoot()
-
-        groups = root_group.findGroups()
-        for qgis_group in groups:
-            qgis_group: QgsLayerTreeGroup
-            if qgis_group.name() == "baselayers":
-                node = qgis_group.addLayer(raster)
-                node.setExpanded(False)
-                break
-
-        self.dlg.display_message_bar(
-            tr("New layer"),
-            tr('Please close and reopen the dialog to display your layer in the tab "{tab_name}".').format(
-                tab_name=self.dlg.mOptionsListWidget.item(Panels.Layers).text()
-            ),
-            Qgis.MessageLevel.Warning,
-        )

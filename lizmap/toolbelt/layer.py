@@ -105,6 +105,14 @@ def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str
         if Qgis.versionInt() < 33800:
             return layer.abstract()
         return layer.serverProperties().abstract()
+    if item_property == LayerProperties.Attribution:
+        if Qgis.versionInt() < 33800:
+            return layer.attribution()
+        return layer.serverProperties().attribution()
+    if item_property == LayerProperties.AttributionUrl:
+        if Qgis.versionInt() < 33800:
+            return layer.attributionUrl()
+        return layer.serverProperties().attributionUrl()
     if item_property == LayerProperties.DataUrl:
         if Qgis.versionInt() < 33800:
             return layer.dataUrl()
@@ -131,6 +139,18 @@ def set_layer_property(layer: QgsVectorLayer, item_property: LayerProperties, va
             layer.setAbstract(value)
             return
         layer.serverProperties().setAbstract(value)
+        return
+    if item_property == LayerProperties.Attribution:
+        if Qgis.versionInt() < 33800:
+            layer.setAttribution(value)
+            return
+        layer.serverProperties().setAttribution(value)
+        return
+    if item_property == LayerProperties.AttributionUrl:
+        if Qgis.versionInt() < 33800:
+            layer.setAttributionUrl(value)
+            return
+        layer.serverProperties().setAttributionUrl(value)
         return
     if item_property == LayerProperties.DataUrl:
         if Qgis.versionInt() < 33800:
