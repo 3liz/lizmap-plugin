@@ -2,17 +2,22 @@
 
 from pathlib import Path
 
-from qgis.core import QgsLayerTree, QgsLayerTreeGroup, QgsProject, QgsVectorLayer
+from qgis.core import (
+    QgsLayerTree,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
+    QgsProject,
+    QgsVectorLayer,
+)
 from qgis.testing.mocked import get_iface
 
 from lizmap.definitions.definitions import GroupNames, IgnLayers, LwcVersions
 from lizmap.plugin import Lizmap
 from lizmap.plugin.baselayers import (
     add_french_ign_layer,
-    add_osm_opentopomap,
     add_osm_mapnik,
+    add_osm_opentopomap,
 )
-from lizmap.plugin.layer_tree import LayerTreeManager
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 
 from .compat import TestCase
