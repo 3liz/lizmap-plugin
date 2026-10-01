@@ -15,7 +15,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 
-from lizmap.toolbelt.layer_files import layer_local_path, scan_layer_files
+from lizmap.toolbelt.layer_files import is_remote_source, layer_local_path, scan_layer_files
 
 
 @pytest.fixture()
@@ -70,6 +70,53 @@ def raster_layer(uri: str) -> QgsRasterLayer:
     layer = QgsRasterLayer(uri, "layer", "gdal")
     assert layer.isValid(), uri
     return layer
+
+
+#
+# is_remote_source()
+#
+
+
+@pytest.mark.parametrize(
+    "components",
+    [
+        # QGIS 3.34, the VSI prefix is kept in the path
+        {"path": "/vsicurl/https://demo.snap.lizmap.com/lizmap/cog/raster.tif"},
+        {"path": "/vsis3/bucket/raster.tif"},
+        {"path": "/VSICURL/https://demo.snap.lizmap.com/lizmap/cog/raster.tif"},
+        # QGIS 3.40, the VSI prefix is split into vsiPrefix
+        {"path": "https://demo.snap.lizmap.com/lizmap/cog/raster.tif", "vsiPrefix": "/vsicurl/"},
+        {"path": "bucket/raster.tif", "vsiPrefix": "/vsis3/"},
+        # Plain remote URL handed to GDAL, without any VSI prefix
+        {"path": "https://demo.snap.lizmap.com/lizmap/cog/raster.tif"},
+    ],
+)
+def test_remote_source(components):
+    """Test remote sources are detected, whatever the QGIS version decoding the URI."""
+    assert is_remote_source(components)
+
+
+@pytest.mark.parametrize(
+    "components",
+    [
+        {"path": "/home/user/data/raster.tif"},
+        {"path": "../parent_dir/raster.tif"},
+        {"path": "C:\\data\\raster.tif"},
+        # Local archive, it must still be checked like any local file
+        {"path": "/vsizip//tmp/archive.zip/points.shp"},
+        {"path": "/tmp/archive.zip", "vsiPrefix": "/vsizip/", "vsiSuffix": "/points.shp"},
+        {},
+    ],
+)
+def test_not_remote_source(components):
+    """Test local sources, including local VSI archives, are not detected as remote."""
+    assert not is_remote_source(components)
+
+
+def test_remote_source_decoded_by_qgis(registry):
+    """Test with the components really returned by the QGIS version running the tests."""
+    components = registry.decodeUri("gdal", "/vsicurl/https://demo.snap.lizmap.com/lizmap/cog/raster.tif")
+    assert is_remote_source(components)
 
 
 #
