@@ -28,6 +28,16 @@ NETWORK_VSI_PREFIXES = (
 )
 
 
+def is_remote_source(components: dict) -> bool:
+    """True if decoded URI components point to an online resource (COG, S3, plain URL...).
+    Depending on the QGIS version, decodeUri() either keeps the /vsi prefix in 'path'
+    (3.34) or splits it into 'vsiPrefix' (3.40+).
+    """
+    path = components.get("path") or ""
+    prefix = components.get("vsiPrefix") or ""
+    return prefix in NETWORK_VSI_PREFIXES or path.lower().startswith(NETWORK_VSI_PREFIXES) or "://" in path
+
+
 def layer_local_path(
     registry: QgsProviderRegistry,
     layer: QgsMapLayer,
@@ -44,11 +54,7 @@ def layer_local_path(
     if not path:
         return None
 
-    if components.get("vsiPrefix", "") in NETWORK_VSI_PREFIXES:
-        return None
-
-    if "://" in path:
-        # Plain remote URL handed to GDAL, no /vsicurl/ prefix
+    if is_remote_source(components):
         return None
 
     try:

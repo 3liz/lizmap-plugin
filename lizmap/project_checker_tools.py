@@ -27,6 +27,7 @@ from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
 from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_vector_pg, update_uri
+from lizmap.toolbelt.layer_files import is_remote_source
 from lizmap.widgets.check_project import (
     RASTER_COUNT_CELL,
     Checks,
@@ -119,9 +120,8 @@ def project_safeguards_checks(
 
         layer_path = Path(components['path'])
 
-        layer_path_lower = str(layer_path).lower()
-        if layer_path_lower.startswith(('/vsi', '\\vsi')):
-            continue  # online layer via GDAL virtual filesystem (COG, S3, GCS, Azure...)
+        if is_remote_source(components):
+            continue  # online layer (COG, S3, GCS, Azure...)
 
         try:
             relative_path = relpath(layer_path, project_home)
