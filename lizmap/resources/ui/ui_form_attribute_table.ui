@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>554</width>
-    <height>390</height>
+    <height>558</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,118 +26,133 @@
      <item row="0" column="1">
       <widget class="QgsMapLayerComboBox" name="layer"/>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_primary_key">
-       <property name="text">
-        <string>Primary key</string>
+     <item row="9" column="1">
+      <widget class="QGroupBox" name="export_enabled">
+       <property name="title">
+        <string>Export</string>
        </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsFieldComboBox" name="primary_key"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_fields_to_hide">
-       <property name="text">
-        <string>Fields to hide</string>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="ListFieldsSelection" name="fields_to_hide"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_pivot_table">
-       <property name="text">
-        <string>Pivot table</string>
+       <property name="checked">
+        <bool>false</bool>
        </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="pivot_table">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_hide_subpanels">
-       <property name="text">
-        <string>Hide in child subpanels</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="hide_subpanels">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_hide_layer">
-       <property name="text">
-        <string>Hide layer in the list</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="hide_layer">
-       <property name="toolTip">
-        <string>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_has_custom_config">
-       <property name="text">
-        <string notr="true">Has a custom config</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QCheckBox" name="has_custom_config">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_export_allowed_groups">
-       <property name="text">
-        <string>Export allowed groups</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QCheckBox" name="export_enabled">
-       <property name="text">
-        <string/>
-       </property>
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_export_allowed_groups">
+          <property name="text">
+           <string>Export allowed groups</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLineEdit" name="allowed_groups"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="button_wizard_group">
+            <property name="text">
+             <string notr="true">WIZARD</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1">
+         <widget class="QgsCheckableComboBox" name="export_formats"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_export_formats">
+          <property name="text">
+           <string>Export formats</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
      <item row="8" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLineEdit" name="allowed_groups"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="button_wizard_group">
-         <property name="text">
-          <string notr="true">WIZARD</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_export_enabled">
-       <property name="text">
-        <string>Export enabled</string>
+      <widget class="QGroupBox" name="hides_group_box">
+       <property name="title">
+        <string>Hide attribute table</string>
        </property>
+       <layout class="QFormLayout" name="formLayout_3">
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="hide_subpanels">
+          <property name="text">
+           <string>Hide in child subpanels</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="hide_layer">
+          <property name="toolTip">
+           <string>No button &quot;Detail&quot; will be shown in Lizmap to open the attribute table, but related features such as selection and filter will be available.</string>
+          </property>
+          <property name="text">
+           <string>Hide layer in the list</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QGroupBox" name="layer_config_group_box">
+       <property name="title">
+        <string>Layer config</string>
+       </property>
+       <layout class="QFormLayout" name="formLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_primary_key">
+          <property name="text">
+           <string>Primary key</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QgsFieldComboBox" name="primary_key"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_fields_to_hide">
+          <property name="text">
+           <string>Fields to hide</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="ListFieldsSelection" name="fields_to_hide"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_pivot_table">
+          <property name="text">
+           <string>Pivot table</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="pivot_table">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_has_custom_config">
+          <property name="text">
+           <string notr="true">Has a custom config</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QCheckBox" name="has_custom_config">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>
@@ -161,7 +176,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Help|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -171,12 +186,12 @@
   <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>ListFieldsSelection</class>
