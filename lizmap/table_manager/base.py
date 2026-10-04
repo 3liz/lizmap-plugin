@@ -1073,7 +1073,28 @@ class TableManager:
                         ):
                             layer_data[key] = AggregationType.No.value["data"]
                         elif definition["type"] == InputType.List and default_value != "":
-                            layer_data[key] = default_value.value["data"]
+                            multiple_selection = definition.get("multiple_selection", False)
+                            if multiple_selection:
+                                if isinstance(default_value, (list,tuple)):
+                                    if len(default_value) != 0:
+                                        layer_data[key] = []
+                                        for default_value_item in default_value:
+                                            if isinstance(default_value_item, Enum):
+                                                layer_data[key] = [default_value_item.value["data"]]
+                                            else:
+                                                layer_data[key] = [default_value_item]
+                                    else:
+                                        layer_data[key] = "" # default value that will pop the key
+                                else:
+                                    if isinstance(default_value, Enum):
+                                        layer_data[key] = default_value.value["data"]
+                                    else:
+                                        layer_data[key] = default_value
+                            else:
+                                if isinstance(default_value, Enum):
+                                    layer_data[key] = default_value.value["data"]
+                                else:
+                                    layer_data[key] = default_value
                         else:
                             layer_data[key] = default_value
                     elif default_value is not None and callable(default_value):
