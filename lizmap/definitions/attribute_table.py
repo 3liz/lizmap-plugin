@@ -1,5 +1,7 @@
 """Definitions for attribute table."""
 
+from enum import Enum, unique
+
 from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
 
 from lizmap.definitions.base import BaseDefinitions, InputType
@@ -9,6 +11,53 @@ from lizmap.toolbelt.i18n import tr
 __copyright__ = "Copyright 2025, 3Liz"
 __license__ = "GPL version 3"
 __email__ = "info@3liz.org"
+
+@unique
+class FormatType(Enum):
+    Geojson = {
+        "data": "geojson",
+        "label": tr("GeoJSON"),
+    }
+    Gml = {
+        "data": "gml",
+        "label": tr("GML"),
+    }
+    Shp = {
+        "data": "shp",
+        "label": tr("Zipped SHP"),
+    }
+    Tab = {
+        "data": "tab",
+        "label": tr("Zipped TAB"),
+    }
+    Mif = {
+        "data": "mif",
+        "label": tr("Zipped MIF"),
+    }
+    Kml = {
+        "data": "kml",
+        "label": tr("KML"),
+    }
+    Gpkg = {
+        "data": "gpkg",
+        "label": tr("GPKG"),
+    }
+    Fgb = {
+        "data": "fgb",
+        "label": tr("FGB"),
+    }
+    Ods = {
+        "data": "ods",
+        "label": tr("ODS"),
+    }
+    Xlsx = {
+        "data": "xlsx",
+        "label": tr("XLSX"),
+    }
+    Csv = {
+        "data": "csv",
+        "label": tr("CSV"),
+    }
 
 
 def layer_has_custom_attribute_table(layer: QgsVectorLayer) -> bool:
@@ -56,6 +105,18 @@ class AttributeTableDefinitions(BaseDefinitions):
             "default": "",
             "tooltip": tr(
                 "Allowed list of groups for exporting the data. If empty, everyone can export the data."
+            ),
+            "version": LwcVersions.Lizmap_3_9,
+            "use_json": True,
+        }
+        self._layer_config["export_formats"] = {
+            "type": InputType.List,
+            "multiple_selection": True,
+            "header": tr("Allowed formats for export"),
+            "default": (),
+            "items": FormatType,
+            "tooltip": tr(
+                "Allowed list of formats for exporting the data. If empty, every formats will be proposed."
             ),
             "version": LwcVersions.Lizmap_3_9,
             "use_json": True,

@@ -51,6 +51,51 @@ class TestEditionDialog(TestCase):
             d = dialog()
             assert not d.error.isVisible()
 
+    def test_attribute_table_dialog(self, layer: QgsVectorLayer):
+        """Test attribute table dialog."""
+        dialog = AttributeTableEditionDialog()
+        self.assertFalse(dialog.error.isVisible())
+
+        self.assertEqual(dialog.layer.count(), 2)
+        self.assertEqual(dialog.layer.currentIndex(), 0)
+        if layer.id() != dialog.layer.currentLayer().id():
+            dialog.layer.setLayer(layer)
+        self.assertEqual(dialog.layer.currentLayer().id(), layer.id())
+        self.assertEqual(dialog.primary_key.currentField(), "id")
+
+        self.assertEqual(dialog.export_formats.count(), 11)
+
+        self.assertEqual(
+            'The layers you have chosen for this tool must be checked in the "WFS Capabilities"\n option of the QGIS '
+            'Server tab in the "Project Properties" dialog.',
+            dialog.validate(),
+        )
+        data = dialog.save_form()
+        self.assertEqual(len(data), len(dialog.config.layer_config.keys()))
+
+        for key, value in data.items():
+            if key == "layerId":
+                self.assertEqual(value, layer.id())
+            elif key == "primaryKey":
+                self.assertEqual(value, "id")
+            elif key in ["hiddenFields", "export_allowed_groups"]:
+                self.assertEqual(value, "")
+            elif key in ["export_enabled"]:
+                self.assertTrue(value)
+            elif key in ["export_formats"]:
+                self.assertTrue(len(data.get("export_formats")) == 0)
+            elif key in ["pivot", "hideAsChild", "hideLayer", "custom_config", "limitDataToBbox"]:
+                self.assertFalse(value)
+
+        self.assertTrue(len(dialog.export_formats.checkedItemsData()) == 0)
+        dialog.export_formats.setCheckedItems(["GeoJSON", "GML"])
+        self.assertTrue(len(dialog.export_formats.checkedItemsData()) == 2)
+
+        data = dialog.save_form()
+        self.assertTrue(data.get("export_formats") is not None)
+        self.assertTrue(len(data.get("export_formats")) == 2)
+        self.assertEqual(data.get("export_formats"), ['geojson', 'gml'])
+
     def test_load_save_collection_dataviz(self):
         """Test we can load collection."""
         dialog = DatavizEditionDialog()
@@ -83,6 +128,11 @@ class TestEditionDialog(TestCase):
         dialog = AtlasEditionDialog()
         self.assertFalse(dialog.error.isVisible())
 
+        self.assertEqual(dialog.layer.count(), 2)
+        self.assertEqual(dialog.layer.currentIndex(), 0)
+        if layer.id() != dialog.layer.currentLayer().id():
+            dialog.layer.setLayer(layer)
+        self.assertEqual(dialog.layer.currentLayer().id(), layer.id())
         self.assertEqual(dialog.primary_key.currentField(), "id")
 
         self.assertEqual(
