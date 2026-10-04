@@ -8,6 +8,7 @@ import logging
 import os
 
 from collections import namedtuple
+from enum import Enum
 from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
@@ -1033,11 +1034,13 @@ class TableManager:
                         items = definition.get("items")
                         multiple_selection = definition.get("multiple_selection", False)
                         if multiple_selection:
-                            layer_data[key] = ""
+                            layer_data[key] = []
                             for single_value in value:
                                 for item_enum in items:
                                     if item_enum.value["data"] == single_value:
-                                        layer_data[key] += single_value
+                                        layer_data[key] += [single_value]
+                            if isinstance(value, tuple):
+                                layer_data[key] = (*layer_data[key],)
                         else:
                             # Single value
                             if items:
