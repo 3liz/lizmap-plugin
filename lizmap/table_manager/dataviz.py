@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
     QgsApplication,
@@ -55,7 +55,7 @@ class TableManagerDataviz(TableManager):
         self,
         parent: LizmapDialog,
         definitions: BaseDefinitions,
-        edition: QDialog | None,
+        edition: Optional[QDialog],
         table: QWidget,
         edit_button: QAbstractButton,
         up_button: QAbstractButton,
@@ -305,7 +305,7 @@ class TableManagerDataviz(TableManager):
         # Only when we are all good, we display the final tab
         self.parent.stacked_dataviz_preview.setCurrentWidget(self.parent.html_content)
 
-    def dataviz_expression_filter(self, layer_id: str) -> str | None:
+    def dataviz_expression_filter(self, layer_id: str) -> Optional[str]:
         """Return the expression filter if possible."""
         project = QgsProject.instance()
         layer = project.mapLayer(layer_id)

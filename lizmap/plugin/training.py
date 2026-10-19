@@ -13,6 +13,7 @@ from functools import partial
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
+    Optional,
     Protocol,
 )
 
@@ -212,7 +213,7 @@ class TrainingManager(LizmapProtocol):
         auth_manager.loadAuthenticationConfig(auth_id, conf, True)
         return conf.config("username")
 
-    def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Path | None:
+    def training_folder_destination(self, workshop_type: str = WorkshopType.ZipFile) -> Optional[Path]:
         """Destination folder where to store the data."""
         if workshop_type == WorkshopType.IndividualQgsFile:
             output = Path(self.dlg.path_training_folder_qgs.filePath())

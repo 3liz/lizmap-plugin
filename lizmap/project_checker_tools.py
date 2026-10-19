@@ -4,6 +4,7 @@ import html
 
 from os.path import relpath
 from pathlib import Path
+from typing import Optional
 
 from psycopg2 import connect, sql
 from qgis.core import (
@@ -190,7 +191,7 @@ def project_tos_layers(project: QgsProject, google_check: bool, bing_check: bool
     return layers
 
 
-def auto_generated_primary_key_field(layer: QgsVectorLayer) -> tuple[bool, str | None]:
+def auto_generated_primary_key_field(layer: QgsVectorLayer) -> tuple[bool, Optional[str]]:
     """ If the primary key has been detected as tid/ctid but the field does not exist. """
     # In QGIS source code, look for "Primary key is ctid"
 
@@ -262,7 +263,7 @@ def duplicated_layer_name_or_group(project: QgsProject) -> dict:
     return _duplicated_layer_name_or_group(project.layerTreeRoot(), result)
 
 
-def _split_layer_uri(provider: str, source: str) -> tuple[str, str | None]:
+def _split_layer_uri(provider: str, source: str) -> tuple[str, Optional[str]]:
     """ Split the base URI from the filter part. """
     uri = QgsDataSourceUri(source)
     uri_filter = uri.sql()
@@ -284,7 +285,7 @@ def _split_layer_uri(provider: str, source: str) -> tuple[str, str | None]:
     return base_uri_string, uri_filter
 
 
-def duplicated_layer_with_filter(project: QgsProject) -> dict[str, dict[str, str]] | None:
+def duplicated_layer_with_filter(project: QgsProject) -> Optional[dict[str, dict[str, str]]]:
     """ Check for duplicated layers with the same datasource but with filters. """
     # Function not used anymore, temporary replaced by the function below
     unique_datasource = {}
@@ -596,7 +597,7 @@ def _clean_result(results: dict) -> dict:
     return data
 
 
-def table_type(layer: QgsVectorLayer) -> QgsAbstractDatabaseProviderConnection.TableFlag | None:
+def table_type(layer: QgsVectorLayer) -> Optional[QgsAbstractDatabaseProviderConnection.TableFlag]:
     """ Check the vector layer if it's a view. """
     datasource = layer.dataProvider().uri()
 

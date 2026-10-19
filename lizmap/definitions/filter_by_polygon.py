@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum, unique
+from typing import Optional
 
 from psycopg2 import connect, sql
 from qgis.core import (
@@ -128,7 +129,7 @@ class FilterByPolygonDefinitions(BaseDefinitions):
         }
 
     @classmethod
-    def has_spatial_centroid_index(cls, layer: QgsVectorLayer) -> tuple[bool, str | None]:
+    def has_spatial_centroid_index(cls, layer: QgsVectorLayer) -> tuple[bool, Optional[str]]:
         """Check if the layer has a spatial index on the centroid."""
         datasource = QgsDataSourceUri(layer.source())
 

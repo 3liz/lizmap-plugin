@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsMapLayerProxyModel
 
@@ -25,9 +25,9 @@ CLASS = load_ui("ui_form_filter_by_login.ui")
 class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: LizmapDialog | None = None,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        parent: Optional[LizmapDialog] = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -69,7 +69,7 @@ class FilterByLoginEditionDialog(BaseEditionDialog, CLASS):
             # Only enable it if the layer is stored in PostgreSQL
             self.allow_multiple.setEnabled(True)
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream

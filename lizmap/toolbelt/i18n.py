@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsSettings
 from qgis.PyQt.QtCore import QLocale
@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 
 def setup_translation(
     file_pattern: str = "{}.qm",
-    folder: Path | None = None,
-) -> tuple[str, Path | None]:
+    folder: Optional[Path] = None,
+) -> tuple[str, Optional[Path]]:
     """Find the translation file according to locale.
 
     :param file_pattern: Custom file pattern to use to find QM files.

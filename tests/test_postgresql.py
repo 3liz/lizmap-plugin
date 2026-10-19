@@ -1,3 +1,5 @@
+from typing import Optional
+
 import psycopg
 import pytest
 
@@ -91,7 +93,7 @@ class TestSql(TestCase):
         self,
         table_name: str,
         prefix: str = "",
-        pk: str | None = None,
+        pk: Optional[str] = None,
     ) -> QgsVectorLayer:
         """Helper to have the QgsVectorLayer."""
         uri = QgsDataSourceUri(self.uri())

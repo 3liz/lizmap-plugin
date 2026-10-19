@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from qgis.core import (
     QgsMapLayerModel,
     QgsMarkerSymbol,
@@ -160,8 +162,8 @@ class Check:
         level: Level,
         severity: Severity,
         icon: QIcon,
-        alt_description_lizmap_cloud: str | None = None,
-        alt_help_lizmap_cloud: str | None = None,
+        alt_description_lizmap_cloud: Optional[str] = None,
+        alt_help_lizmap_cloud: Optional[str] = None,
         export_in_json: bool = True,
     ):
         self.data = data
@@ -836,7 +838,7 @@ class SourceType:
 class Error:
     """An error is defined by a check and a source."""
 
-    def __init__(self, source: str, check: Check, source_type: type[Source] | None = None):
+    def __init__(self, source: str, check: Check, source_type: Optional[type[Source]] = None):
         self.source = source
         self.check = check
         self.source_type = source_type
@@ -945,8 +947,8 @@ class TableCheck(QTableWidget):
         self,
         error: Error,
         lizmap_cloud: bool = False,
-        severity: Severity | None = None,
-        icon: QIcon | None = None,
+        severity: Optional[Severity] = None,
+        icon: Optional[QIcon] = None,
     ):
         """Add an error in the table."""
         # By default, let's take the one in the error

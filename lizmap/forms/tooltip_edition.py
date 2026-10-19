@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Optional
+
 from qgis.core import QgsMapLayerProxyModel, QgsWkbTypes
 from qgis.PyQt.QtGui import QColor, QIcon
 from qgis.PyQt.QtWidgets import QMessageBox, QWidget
@@ -19,9 +21,9 @@ CLASS = load_ui("ui_form_tooltip.ui")
 class ToolTipEditionDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: QWidget | None = None,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        parent: Optional[QWidget] = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -124,7 +126,7 @@ class ToolTipEditionDialog(BaseEditionDialog, CLASS):
         if self.display_layer_style.isChecked() and self.display_geometry.isChecked():
             self.display_geometry.setChecked(False)
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream
