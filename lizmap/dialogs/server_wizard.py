@@ -8,7 +8,7 @@ import sys
 from base64 import b64encode
 from enum import IntEnum, auto
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
@@ -82,7 +82,7 @@ class WizardPages(IntEnum):
 class UrlPage(QWizardPage):
     """Server URL page."""
 
-    def __init__(self, url: str, parent: QWidget | None = None):
+    def __init__(self, url: str, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("URL of the instance"))
 
@@ -167,7 +167,7 @@ class UrlPage(QWizardPage):
 class LoginPasswordPage(QWizardPage):
     """Login and password for the server."""
 
-    def __init__(self, auth_id: str, parent: QWidget | None = None):
+    def __init__(self, auth_id: str, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("Login and password of the instance"))
 
@@ -276,7 +276,7 @@ class LoginPasswordPage(QWizardPage):
 class NamePage(QWizardPage):
     """Alias for the server."""
 
-    def __init__(self, name: str = "", parent: QWidget | None = None):
+    def __init__(self, name: str = "", parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("Name of your instance"))
 
@@ -322,7 +322,7 @@ class NamePage(QWizardPage):
 class MasterPasswordPage(QWizardPage):
     """Save credentials in the QGIS password manager."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("QGIS Password manager"))
 
@@ -378,7 +378,7 @@ class MasterPasswordPage(QWizardPage):
 class AddOrNotPostgresqlPage(QWizardPage):
     """Question for PostgreSQL connection."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         LOGGER.debug("Page : Add the PostgreSQL connection delivered with Lizmap")
         self.setTitle(tr("PostgreSQL"))
@@ -468,7 +468,7 @@ class AddOrNotPostgresqlPage(QWizardPage):
 class PostgresqlPage(QWizardPage):
     """Wizard for the PostgreSQL connection."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("Adding a PostgreSQL connection"))
         self.setSubTitle("PostgreSQL database provided with the Lizmap instance")
@@ -592,7 +592,7 @@ class PostgresqlPage(QWizardPage):
 class SuggestionNewFolderPage(QWizardPage):
     """Question for the first folder."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("Create the first folder"))
         self.setSubTitle(tr("A folder can contain one or many QGIS projects"))
@@ -645,7 +645,7 @@ class SuggestionNewFolderPage(QWizardPage):
 class CreateNewFolderDavPage(QWizardPage):
     """Wizard for the first folder creation."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("New folder"))
 
@@ -737,7 +737,7 @@ class CreateNewFolderDavPage(QWizardPage):
 class LizmapNewRepositoryPage(QWizardPage):
     """Web-browser step for the Lizmap repository creation."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setTitle(tr("Create a Lizmap repository"))
 
@@ -815,7 +815,7 @@ class LizmapNewRepositoryPage(QWizardPage):
 class BaseWizard(QWizard):
     """Base wizard class."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         # noinspection PyArgumentList
         super().__init__(parent)
         self.setWindowTitle(tr("Lizmap Web Client instance"))
@@ -829,7 +829,7 @@ class BaseWizard(QWizard):
         self.helpRequested.connect(self.open_online_help)
 
     @classmethod
-    def auth_id_to_login(cls, auth_id: str) -> tuple[str, str] | None:
+    def auth_id_to_login(cls, auth_id: str) -> Optional[tuple[str, str]]:
         """Retrieve login and password from an auth ID."""
         conf = QgsAuthMethodConfig()
         # noinspection PyArgumentList
@@ -868,10 +868,10 @@ class ServerWizard(BaseWizard):
 
     def __init__(
         self,
-        parent: QWidget | None = None,
-        existing: list | None = None,
+        parent: Optional[QWidget] = None,
+        existing: Optional[list] = None,
         url: str = "",
-        auth_id: str | None = None,
+        auth_id: Optional[str] = None,
         name: str = "",
     ):
         # noinspection PyArgumentList
@@ -1056,7 +1056,7 @@ class ServerWizard(BaseWizard):
         LOGGER.debug("Server saved in the JSON file")
 
     @classmethod
-    def override_url(cls, base_url: str, metadata: bool = True) -> str | None:
+    def override_url(cls, base_url: str, metadata: bool = True) -> Optional[str]:
         """Override URL if the file is specified."""
         ini = lizmap_user_folder().joinpath("urls.ini")
         if not ini.exists():
@@ -1267,12 +1267,12 @@ class CreateFolderWizard(BaseWizard):
 
     def __init__(
         self,
-        parent: QWidget | None = None,
-        webdav_server: str | None = None,
-        auth_id: str | None = None,
-        url: str | None = None,
-        user: str | None = None,
-        password: str | None = None,
+        parent: Optional[QWidget] = None,
+        webdav_server: Optional[str] = None,
+        auth_id: Optional[str] = None,
+        url: Optional[str] = None,
+        user: Optional[str] = None,
+        password: Optional[str] = None,
     ):
         # noinspection PyArgumentList
         super().__init__(parent)

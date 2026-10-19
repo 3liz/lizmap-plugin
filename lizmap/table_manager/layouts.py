@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -27,9 +27,9 @@ class TableManagerLayouts(TableManager):
 
     def __init__(
         self,
-        parent: QWidget | None,
+        parent: Optional[QWidget],
         definitions: BaseDefinitions,
-        edition: QDialog | None,
+        edition: Optional[QDialog],
         table: QWidget,
         edit_button: QAbstractButton,
         up_button: QAbstractButton,

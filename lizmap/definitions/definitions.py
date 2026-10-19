@@ -7,6 +7,7 @@ from functools import cached_property, total_ordering
 from types import SimpleNamespace
 from typing import (
     NamedTuple,
+    Optional,
 )
 
 from qgis.PyQt.QtCore import Qt
@@ -49,7 +50,7 @@ class LwcVersions(Enum):
         return next(iter(LwcVersions))
 
     @classmethod
-    def find(cls, version_string: str) -> LwcVersions | None:
+    def find(cls, version_string: str) -> Optional[LwcVersions]:
         """Return the LWC version for the given string."""
         major, minor = version_string.split(".", maxsplit=2)[:2]
         branch = f"{major}.{minor}"
@@ -59,7 +60,7 @@ class LwcVersions(Enum):
             return None
 
     @classmethod
-    def find_from_metadata(cls, metadata: dict) -> LwcVersions | None:
+    def find_from_metadata(cls, metadata: dict) -> Optional[LwcVersions]:
         """Return the release status from metadata."""
         version = metadata.get("info").get("version")
         return LwcVersions.find(version)

@@ -7,6 +7,7 @@ __email__ = "info@3liz.org"
 import logging
 
 from collections import namedtuple
+from typing import Optional
 
 from pyplugin_installer import instance
 from qgis.PyQt.QtCore import QDate, QDateTime, QLocale, Qt
@@ -70,7 +71,7 @@ class QgisPluginManager:
                     name=plugin, version=None, date=QDate(), template=f"{plugin} - Unknown"
                 )
 
-    def current_plugin_needs_update(self) -> bool | None:
+    def current_plugin_needs_update(self) -> Optional[bool]:
         """Return if the plugin is less than a few days late."""
         current_version = version()
         if current_version in DEV_VERSION_PREFIX:

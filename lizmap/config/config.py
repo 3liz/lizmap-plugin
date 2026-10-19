@@ -6,6 +6,7 @@ import os
 from typing import (
     TYPE_CHECKING,
     Any,
+    Optional,
 )
 
 from qgis.core import QgsMapLayer, QgsProject
@@ -50,7 +51,7 @@ class LizmapConfig:
             raise LizmapConfigError("Error reading qgis project")
         return project
 
-    def get_layer_by_name(self, name: str) -> QgsMapLayer | None:
+    def get_layer_by_name(self, name: str) -> Optional[QgsMapLayer]:
         """Return a unique layer by its name"""
         matches = self.project.mapLayersByName(name)
         if len(matches) > 0:
@@ -59,9 +60,9 @@ class LizmapConfig:
 
     def to_json(
         self,
-        p_global_options: Mapping[str, Any] | None = None,
-        p_layer_options: Mapping[str, Any] | None = None,
-        p_attributes_options: Mapping[str, Any] | None = None,
+        p_global_options: Optional[Mapping[str, Any]] = None,
+        p_layer_options: Optional[Mapping[str, Any]] = None,
+        p_attributes_options: Optional[Mapping[str, Any]] = None,
         sort_keys: bool = False,
         indent: int = 4,
         **kwargs,
@@ -88,7 +89,7 @@ class LizmapConfig:
         # Write json to the cfg file
         return json.dumps(config, sort_keys=sort_keys, indent=indent, **kwargs)
 
-    def set_global_options(self, options: Mapping[str, Any] | None = None):
+    def set_global_options(self, options: Optional[Mapping[str, Any]] = None):
         """Set the global lizmap configuration options"""
         # set defaults
         self._global_options = {
@@ -173,7 +174,7 @@ class LizmapConfig:
         self._layer_options[lid] = lo
         return lo
 
-    def set_layer_options(self, p_layer_options: Mapping[str, Any] | None = None):
+    def set_layer_options(self, p_layer_options: Optional[Mapping[str, Any]] = None):
         """Set the configuration options for the the project layers
 
         :param p_layer_options: dict of options for each layers
@@ -251,10 +252,10 @@ class LizmapConfig:
     # noinspection PyPep8Naming
     def configure_server_options(
         self,
-        WMSTitle: str | None = None,
-        WMSDescription: str | None = None,
+        WMSTitle: Optional[str] = None,
+        WMSDescription: Optional[str] = None,
         WFSLayersPrecision: int = 6,
-        WMSExtent: Sequence[int] | None = None,
+        WMSExtent: Optional[Sequence[int]] = None,
     ):
         """Configure server options for layers in the qgis project
 

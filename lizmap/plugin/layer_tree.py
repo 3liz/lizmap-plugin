@@ -10,6 +10,7 @@ import os
 from typing import (
     TYPE_CHECKING,
     Any,
+    Optional,
     Protocol,
 )
 
@@ -317,7 +318,7 @@ class LayerTreeManager(LizmapProtocol):
         self,
         myDic: dict,
         node: QgsLayerTreeNode,
-        parent_node: QTreeWidgetItem | None,
+        parent_node: Optional[QTreeWidgetItem],
         json_layers: dict,
     ):
         """
@@ -633,7 +634,7 @@ class LayerTreeManager(LizmapProtocol):
                 wms_enabled = True
         return wms_enabled
 
-    def _current_item_predefined_group(self) -> PredefinedGroup | None:
+    def _current_item_predefined_group(self) -> Optional[PredefinedGroup]:
         """Get the current group type."""
         item = self.dlg.layer_tree.currentItem()
         if not item:
@@ -645,7 +646,7 @@ class LayerTreeManager(LizmapProtocol):
 
         return item.data(0, Qt.ItemDataRole.UserRole + 1)
 
-    def _current_selected_item_in_config(self) -> str | None:
+    def _current_selected_item_in_config(self) -> Optional[str]:
         """Either a group or a layer name."""
         item = self.dlg.layer_tree.currentItem()
         if not item:
@@ -657,7 +658,7 @@ class LayerTreeManager(LizmapProtocol):
 
         return text
 
-    def _current_selected_layer(self) -> QgsMapLayer | None:
+    def _current_selected_layer(self) -> Optional[QgsMapLayer]:
         """Current selected map layer in the tree."""
         lid = self._current_selected_item_in_config()
         if not lid:
@@ -733,7 +734,7 @@ class LayerTreeManager(LizmapProtocol):
             self._restore_layer_tree_group_states()
             self.dlg._ignore_layer_tree_state = False
 
-    def get_qgis_layer_by_id(self, my_id: str) -> QgsMapLayer | None:
+    def get_qgis_layer_by_id(self, my_id: str) -> Optional[QgsMapLayer]:
         """Get a QgsMapLayer by its ID."""
         return self.project.mapLayers().get(my_id, None)
 
@@ -818,7 +819,7 @@ class LayerTreeManager(LizmapProtocol):
         root_group: QgsLayerTree,
         label: str,
         index: bool = False,
-    ) -> QgsLayerTreeGroup | int | None:
+    ) -> QgsLayerTreeGroup | Optional[int]:
         """Return the existing group in the legend if existing.
 
         It will either return the group itself if found, or its index.
