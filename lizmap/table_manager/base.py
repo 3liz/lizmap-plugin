@@ -696,6 +696,9 @@ class TableManager:
                 traces = layer_data.pop("traces")
                 for j, trace in enumerate(traces):
                     for key in trace:
+                        if key == "trace_aggregation":
+                            # The aggregation by trace is not supported by this version
+                            continue
                         definition = self.definitions.layer_config[key]
                         if j == 0:
                             json_key = definition["plural"].format("")
@@ -867,7 +870,14 @@ class TableManager:
 
     @staticmethod
     def _from_json_legacy_dataviz(data):
-        """Read legacy dataviz without the trace config."""
+        """Read legacy dataviz without the trace config.
+
+        The legacy Y fields are converted to traces, and the traces without
+        aggregation get the aggregation of the chart.
+
+        :param data: The dataviz configuration read from the CFG file
+        :return: The dataviz configuration with traces
+        """
 
         # Todo, we should read the definition file
         legacy = [
@@ -908,6 +918,16 @@ class TableManager:
                     if not missing_field:
                         # We skip if Y field is missing
                         layer["traces"].append(one_trace)
+
+        # The aggregation is now configured for each trace:
+        # the traces without aggregation get the aggregation of the chart
+        for layer in data.get("layers"):
+            aggregation = layer.get("aggregation")
+            if aggregation is None:
+                continue
+            for trace in layer.get("traces", []):
+                if "trace_aggregation" not in trace:
+                    trace["trace_aggregation"] = aggregation
 
         return data
 

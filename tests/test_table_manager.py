@@ -447,6 +447,7 @@ class TestTableManager(TestCase):
                             "y_field": "name",
                             "color": "#00aaff",
                             "colorfield": "",
+                            "trace_aggregation": "",
                         }
                     ],
                 }
@@ -527,6 +528,7 @@ class TestTableManager(TestCase):
                             "y_field": "name",
                             "color": "#00aaff",
                             "colorfield": "",
+                            "trace_aggregation": "",
                         }
                     ],
                 }
@@ -553,11 +555,13 @@ class TestTableManager(TestCase):
                         "y_field": "name",
                         "color": "#00aaff",
                         "colorfield": "",
+                        "trace_aggregation": "",
                     },
                     {
                         "y_field": "name",
                         "color": "#ffaa00",
                         "colorfield": "",
+                        "trace_aggregation": "",
                     },
                 ],
                 "stacked": "False",
@@ -676,11 +680,13 @@ class TestTableManager(TestCase):
                             "y_field": "name",
                             "color": "#00aaff",
                             "colorfield": "",
+                            "trace_aggregation": "",
                         },
                         {
                             "y_field": "name",
                             "color": "#ffaa00",
                             "colorfield": "",
+                            "trace_aggregation": "",
                         },
                     ],
                 }
@@ -706,11 +712,13 @@ class TestTableManager(TestCase):
                         "y_field": "name",
                         "color": "#00aaff",
                         "colorfield": "",
+                        "trace_aggregation": "",
                     },
                     {
                         "y_field": "name",
                         "color": "#ffaa00",
                         "colorfield": "",
+                        "trace_aggregation": "",
                     },
                 ],
                 "stacked": "False",
@@ -805,8 +813,18 @@ class TestTableManager(TestCase):
                 "x_field": "id",
                 "aggregation": "",  # It must stay empty
                 "traces": [
-                    {"color": "#00aaff", "colorfield": "first color field", "y_field": "first name"},
-                    {"color": "#ffaa00", "colorfield": "second color field", "y_field": "second name"},
+                    {
+                        "color": "#00aaff",
+                        "colorfield": "first color field",
+                        "trace_aggregation": "",
+                        "y_field": "first name",
+                    },
+                    {
+                        "color": "#ffaa00",
+                        "colorfield": "second color field",
+                        "trace_aggregation": "",
+                        "y_field": "second name",
+                    },
                 ],
                 "trigger_filter": True,
                 "display_legend": "True",

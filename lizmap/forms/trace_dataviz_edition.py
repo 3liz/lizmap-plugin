@@ -7,6 +7,7 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
+from lizmap.forms.base_edition_dialog import fill_list_widget
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
 
@@ -33,17 +34,23 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.z_field.setLayer(self._layer)
 
         self.config.add_layer_widget("y_field", self.y_field)
+        self.config.add_layer_widget("trace_aggregation", self.trace_aggregation)
         self.config.add_layer_widget("colorfield", self.color_field)
         self.config.add_layer_widget("color", self.color)
         self.config.add_layer_widget("z_field", self.z_field)
 
         self.config.add_layer_label("y_field", self.label_y_field)
+        self.config.add_layer_label("trace_aggregation", self.label_trace_aggregation)
         self.config.add_layer_label("colorfield", self.label_color)
         self.config.add_layer_label("z_field", self.label_z_field)
 
+        # Fill the aggregation list: unlike the parent dialog, this dialog does
+        # not inherit from BaseEditionDialog, which fills the lists in setup_ui()
+        fill_list_widget(self.trace_aggregation, self.config.layer_config["trace_aggregation"])
+
         self.y_field.setAllowEmptyFieldName(False)
-        self.z_field.setAllowEmptyFieldName(True)
         self.color_field.setAllowEmptyFieldName(True)
+        self.z_field.setAllowEmptyFieldName(True)
 
         self.button_box.button(QDialogButtonBox.StandardButton.Cancel).clicked.connect(self.close)
         self.button_box.button(QDialogButtonBox.StandardButton.Ok).clicked.connect(self.accept)
@@ -54,6 +61,7 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.color.setToDefaultColor()
 
         self.color_field.setAllowEmptyFieldName(True)
+        self.color_field.setCurrentIndex(0)
         self.color_field.currentTextChanged.connect(self.check_y_color_field)
         self.check_y_color_field()
 
@@ -113,6 +121,8 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
                     value = ""
                 else:
                     value = widget.color().name()
+            elif definition["type"] == InputType.List:
+                value = definition["widget"].currentData()
             else:
                 raise InputTypeError(f'InputType "{definition["type"]}" not implemented')
 
@@ -133,5 +143,10 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
                     definition["widget"].setColor(color)
                 else:
                     definition["widget"].setToNull()
+            elif definition["type"] == InputType.List:
+                # Select the item with the saved value, keep the default otherwise
+                index = definition["widget"].findData(value)
+                if index >= 0:
+                    definition["widget"].setCurrentIndex(index)
             else:
                 raise InputTypeError(f'InputType "{definition["type"]}" not implemented')

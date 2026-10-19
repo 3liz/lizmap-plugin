@@ -61,11 +61,15 @@ class TestTraceDialog(TestCase):
         dialog = TraceDatavizEditionDialog(None, layer, GraphType.Histogram, [])
         self.assertFalse(dialog.error.isVisible())
 
-        # TODO better to check these ones
+        # By default, no color field: the default color is used
         self.assertEqual("id", dialog.y_field.currentField())
-        self.assertEqual("#000000", dialog.color.color().name())
-        self.assertEqual("id", dialog.color_field.currentField())
-        self.assertFalse(dialog.color.isEnabled())
+        self.assertEqual("#086fa1", dialog.color.color().name())
+        self.assertEqual("", dialog.color_field.currentField())
+        self.assertTrue(dialog.color.isEnabled())
+
+        # The aggregation list is filled, with the default aggregation selected
+        assert dialog.trace_aggregation.count() > 0
+        self.assertEqual("sum", dialog.trace_aggregation.currentData())
 
         self.assertTrue(dialog.color_field.allowEmptyFieldName())
 
@@ -83,13 +87,16 @@ class TestTraceDialog(TestCase):
         data = dialog.save_form()
         expected = OrderedDict()
         expected["y_field"] = "id"
+        expected["trace_aggregation"] = "sum"
         expected["color"] = "#086fa1"
         expected["colorfield"] = ""
         expected["z_field"] = ""
         self.assertEqual(expected, data)
 
+        # Load a trace with another aggregation
         data = OrderedDict()
         data["y_field"] = "name"
+        data["trace_aggregation"] = "count"
         data["color"] = "#aabbcc"
         data["colorfield"] = ""
         data["z_field"] = ""

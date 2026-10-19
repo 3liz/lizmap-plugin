@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication, QgsMapLayerProxyModel
@@ -22,10 +24,12 @@ from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.table_manager.base import CellError
 from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import load_ui
+from lizmap.toolbelt.resources import load_ui, plugin_name
 
 if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
+
+LOGGER = logging.getLogger(plugin_name())
 
 
 CLASS = load_ui("ui_form_dataviz.ui")
@@ -174,7 +178,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                     # Do not put if not cell, it might be False
                     raise CellError(f"Cell has no data ({row}, {i})")
 
-                if input_type == InputType.Field or input_type == InputType.Color:
+                if input_type in (InputType.Field, InputType.Color, InputType.List):
                     trace_data[sub_key] = cell
                 else:
                     raise InputTypeError(f'InputType "{input_type}" not implemented')
@@ -241,6 +245,32 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
                 if value:
                     cell.setData(Qt.ItemDataRole.DecorationRole, QColor(value))
+
+            elif input_type == InputType.List:
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
+
+                # Display the label and the icon of the selected item of the list
+                items = self.config.layer_config[key].get("items")
+                if items:
+                    for item_enum in items:
+                        if item_enum.value["data"] == value:
+                            text = item_enum.value["label"]
+                            icon = item_enum.value.get("icon")
+                            break
+                    else:
+                        msg = f'Error with value = "{value}" in list "{key}"'
+                        LOGGER.critical(msg)
+                        raise InputTypeError(msg)
+                    cell.setText(text)
+                    if icon:
+                        cell.setIcon(QIcon(icon))
+                else:
+                    # Some settings are a list, but not using a Python enum yet
+                    # Form filter by instance commit d1bca9c5c1f626893001e5824196dec5fe9a6c9a
+                    # It's not possible for now to have the human display name
+                    # and the icon
+                    cell.setText(value)
 
             else:
                 raise InputTypeError(f'InputType "{input_type}" not implemented')

@@ -52,21 +52,24 @@ class TestEditionDialog(TestCase):
             assert not d.error.isVisible()
 
     def test_load_save_collection_dataviz(self):
-        """Test we can load collection."""
+        """Test we can load and save the collection of traces, with their aggregation."""
         dialog = DatavizEditionDialog()
         assert not dialog.error.isVisible()
         assert dialog.x_field.currentField() == "id"
 
+        # Each trace has its own aggregation
         data = [
             {
                 "color": "#db06b1",
                 "colorfield": "",
+                "trace_aggregation": "sum",
                 "y_field": "distance",
                 "z_field": "",
             },
             {
                 "color": "",
                 "colorfield": "id",
+                "trace_aggregation": "count",
                 "y_field": "cat_name",
                 "z_field": "",
             },
