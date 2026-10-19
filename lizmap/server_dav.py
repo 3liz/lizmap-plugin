@@ -5,7 +5,11 @@ import logging
 from base64 import b64encode
 from collections import namedtuple
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Union,
+)
 
 from qgis.core import (
     Qgis,
@@ -730,7 +734,7 @@ class WebDav:
         return messages.item(0).toElement().text()
 
     @classmethod
-    def parse_propfind_response(cls, xml_data: str) -> PropFindFileResponse | PropFindDirResponse:
+    def parse_propfind_response(cls, xml_data: str) -> Union[PropFindFileResponse, PropFindDirResponse]:
         """Parse a response from a PROPFIND request.
 
         Exemple of content:

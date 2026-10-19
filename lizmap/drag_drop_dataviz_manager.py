@@ -3,7 +3,11 @@ from __future__ import annotations
 import logging
 
 from enum import Enum, unique
-from typing import TYPE_CHECKING, Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Union,
+)
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QBrush, QIcon
@@ -74,7 +78,7 @@ class DragDropDatavizManager:
         uuid = self.combo_plots.itemData(index, Qt.ItemDataRole.UserRole)
         self._add_plot_in_tree(text, icon, uuid)
 
-    def metadata_from_uuid(self, uuid: str) -> tuple[None, None] | tuple[str, QIcon]:
+    def metadata_from_uuid(self, uuid: str) -> Union[tuple[None, None], tuple[str, QIcon]]:
         """Fetch title and icon from the plot UUID in the combobox.
 
         Because this information is not stored in the CFG in the D&D section.
