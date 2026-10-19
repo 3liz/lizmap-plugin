@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
     QgsExpression,
@@ -29,9 +29,9 @@ if TYPE_CHECKING:
 class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: QWidget | None = None,
-        unicity: dict[str, str] | None = None,
-        version: LwcVersions | None = None,
+        parent: Optional[QWidget] = None,
+        unicity: Optional[dict[str, str]] = None,
+        version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, version)
         self.setupUi(self)
@@ -136,7 +136,7 @@ class TimeManagerEditionDialog(BaseEditionDialog, CLASS):
     def end_field_changed(self):
         self.edit_max_value.setText("")
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream

@@ -6,6 +6,7 @@ import traceback
 from functools import partial
 from typing import (
     TYPE_CHECKING,
+    Optional,
     Protocol,
 )
 
@@ -50,8 +51,8 @@ class LizmapProtocol(Protocol):
         self,
         source: str,
         name: str,
-        attribution_url: str | None = None,
-        attribution_name: str | None = None,
+        attribution_url: Optional[str] = None,
+        attribution_name: Optional[str] = None,
     ):
         raise NotImplementedError("_add_base_layer")
 
@@ -207,8 +208,8 @@ class BaseLayersManager(LizmapProtocol):
         self,
         source: str,
         name: str,
-        attribution_url: str | None = None,
-        attribution_name: str | None = None,
+        attribution_url: Optional[str] = None,
+        attribution_name: Optional[str] = None,
     ):
         """Add a base layer to the "baselayers" group."""
         logger.info("start _add_base_layer")

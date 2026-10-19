@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+)
 
 from qgis.core import QgsApplication, QgsMapLayerProxyModel
 from qgis.PyQt.QtCore import Qt
@@ -34,9 +38,9 @@ CLASS = load_ui("ui_form_dataviz.ui")
 class DatavizEditionDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: LizmapDialog | None = None,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        parent: Optional[LizmapDialog] = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -338,7 +342,7 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         """Add the current trace from the combobox in the HTML template."""
         self.html_template.insert_text(f"{{$y{self.trace_combo.currentData()}}}")
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream

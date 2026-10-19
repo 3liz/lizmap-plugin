@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsMapLayerProxyModel
 from qgis.PyQt.QtGui import QIcon
@@ -26,9 +26,9 @@ CLASS = load_ui("ui_form_attribute_table.ui")
 class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: LizmapDialog | None = None,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        parent: Optional[LizmapDialog] = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -103,7 +103,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.has_custom_config.setChecked(layer_has_custom_attribute_table(layer))
         self.enable_primary_key_field()
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream

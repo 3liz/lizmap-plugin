@@ -68,7 +68,7 @@ minimum_translation = 25.0
 
 [tool.ruff]
 line-length = 110
-target-version = "py310"
+target-version = "py39"
 exclude = [
     ".venv",
     ".local",

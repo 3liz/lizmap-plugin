@@ -10,6 +10,8 @@ from functools import partial
 from typing import (
     TYPE_CHECKING,
     Callable,
+    Optional,
+    Union,
 )
 
 from qgis.core import (
@@ -92,7 +94,7 @@ class Color(Enum):
 MAX_DAYS = 7
 
 
-def is_numeric(v: str | int) -> bool:
+def is_numeric(v: Union[str, int]) -> bool:
     try:
         int(v)
         return True
@@ -234,7 +236,7 @@ class ServerManager:
         self.add_first_server.setVisible(self.table.rowCount() == 0)
 
     @staticmethod
-    def config_for_id(auth_id: str) -> QgsAuthMethodConfig | None:
+    def config_for_id(auth_id: str) -> Optional[QgsAuthMethodConfig]:
         """Fetch the authentication settings for a given token."""
         auth_manager = QgsApplication.authManager()
         if not auth_manager.masterPasswordIsSet():
@@ -924,8 +926,8 @@ class ServerManager:
         lizmap_version: str,
         qgis_server_version: str,
         row: int,
-        login: str | None = None,
-        error: str | None = None,
+        login: Optional[str] = None,
+        error: Optional[str] = None,
         lizmap_cloud: bool = False,
     ):
         """When we know the version, we can check the latest release from LWC with the file in cache."""

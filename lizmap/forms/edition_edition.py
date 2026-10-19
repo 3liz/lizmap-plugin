@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
     QgsMapLayerProxyModel,
@@ -30,9 +30,9 @@ CLASS = load_ui("ui_form_edition.ui")
 class EditionLayerDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: LizmapDialog | None = None,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        parent: Optional[LizmapDialog] = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -140,7 +140,7 @@ class EditionLayerDialog(BaseEditionDialog, CLASS):
         helper = tr("Setting groups for the layer editing capabilities '{}'").format(layer.name())
         super().open_wizard_dialog(helper)
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         layer = self.layer.currentLayer()
         if not layer:
             return tr("A layer is mandatory.")

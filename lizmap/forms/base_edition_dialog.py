@@ -6,7 +6,7 @@ import json
 import re
 
 from collections import OrderedDict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
@@ -42,8 +42,8 @@ class BaseEditionDialog(QDialog):
     def __init__(
         self,
         parent: LizmapDialog,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         """Constructor."""
         # parent is the main UI of the plugin
@@ -270,7 +270,7 @@ class BaseEditionDialog(QDialog):
                 found = True
 
     @staticmethod
-    def is_layer_in_wfs(layer: QgsVectorLayer) -> str | None:
+    def is_layer_in_wfs(layer: QgsVectorLayer) -> Optional[str]:
         """Check if the layer in the WFS capabilities."""
         if is_layer_published_wfs(QgsProject.instance(), layer.id()):
             return None

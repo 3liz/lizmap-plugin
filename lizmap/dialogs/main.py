@@ -3,7 +3,11 @@ from __future__ import annotations
 import logging
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,
+)
 
 from qgis.core import (
     Qgis,
@@ -105,9 +109,9 @@ LOGGER = logging.getLogger("Lizmap")
 class LizmapDialog(QDialog, FORM_CLASS):
     def __init__(
         self,
-        parent: QWidget | None = None,
+        parent: Optional[QWidget] = None,
         is_dev_version: bool = True,
-        lwc_version: LwcVersions | None = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         """Constructor."""
         super().__init__(parent)
@@ -526,7 +530,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         QDesktopServices.openUrl(QUrl("https://docs.3liz.org/workshop/workshop/"))
 
     @staticmethod
-    def set_tooltip_webdav(button: QPushButton, date: str | None = None):
+    def set_tooltip_webdav(button: QPushButton, date: Optional[str] = None):
         """ Set tooltip about the upload on the WebDAV server. """
         msg = tr('Upload on the server')
         if date:
@@ -771,7 +775,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """ Return the current LWC server information from the server combobox. """
         return self.server_combo.currentData(info)
 
-    def current_lwc_version(self, default_value: bool = True) -> LwcVersions | None:
+    def current_lwc_version(self, default_value: bool = True) -> Optional[LwcVersions]:
         """ Return the current LWC version from the server combobox. """
         metadata = self.current_server_info(ServerComboData.JsonMetadata.value)
         # In tests, we might not have metadata in the combobox
@@ -897,10 +901,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def display_message_bar(
             self,
             title: str,
-            message: str | None = None,
+            message: Optional[str] = None,
             level: Qgis.MessageLevel = Qgis.MessageLevel.Info,
-            duration: int | None = None,
-            more_details: str | None = None,
+            duration: Optional[int] = None,
+            more_details: Optional[str] = None,
             open_logs: bool = False):
         """Display a message.
 
@@ -1184,7 +1188,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
                         human_size(thumbnail.stat().st_size))
                 )
 
-    def thumbnail_file(self) -> Path | None:
+    def thumbnail_file(self) -> Optional[Path]:
         """ Get filepath to the thumbnail if found. """
         # Check the project image
         # https://github.com/3liz/lizmap-web-client/blob/master/lizmap/modules/view/controllers/media.classic.php
@@ -1341,7 +1345,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         if not allow_navigation:
             self.refresh_helper_target_version(None)
 
-    def refresh_helper_target_version(self, version=LwcVersions | None):
+    def refresh_helper_target_version(self, version=Optional[LwcVersions]):
         """ Refresh the helper about target version. """
         if not version:
             msg = tr('Unknown')

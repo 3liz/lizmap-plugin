@@ -10,6 +10,7 @@ import contextlib
 
 from typing import (
     TYPE_CHECKING,
+    Optional,
     Protocol,
 )
 
@@ -98,7 +99,7 @@ class ScalesManager(LizmapProtocol):
         map_scales: list,
         min_scale: int,
         max_scale: int,
-        use_native: bool | None,
+        use_native: Optional[bool],
         project_crs: str,
     ):
         """From CFG or default values into the user interface."""

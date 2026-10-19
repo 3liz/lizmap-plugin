@@ -6,6 +6,7 @@ import os
 from shutil import copyfile
 from typing import (
     TYPE_CHECKING,
+    Optional,
     Protocol,
 )
 
@@ -285,9 +286,9 @@ class ConfigFileManager(LizmapProtocol):
 
     def save_cfg_file(
         self,
-        lwc_version: LwcVersions | None = None,
+        lwc_version: Optional[LwcVersions] = None,
         # TODO find better semantic
-        save_project: bool | None = None,
+        save_project: Optional[bool] = None,
         # FIXME seems to be redondant with save_project == None
         with_gui: bool = True,
     ) -> bool:
