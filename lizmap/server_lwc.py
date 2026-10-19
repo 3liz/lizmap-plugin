@@ -11,6 +11,7 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     Optional,
+    Union,
 )
 
 from qgis.core import (
@@ -93,7 +94,7 @@ class Color(Enum):
 MAX_DAYS = 7
 
 
-def is_numeric(v: str | int) -> bool:
+def is_numeric(v: Union[str, int]) -> bool:
     try:
         int(v)
         return True

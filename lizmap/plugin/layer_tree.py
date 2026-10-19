@@ -12,6 +12,7 @@ from typing import (
     Any,
     Optional,
     Protocol,
+    Union,
 )
 
 from qgis.core import (
@@ -819,7 +820,7 @@ class LayerTreeManager(LizmapProtocol):
         root_group: QgsLayerTree,
         label: str,
         index: bool = False,
-    ) -> QgsLayerTreeGroup | Optional[int]:
+    ) -> Union[QgsLayerTreeGroup, int, None]:
         """Return the existing group in the legend if existing.
 
         It will either return the group itself if found, or its index.
