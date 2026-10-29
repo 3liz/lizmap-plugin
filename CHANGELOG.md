@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.1.0 -
+
+* Fix false "Parent folder" error on COG layers with QGIS 3.40
+* QGIS minimum version is now 3.40
+
 ## 5.0.3 - 2026-09-30
 
 * Fix: Base layers management
