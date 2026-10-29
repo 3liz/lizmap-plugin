@@ -1,9 +1,12 @@
 # Changelog
 
-## 5.1.0 -
+## 5.1.0 - 2026-10-29
 
 * Fix false "Parent folder" error on COG layers with QGIS 3.40
 * QGIS minimum version is now 3.40
+* Config the available export formats per layer
+* Config the maximum features exportable per layer
+* Reorganize the attribute table properties dialog
 
 ## 5.0.3 - 2026-09-30
 
