@@ -423,11 +423,14 @@ class TableManager:
                     cell.setText(value)
 
             elif input_type == InputType.SpinBox:
-                unit = self.definitions.layer_config[key].get("unit")
-                if unit:
-                    display = f"{value}{unit}"
-                else:
-                    display = f"{value}"
+                display_default_value = self.definitions.layer_config[key].get("display_default_value", True)
+                display = ""
+                if display_default_value or value != self.definitions.layer_config[key].get("default"):
+                    unit = self.definitions.layer_config[key].get("unit")
+                    if unit:
+                        display = f"{value}{unit}"
+                    else:
+                        display = f"{value}"
                 cell.setText(display)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
@@ -592,6 +595,8 @@ class TableManager:
             for i, key in enumerate(self.keys):
                 input_type = self.definitions.layer_config[key]["type"]
                 use_bool_type = self.definitions.layer_config[key].get("use_json", False)
+                display_default_value = self.definitions.layer_config[key].get("display_default_value", True)
+                default_value = self.definitions.layer_config[key].get("default")
                 item = self.table.item(row, i)
 
                 if export_legacy_single_row:
@@ -605,6 +610,11 @@ class TableManager:
                 if cell is None:
                     # Do not put if not cell, it might be False
                     raise CellError(f"Cell has no data ({row}, {i})")
+
+                if cell == default_value and not display_default_value:
+                    # Do not put if default value and not display_default_value
+                    # introduced for export_max_features in attribute table configuration
+                    continue
 
                 if (
                     input_type == InputType.Layer
@@ -995,7 +1005,7 @@ class TableManager:
                 continue
             layer_data = {}
 
-            # Fixme, better to mave these two lines in a dedicated function to retrieve QgsVectorLayer from a dict
+            # Fixme, better to move these two lines in a dedicated function to retrieve QgsVectorLayer from a dict
             vector_layer = None
             valid_layer = True
 

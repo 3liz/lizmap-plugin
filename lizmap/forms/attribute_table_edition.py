@@ -39,6 +39,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget("export_enabled", self.export_enabled)
         self.config.add_layer_widget("export_allowed_groups", self.allowed_groups)
         self.config.add_layer_widget("export_formats", self.export_formats)
+        self.config.add_layer_widget("export_max_features", self.export_max_features)
         self.config.add_layer_widget("pivot", self.pivot_table)
         self.config.add_layer_widget("hideAsChild", self.hide_subpanels)
         self.config.add_layer_widget("hideLayer", self.hide_layer)
@@ -48,7 +49,6 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label("primaryKey", self.label_primary_key)
         self.config.add_layer_label("hiddenFields", self.label_fields_to_hide)
         self.config.add_layer_label("export_allowed_groups", self.label_export_allowed_groups)
-        self.config.add_layer_label("export_formats", self.label_export_formats)
         self.config.add_layer_label("pivot", self.label_pivot_table)
         self.config.add_layer_label("custom_config", self.label_has_custom_config)
 
@@ -116,3 +116,17 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
             return tr("Primary key field is mandatory.")
 
         return None
+
+    # def save_form(self) -> OrderedDict:
+    #     """Save the form into a dictionary."""
+    #     data = super().save_form()
+
+    #     key = "export_max_features"
+    #     key_config = self.config.layer_config.get(key)
+    #     if not key_config:
+    #         return data
+
+    #     # If the export_max_features is set to default value, removed it
+    #     if data.get(key): # == key_config.get("default"):
+    #         data.pop(key)
+    #     return data
