@@ -12,6 +12,7 @@ import logging
 import re
 
 from textwrap import dedent
+from typing import Optional, Union
 
 from qgis.core import (
     Qgis,
@@ -54,7 +55,7 @@ class Tooltip:
     @staticmethod
     def create_popup_node_item_from_form(
         layer: QgsVectorLayer,
-        node: QgsAttributeEditorElement | QgsAttributeEditorContainer | QgsAttributeEditorField | None,
+        node: Optional[QgsAttributeEditorElement, QgsAttributeEditorContainer, QgsAttributeEditorField],
         level: int,
         headers: list,
         html: str,
@@ -312,7 +313,7 @@ class Tooltip:
             %]'''
 
     @staticmethod
-    def _generate_value_map(widget_config: list | dict, name: str) -> str:
+    def _generate_value_map(widget_config: Union[list, dict], name: str) -> str:
         def escape_value(value: str) -> str:
             """Change ' to ’ for the HStore function."""
             return value.replace("'", "’")

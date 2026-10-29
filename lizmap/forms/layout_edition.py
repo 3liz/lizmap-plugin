@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsMasterLayoutInterface, QgsProject
 from qgis.gui import QgsFileWidget
@@ -25,9 +25,9 @@ CLASS = load_ui("ui_form_layout.ui")
 class LayoutEditionDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: QWidget | None = None,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        parent: Optional[QWidget] = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -131,7 +131,7 @@ class LayoutEditionDialog(BaseEditionDialog, CLASS):
         else:
             self.icon.setFilePath("")
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream

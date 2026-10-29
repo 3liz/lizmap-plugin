@@ -10,6 +10,7 @@ from typing import (
     TYPE_CHECKING,
     Optional,
     TypeVar,
+    Union,
     cast,
 )
 
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 PACKAGE_NAME = "lizmap"
 
 
-def plugin_path(*args: str | Path) -> Path:
+def plugin_path(*args: Union[str, Path]) -> Path:
     """Get the path to plugin root folder.
 
     :param args List of path elements e.g. ['img', 'logos', 'image.png']
@@ -57,12 +58,12 @@ def metadata_config() -> configparser.ConfigParser:
     return config
 
 
-def resources_path(*args: str | Path) -> str:
+def resources_path(*args: Union[str, Path]) -> str:
     """Get the path to our resources folder."""
     return str(plugin_path("resources", *args))
 
 
-def load_icon(*args: str | Path) -> QIcon:
+def load_icon(*args: Union[str, Path]) -> QIcon:
     from qgis.PyQt.QtGui import QIcon
 
     return QIcon(resources_path("icons", *args))

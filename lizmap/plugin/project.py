@@ -11,6 +11,7 @@ from pathlib import Path
 from shutil import copyfile
 from typing import (
     TYPE_CHECKING,
+    Optional,
     Protocol,
 )
 
@@ -119,7 +120,7 @@ class LizmapProtocol(Protocol):
     dlg: LizmapDialog
     project: QgsProject
     layers_table: dict
-    current_path: str | None
+    current_path: Optional[str]
 
     iface: QgisInterface
 
@@ -128,7 +129,7 @@ class LizmapProtocol(Protocol):
 
 
 class ProjectManager(LizmapProtocol):
-    _current_path: Path | None
+    _current_path: Optional[Path]
 
     def initialize_project_management(self):
         self._current_path = None
@@ -213,7 +214,7 @@ class ProjectManager(LizmapProtocol):
         with_gui: bool = True,
         check_server: bool = True,
         ignore_error: bool = False,
-    ) -> dict | None:
+    ) -> Optional[dict]:
         """Get the JSON CFG content."""
 
         if lwc_version >= LwcVersions.Lizmap_3_6:

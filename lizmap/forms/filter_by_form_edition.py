@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsFields, QgsMapLayerProxyModel, QgsProject
 from qgis.PyQt.QtGui import QIcon
@@ -23,9 +23,9 @@ if TYPE_CHECKING:
 class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
     def __init__(
         self,
-        parent: LizmapDialog | None = None,
-        unicity: dict[str, str] | None = None,
-        lwc_version: LwcVersions | None = None,
+        parent: Optional[LizmapDialog] = None,
+        unicity: Optional[dict[str, str]] = None,
+        lwc_version: Optional[LwcVersions] = None,
     ):
         super().__init__(parent, unicity, lwc_version)
         self.setupUi(self)
@@ -179,7 +179,7 @@ class FilterByFormEditionDialog(BaseEditionDialog, CLASS):
         # Let's repaint colors on widgets because of the numeric versus date type
         self.version_lwc()
 
-    def validate(self) -> str | None:
+    def validate(self) -> Optional[str]:
         upstream = super().validate()
         if upstream:
             return upstream

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
+    Optional,
     Protocol,
 )
 
@@ -29,7 +30,7 @@ class LizmapProtocol(Protocol):
 
 
 class DatavizManager(LizmapProtocol):
-    drag_drop_dataviz: DragDropDatavizManager | None
+    drag_drop_dataviz: Optional[DragDropDatavizManager]
 
     def initialize_dataviz(self):
         self.drag_drop_dataviz = None

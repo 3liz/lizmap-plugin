@@ -6,6 +6,8 @@ __email__ = "info@3liz.org"
 
 import re
 
+from typing import Optional
+
 from qgis.core import QgsDataSourceUri, QgsProject
 
 from lizmap.definitions.lizmap_cloud import CLOUD_DOMAIN
@@ -41,7 +43,7 @@ def webdav_properties(metadata: dict) -> dict:
     return metadata.get("webdav", {})
 
 
-def webdav_url(metadata: dict) -> str | None:
+def webdav_url(metadata: dict) -> Optional[str]:
     """Return the WebDAV URL according to metadata."""
     webdav = webdav_properties(metadata)
     if not webdav:

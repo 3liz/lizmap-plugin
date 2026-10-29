@@ -9,7 +9,7 @@ import tempfile
 from functools import partial
 from os.path import relpath
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import (
     Qgis,
@@ -1049,7 +1049,7 @@ class Lizmap(
         helper = tr("Setting groups allowed to export DXF files.")
         self._open_wizard_group(self.dlg.text_dxf_allowed_groups, helper)
 
-    def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> str | None:
+    def _open_wizard_group(self, line_edit: QLineEdit, helper: str) -> Optional[str]:
         """Open the group wizard and set the output in the line edit."""
         # Duplicated in base_edition_dialog.py, open_wizard_dialog()
         json_metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)

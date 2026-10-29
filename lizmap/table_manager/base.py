@@ -8,7 +8,7 @@ import logging
 import os
 
 from collections import namedtuple
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
 from qgis.PyQt.QtCore import Qt
@@ -47,7 +47,7 @@ class TableManager:
         self,
         parent: LizmapDialog,
         definitions: BaseDefinitions,
-        edition: QDialog | None,
+        edition: Optional[QDialog],
         table: QWidget,
         remove_button: QAbstractButton,
         edit_button: QAbstractButton,
@@ -938,7 +938,7 @@ class TableManager:
             data = self._from_json_legacy_form_filter(data)
 
         config = data.get("config")
-        config: dict | None
+        config: Optional[dict]
         if config:
             settings = []
             widget_type = None

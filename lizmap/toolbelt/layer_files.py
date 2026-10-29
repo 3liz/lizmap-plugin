@@ -4,6 +4,7 @@
 from pathlib import Path
 from typing import (
     Iterator,
+    Optional,
     Set,
 )
 
@@ -42,7 +43,7 @@ def layer_local_path(
     registry: QgsProviderRegistry,
     layer: QgsMapLayer,
     provider_name: str,
-) -> tuple[Path, QgsProviderMetadata] | None:
+) -> Optional[tuple[Path, QgsProviderMetadata]]:
     """Check if the layer is local file based"""
     md = registry.providerMetadata(provider_name)
 
@@ -72,8 +73,8 @@ def layer_local_path(
 def scan_layer_files(
     project: QgsProject,
     *,
-    included_provider: Set[str] | None = None,
-    excluded_providers: Set[str] | None = None,
+    included_provider: Optional[Set[str]] = None,
+    excluded_providers: Optional[Set[str]] = None,
 ) -> Iterator[tuple[QgsMapLayer, Path, list[Path]]]:
     """Return an iterator over layer file resourc path
     and the list of sidecar files associated

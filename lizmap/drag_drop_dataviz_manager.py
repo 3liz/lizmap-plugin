@@ -3,7 +3,11 @@ from __future__ import annotations
 import logging
 
 from enum import Enum, unique
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+    Union,
+)
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QBrush, QIcon
@@ -41,7 +45,7 @@ class DragDropDatavizManager:
 
     def __init__(
         self,
-        parent: QDialog | None,
+        parent: Optional[QDialog],
         definitions: DatavizDefinitions,
         table_widget: QTableWidget,
         tree_widget: QTreeWidget,
@@ -74,7 +78,7 @@ class DragDropDatavizManager:
         uuid = self.combo_plots.itemData(index, Qt.ItemDataRole.UserRole)
         self._add_plot_in_tree(text, icon, uuid)
 
-    def metadata_from_uuid(self, uuid: str) -> tuple[None, None] | tuple[str, QIcon]:
+    def metadata_from_uuid(self, uuid: str) -> Union[tuple[None, None], tuple[str, QIcon]]:
         """Fetch title and icon from the plot UUID in the combobox.
 
         Because this information is not stored in the CFG in the D&D section.
@@ -92,7 +96,7 @@ class DragDropDatavizManager:
         icon = self.combo_plots.itemIcon(index)
         return text, icon
 
-    def _add_plot_in_tree(self, text: str, icon: QIcon, uuid: str, name_parent: str | None = None):
+    def _add_plot_in_tree(self, text: str, icon: QIcon, uuid: str, name_parent: Optional[str] = None):
         """Internal function to add a plot in the tree."""
         if name_parent:
             # noinspection PyUnresolvedReferences
@@ -293,7 +297,7 @@ class DragDropDatavizManager:
         self._container_from_cfg(data)
         return True
 
-    def _container_from_cfg(self, data: list, parent: str | None = None) -> bool:
+    def _container_from_cfg(self, data: list, parent: Optional[str] = None) -> bool:
         """Recursive function to read the container data."""
         for line in data:
             line: dict
@@ -326,7 +330,7 @@ class DragDropDatavizManager:
 
         return True
 
-    def _add_container(self, name: str, name_parent: str | None = None):
+    def _add_container(self, name: str, name_parent: Optional[str] = None):
         """Add a new container in the tree."""
         parent_item = None
         if name_parent:

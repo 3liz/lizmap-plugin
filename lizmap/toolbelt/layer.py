@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 
+from typing import Optional
 from urllib.parse import parse_qsl
 
 from qgis.core import (
@@ -120,7 +121,7 @@ def layer_property(layer: QgsVectorLayer, item_property: LayerProperties) -> str
     raise NotImplementedError
 
 
-def set_layer_property(layer: QgsVectorLayer, item_property: LayerProperties, value: str | None):
+def set_layer_property(layer: QgsVectorLayer, item_property: LayerProperties, value: Optional[str]):
     """Set layer server property"""
     if item_property == LayerProperties.ShortName:
         if Qgis.versionInt() < 33800:
