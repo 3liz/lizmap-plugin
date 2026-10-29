@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.4 - 2026-10-29
+
+* Fix false "Parent folder" error on COG layers with QGIS 3.40
+* Compatibility with Python 3.9 for QGIS 3.34.5
+
 ## 5.0.3 - 2026-09-30
 
 * Fix: Base layers management
