@@ -13,8 +13,10 @@ psycopg==3.3.4
 psycopg-binary==3.3.4 ; implementation_name != 'pypy'
 pygments==2.20.0
 pytest==9.1.1
+pytest-qgis==4.1.1
 python-dateutil==2.9.0.post0
 requests==2.34.2
+semver==3.0.4
 six==1.17.0
 tomli==2.4.1 ; python_full_version < '3.11'
 typing-extensions==4.16.0 ; python_full_version < '3.13'
