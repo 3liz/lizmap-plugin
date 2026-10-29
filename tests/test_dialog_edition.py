@@ -24,6 +24,7 @@ from .compat import TestCase
 
 @pytest.fixture(scope="class", autouse=True)
 def layer(data: Path) -> None:
+    QgsProject.instance().clear()
     layer = QgsVectorLayer(str(data.joinpath("lines.geojson")), "lines", "ogr")
     QgsProject.instance().addMapLayer(layer)
     assert layer.isValid()
