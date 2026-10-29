@@ -38,6 +38,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_widget("hiddenFields", self.fields_to_hide)
         self.config.add_layer_widget("export_enabled", self.export_enabled)
         self.config.add_layer_widget("export_allowed_groups", self.allowed_groups)
+        self.config.add_layer_widget("export_formats", self.export_formats)
         self.config.add_layer_widget("pivot", self.pivot_table)
         self.config.add_layer_widget("hideAsChild", self.hide_subpanels)
         self.config.add_layer_widget("hideLayer", self.hide_layer)
@@ -46,11 +47,9 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.config.add_layer_label("layerId", self.label_layer)
         self.config.add_layer_label("primaryKey", self.label_primary_key)
         self.config.add_layer_label("hiddenFields", self.label_fields_to_hide)
-        self.config.add_layer_label("export_enabled", self.label_export_enabled)
         self.config.add_layer_label("export_allowed_groups", self.label_export_allowed_groups)
+        self.config.add_layer_label("export_formats", self.label_export_formats)
         self.config.add_layer_label("pivot", self.label_pivot_table)
-        self.config.add_layer_label("hideAsChild", self.label_hide_subpanels)
-        self.config.add_layer_label("hideLayer", self.label_hide_layer)
         self.config.add_layer_label("custom_config", self.label_has_custom_config)
 
         self.layer.setFilters(QgsMapLayerProxyModel.Filter.VectorLayer)
@@ -65,7 +64,7 @@ class AttributeTableEditionDialog(BaseEditionDialog, CLASS):
         self.setup_ui()
 
         # Wizard ACL group
-        self.export_enabled.stateChanged.connect(self.allowed_groups.setEnabled)
+        self.export_enabled.toggled.connect(self.allowed_groups.setEnabled)
         icon = QIcon(resources_path("icons", "user_group.svg"))
         self.button_wizard_group.setText("")
         self.button_wizard_group.setIcon(icon)

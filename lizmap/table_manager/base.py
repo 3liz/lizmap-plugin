@@ -8,6 +8,7 @@ import logging
 import os
 
 from collections import namedtuple
+from enum import Enum
 from typing import TYPE_CHECKING
 
 from qgis.core import QgsMapLayerModel, QgsMasterLayoutInterface, QgsProject
@@ -1033,11 +1034,13 @@ class TableManager:
                         items = definition.get("items")
                         multiple_selection = definition.get("multiple_selection", False)
                         if multiple_selection:
-                            layer_data[key] = ""
+                            layer_data[key] = []
                             for single_value in value:
                                 for item_enum in items:
                                     if item_enum.value["data"] == single_value:
-                                        layer_data[key] += single_value
+                                        layer_data[key] += [single_value]
+                            if isinstance(value, tuple):
+                                layer_data[key] = (*layer_data[key],)
                         else:
                             # Single value
                             if items:
@@ -1070,7 +1073,28 @@ class TableManager:
                         ):
                             layer_data[key] = AggregationType.No.value["data"]
                         elif definition["type"] == InputType.List and default_value != "":
-                            layer_data[key] = default_value.value["data"]
+                            multiple_selection = definition.get("multiple_selection", False)
+                            if multiple_selection:
+                                if isinstance(default_value, (list,tuple)):
+                                    if len(default_value) != 0:
+                                        layer_data[key] = []
+                                        for default_value_item in default_value:
+                                            if isinstance(default_value_item, Enum):
+                                                layer_data[key] = [default_value_item.value["data"]]
+                                            else:
+                                                layer_data[key] = [default_value_item]
+                                    else:
+                                        layer_data[key] = "" # default value that will pop the key
+                                else:
+                                    if isinstance(default_value, Enum):
+                                        layer_data[key] = default_value.value["data"]
+                                    else:
+                                        layer_data[key] = default_value
+                            else:
+                                if isinstance(default_value, Enum):
+                                    layer_data[key] = default_value.value["data"]
+                                else:
+                                    layer_data[key] = default_value
                         else:
                             layer_data[key] = default_value
                     elif default_value is not None and callable(default_value):
