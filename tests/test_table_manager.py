@@ -1100,6 +1100,40 @@ class TestTableManager(TestCase):
 
         self.assertDictEqual({layer.id(): ["id"]}, table_manager.wfs_fields_used())
 
+    def test_attribute_table_export_max_features(self, layer: QgsVectorLayer):
+        """Test table manager with attribute table with export ACL"""
+        table = QTableWidget()
+        definitions = AttributeTableDefinitions()
+
+        table_manager = TableManager(None, definitions, None, table, None, None, None, None)
+
+        # Check the default value to False
+        # https://github.com/3liz/lizmap-plugin/issues/629
+        json = {
+            "lines": {
+                "primaryKey": "id",
+                "export_enabled": True,
+                "export_max_features": 2,
+                "hiddenFields": "id,name,value",
+                "pivot": "False",
+                "hideAsChild": "False",
+                "hideLayer": "False",
+                "layerId": layer.id(),
+                "order": 0,
+            }
+        }
+        self.assertEqual(table_manager.table.rowCount(), 0)
+        table_manager.from_json(json)
+        self.assertEqual(table_manager.table.rowCount(), 1)
+        data = table_manager.to_json(LwcVersions.latest())
+
+        # Automatically added, so we add it manually for the comparaison
+        json["lines"]["custom_config"] = "False"
+
+        self.assertDictEqual(data, json)
+
+        self.assertDictEqual({layer.id(): ["id"]}, table_manager.wfs_fields_used())
+
 
     def test_time_manager_table(self, layer: QgsVectorLayer):
         """Test table manager with time manager."""

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>554</width>
-    <height>558</height>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,14 +38,14 @@
         <bool>false</bool>
        </property>
        <layout class="QFormLayout" name="formLayout_2">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <widget class="QLabel" name="label_export_allowed_groups">
           <property name="text">
            <string>Export allowed groups</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="1" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QLineEdit" name="allowed_groups"/>
@@ -59,13 +59,27 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="1">
+        <item row="2" column="1">
          <widget class="QgsCheckableComboBox" name="export_formats"/>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="label_export_formats">
           <property name="text">
            <string>Export formats</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_export_max_features">
+          <property name="text">
+           <string>Max. features</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QgsSpinBox" name="export_max_features">
+          <property name="minimum">
+           <number>-1</number>
           </property>
          </widget>
         </item>
@@ -196,6 +210,11 @@
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
    <header>qgis.gui</header>
   </customwidget>
   <customwidget>

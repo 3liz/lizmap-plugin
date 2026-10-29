@@ -122,6 +122,17 @@ class AttributeTableDefinitions(BaseDefinitions):
             "version": LwcVersions.Lizmap_3_9,
             "use_json": True,
         }
+        self._layer_config["export_max_features"] = {
+            "type": InputType.SpinBox,
+            "header": tr("Maximum features to export"),
+            "default": -1,
+            "display_default_value": False,
+            "tooltip": tr(
+                "Allowed maximum number of features for exporting the data. If it is less than 1, the entire layer can be exported. "
+                "This configuration is supported in versions 3.9.13 and later."
+            ),
+            "version": LwcVersions.Lizmap_3_9,
+        }
         self._layer_config["pivot"] = {
             "type": InputType.CheckBox,
             "header": tr("Pivot table"),
