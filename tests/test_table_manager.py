@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from qgis.core import QgsProject, QgsVectorLayer
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
     QComboBox,
     QTableWidget,
@@ -29,6 +30,8 @@ from lizmap.forms.atlas_edition import AtlasEditionDialog
 from lizmap.table_manager.base import TableManager
 from lizmap.table_manager.layouts import TableManagerLayouts
 from lizmap.widgets.sortable_table import (
+    SORT_ROLE,
+    SortableTableWidgetItem,
     make_table_sortable,
     reset_table_sort_indicator,
     sort_table_by_column,
@@ -81,6 +84,59 @@ class TestSortableTable(TestCase):
         reset_table_sort_indicator(table)
         self.assertEqual(table.horizontalHeader().sortIndicatorSection(), -1)
         self.assertEqual(column_values(), ["cherry", "banana", "apple"])
+
+    def test_sortable_item_sort_role(self):
+        """Test the item is sorted on SORT_ROLE rather than on its display text."""
+        table = QTableWidget()
+        table.setColumnCount(1)
+        table.setRowCount(3)
+        for row, value in enumerate((10, 2, 30)):
+            item = SortableTableWidgetItem(f"{value} px")
+            item.setData(SORT_ROLE, value)
+            table.setItem(row, 0, item)
+
+        make_table_sortable(table)
+
+        def column_values():
+            return [table.item(row, 0).text() for row in range(table.rowCount())]
+
+        # Sorted as numbers, the text would have put "10 px" before "2 px"
+        sort_table_by_column(table, 0)
+        self.assertEqual(column_values(), ["2 px", "10 px", "30 px"])
+
+        sort_table_by_column(table, 0)
+        self.assertEqual(column_values(), ["30 px", "10 px", "2 px"])
+
+    def test_sortable_item_check_state(self):
+        """Test checkable items without any text are sorted on their check state."""
+        table = QTableWidget()
+        table.setColumnCount(2)
+        table.setRowCount(4)
+        for row, (name, checked) in enumerate((("a", True), ("b", False), ("c", True), ("d", False))):
+            table.setItem(row, 0, QTableWidgetItem(name))
+            item = SortableTableWidgetItem()
+            item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
+            item.setCheckState(Qt.CheckState.Checked if checked else Qt.CheckState.Unchecked)
+            table.setItem(row, 1, item)
+
+        make_table_sortable(table)
+
+        def names():
+            return [table.item(row, 0).text() for row in range(table.rowCount())]
+
+        # Ascending: unchecked first
+        sort_table_by_column(table, 1)
+        self.assertEqual(sorted(names()[0:2]), ["b", "d"])
+        self.assertEqual(sorted(names()[2:4]), ["a", "c"])
+
+        # The check state is read live, so a box (un)checked by the user is taken into account
+        row_a = names().index("a")
+        table.item(row_a, 1).setCheckState(Qt.CheckState.Unchecked)
+        sort_table_by_column(table, 0)
+        sort_table_by_column(table, 1)
+        sort_table_by_column(table, 1)
+        # Descending: only "c" is still checked
+        self.assertEqual(names()[0], "c")
 
 
 class TestTableManager(TestCase):
@@ -1608,6 +1664,41 @@ class TestTableManager(TestCase):
         self.assertEqual(table.horizontalHeader().sortIndicatorSection(), -1)
         data = table_manager.to_json(LwcVersions.latest())
         self.assertDictEqual(data, {"layers": [layer_2, layer_1]})
+
+    def test_sort_by_spinbox_column(self, layer: QgsVectorLayer):
+        """Test a SpinBox column is sorted as numbers, not as text."""
+        table = QTableWidget()
+        definitions = AtlasDefinitions()
+        definitions._use_single_row = False
+        table_manager = TableManager(None, definitions, AtlasEditionDialog, table, None, None, None, None)
+
+        base = {
+            "layer": layer.id(),
+            "primaryKey": "id",
+            "displayLayerDescription": "False",
+            "featureLabel": "name",
+            "sortField": "name",
+            "highlightGeometry": "True",
+            "zoom": "center",
+            "displayPopup": "True",
+            "triggerFilter": "True",
+        }
+        layer_10 = dict(base, duration=10)
+        layer_2 = dict(base, duration=2)
+        layer_30 = dict(base, duration=30)
+        table_manager.from_json({"layers": [layer_10, layer_2, layer_30]})
+        self.assertEqual(table_manager.table.rowCount(), 3)
+
+        column = table_manager.keys.index("duration")
+
+        # As text, "10" would be before "2"
+        table_manager.sort_by_column(column)
+        data = table_manager.to_json(LwcVersions.latest())
+        self.assertDictEqual(data, {"layers": [layer_2, layer_10, layer_30]})
+
+        table_manager.sort_by_column(column)
+        data = table_manager.to_json(LwcVersions.latest())
+        self.assertDictEqual(data, {"layers": [layer_30, layer_10, layer_2]})
 
     def test_atlas_missing_json_parameter(self, layer: QgsVectorLayer):
         """Test if we can load CFG file with missing parameter."""

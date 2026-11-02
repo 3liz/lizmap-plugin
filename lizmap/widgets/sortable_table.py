@@ -1,7 +1,7 @@
 """Helper to sort a QTableWidget by clicking on a column header."""
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTableWidget
+from qgis.PyQt.QtWidgets import QTableWidget, QTableWidgetItem
 
 __copyright__ = "Copyright 2024, 3Liz"
 __license__ = "GPL version 3"
@@ -10,6 +10,42 @@ __email__ = "info@3liz.org"
 # Dynamic attributes stored on the table widget to remember the current sort.
 _SORT_COLUMN = "_lizmap_sort_column"
 _SORT_ORDER = "_lizmap_sort_order"
+
+# Role holding the value used to sort a cell, when the display text is not suitable.
+SORT_ROLE = Qt.ItemDataRole.UserRole + 100
+
+
+class SortableTableWidgetItem(QTableWidgetItem):
+    """Table item which can be sorted on another value than its display text.
+
+    The default QTableWidgetItem compares the display text only, so "10 px" is
+    before "2 px" and checkboxes without any text are never sorted.
+
+    The comparison is done on:
+    * the value stored in SORT_ROLE, if both items have one,
+    * the check state, if both items are checkable,
+    * the display text otherwise.
+    """
+
+    def __lt__(self, other: QTableWidgetItem) -> bool:
+        value = self.data(SORT_ROLE)
+        other_value = other.data(SORT_ROLE)
+        if value is not None and other_value is not None:
+            try:
+                return value < other_value
+            except TypeError:
+                # Not comparable, e.g. a number and a string
+                pass
+
+        # Not on the ItemIsUserCheckable flag, it is set by default on every item
+        check_role = Qt.ItemDataRole.CheckStateRole
+        if self.data(check_role) is not None and other.data(check_role) is not None:
+            # Read live from the widget, so it follows the user (un)checking the box
+            checked = self.checkState() == Qt.CheckState.Checked
+            other_checked = other.checkState() == Qt.CheckState.Checked
+            return not checked and other_checked
+
+        return super().__lt__(other)
 
 
 def make_table_sortable(table: QTableWidget):

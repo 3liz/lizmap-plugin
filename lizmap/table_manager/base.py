@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import inspect
 import json
 import logging
@@ -31,6 +32,8 @@ from lizmap.toolbelt.convert import as_boolean
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import plugin_name
 from lizmap.widgets.sortable_table import (
+    SORT_ROLE,
+    SortableTableWidgetItem,
     make_table_sortable,
     reset_table_sort_indicator,
     sort_table_by_column,
@@ -278,7 +281,7 @@ class TableManager:
         self._layer = None
         for i, key in enumerate(data.keys()):
             value = data[key]
-            cell = QTableWidgetItem()
+            cell = SortableTableWidgetItem()
 
             input_type = self.definitions.layer_config[key]["type"]
 
@@ -443,6 +446,10 @@ class TableManager:
                 cell.setText(display)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
+                # Sort on the number, not on the text with the unit.
+                # The value might be a string in an old CFG file.
+                with contextlib.suppress(TypeError, ValueError):
+                    cell.setData(SORT_ROLE, float(value))
 
             elif input_type == InputType.Text:
                 separator = self.definitions.layer_config[key].get("separator", ",")
