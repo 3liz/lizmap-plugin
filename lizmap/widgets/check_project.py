@@ -18,6 +18,11 @@ from lizmap.definitions.lizmap_cloud import CLOUD_MAX_PARENT_FOLDER, CLOUD_NAME
 from lizmap.definitions.online_help import pg_service_help
 from lizmap.definitions.qgis_settings import Settings
 from lizmap.toolbelt.i18n import tr
+from lizmap.widgets.sortable_table import (
+    SORT_ROLE,
+    SortableTableWidgetItem,
+    make_table_sortable,
+)
 
 # 10 000 * 10 000
 RASTER_COUNT_CELL = 100000000
@@ -146,6 +151,15 @@ class Levels:
         tr("Issue at the field level"),
         QIcon(":/images/themes/default/mSourceFields.svg"),
     )
+
+
+# Order used when sorting the table by level, from the widest scope to the narrowest
+LEVELS_ORDER = (
+    Levels.GlobalConfig.data,
+    Levels.Project.data,
+    Levels.Layer.data,
+    Levels.Field.data,
+)
 
 
 class Check:
@@ -863,8 +877,9 @@ class TableCheck(QTableWidget):
         self.setAlternatingRowColors(True)
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setVisible(True)
-        # Bug, same as self.sort()
-        # self.setSortingEnabled(True)
+        # One-shot sort on header click, to avoid the row corruption caused by
+        # QTableWidget.setSortingEnabled() while the table is being populated.
+        make_table_sortable(self)
 
         headers = Headers()
         self.setColumnCount(len(headers.members))
@@ -964,17 +979,21 @@ class TableCheck(QTableWidget):
         column = 0
 
         # Severity
-        item = QTableWidgetItem(used_severity.label)
+        item = SortableTableWidgetItem(used_severity.label)
         item.setData(self.DATA, used_severity.data)
         item.setData(self.JSON, used_severity.data)
+        # Sort by severity, not alphabetically on the translated label
+        item.setData(SORT_ROLE, used_severity.data)
         item.setToolTip(used_severity.tooltip)
         item.setIcon(used_severity.marker())
         self.setItem(row, column, item)
         column += 1
 
         # Level
-        item = QTableWidgetItem(error.check.level.label)
+        item = SortableTableWidgetItem(error.check.level.label)
         item.setData(self.DATA, error.check.level.data)
+        # Sort from the global configuration down to the field, not on the translated label
+        item.setData(SORT_ROLE, LEVELS_ORDER.index(error.check.level.data))
         item.setData(self.JSON, error.check.level.data)
         item.setData(self.EXPORT, error.check.export_in_json)
         item.setToolTip(error.check.level.tooltip)
