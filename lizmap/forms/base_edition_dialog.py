@@ -12,6 +12,7 @@ from qgis.core import QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QBrush, QColor, QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import (
+    QComboBox,
     QDialog,
     QDialogButtonBox,
     QMessageBox,
@@ -34,6 +35,37 @@ if TYPE_CHECKING:
 
 class UnknownError(Exception):
     pass
+
+
+def fill_list_widget(widget: QComboBox, layer_config: dict) -> None:
+    """Fill a list widget with the items of its definition.
+
+    Each item of the Python enum is added with its label, its data, and its
+    icon and tooltip if defined. The default item is then selected.
+
+    :param widget: The list widget to fill, a combobox or a checkable combobox
+    :param layer_config: The definition of the input, with the items and the default value
+    """
+    items = layer_config.get("items")
+    if not items:
+        return
+
+    for item in items:
+        icon = item.value.get("icon")
+        if icon:
+            widget.addItem(QIcon(icon), item.value["label"], item.value["data"])
+        else:
+            widget.addItem(item.value["label"], item.value["data"])
+        index = widget.findData(item.value["data"])
+        tooltip = item.value.get("tooltip")
+        if tooltip:
+            widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
+
+    # Select the default item, if it is not a list of default values
+    default = layer_config.get("default")
+    if default and not isinstance(default, (list, tuple)):
+        index = widget.findData(default.value["data"])
+        widget.setCurrentIndex(index)
 
 
 class BaseEditionDialog(QDialog):
@@ -102,22 +134,7 @@ class BaseEditionDialog(QDialog):
                     widget.setToolTip(tooltip)
 
             if layer_config["type"] in (InputType.List, InputType.CheckBoxAsDropdown) and widget is not None:
-                items = layer_config.get("items")
-                if items:
-                    for item in items:
-                        icon = item.value.get("icon")
-                        if icon:
-                            widget.addItem(QIcon(icon), item.value["label"], item.value["data"])
-                        else:
-                            widget.addItem(item.value["label"], item.value["data"])
-                        index = widget.findData(item.value["data"])
-                        tooltip = item.value.get("tooltip")
-                        if tooltip:
-                            widget.setItemData(index, tooltip, Qt.ItemDataRole.ToolTipRole)
-                    default = layer_config.get("default")
-                    if default and not isinstance(default, (list, tuple)):
-                        index = widget.findData(default.value["data"])
-                        widget.setCurrentIndex(index)
+                fill_list_widget(widget, layer_config)
 
             if layer_config["type"] == InputType.CheckBox:
                 default_value = layer_config["default"]

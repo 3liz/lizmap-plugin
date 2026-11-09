@@ -132,6 +132,10 @@ def represent_traces(data: dict) -> str:
         if y_field:
             html += f"<li>{y_field}: "
 
+            trace_aggregation = trace.get("trace_aggregation")
+            if trace_aggregation:
+                html += f"({trace_aggregation}) "
+
             color_field = trace.get("colorfield")
             if color_field:
                 html += color_field
@@ -208,6 +212,7 @@ class DatavizDefinitions(BaseDefinitions):
             "tooltip": tr("Textual representations of traces"),
             "items": [
                 "y_field",
+                "trace_aggregation",
                 "color",
                 "colorfield",
                 "z_field",
@@ -222,6 +227,19 @@ class DatavizDefinitions(BaseDefinitions):
             "default": "",
             "tooltip": tr("The Y field of your graph."),
         }
+        self._layer_config["trace_aggregation"] = {
+            "plural": "trace_aggregation{}",
+            "type": InputType.List,
+            "header": tr("Aggregation"),
+            "items": AggregationType,
+            "default": AggregationType.Sum,
+            "tooltip": tr(
+                'For a few types of charts like "bar" or "pie", you can choose to aggregate the data in the '
+                "graph."
+            ),
+            # The aggregation by trace is available since LWC 3.11
+            "version": LwcVersions.Lizmap_3_11,
+        }
         self._layer_config["color"] = {
             "plural": "color{}",
             "type": InputType.Color,
@@ -234,7 +252,7 @@ class DatavizDefinitions(BaseDefinitions):
             "type": InputType.Field,
             "wfs_required": True,
             "header": tr("Color field"),
-            "default": "",
+            "default": None,
             "tooltip": tr(
                 "You can choose or not a color field to customize the color of each category of your chart. "
                 "Choose the field of your layer which contains the colors you want to use. The color can be written "

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from typing import TYPE_CHECKING, Any
 
 from qgis.core import QgsApplication, QgsMapLayerProxyModel
@@ -22,10 +24,12 @@ from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
 from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.table_manager.base import CellError
 from lizmap.toolbelt.i18n import tr
-from lizmap.toolbelt.resources import load_ui
+from lizmap.toolbelt.resources import load_ui, plugin_name
 
 if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
+
+LOGGER = logging.getLogger(plugin_name())
 
 
 CLASS = load_ui("ui_form_dataviz.ui")
@@ -80,6 +84,9 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.remove_trace.setText("")
         self.remove_trace.setIcon(QIcon(QgsApplication.iconPath("symbologyRemove.svg")))
         self.remove_trace.setToolTip(tr("Remove the selected trace from the chart."))
+        self.edit_trace.setText("")
+        self.edit_trace.setIcon(QIcon(QgsApplication.iconPath("symbologyEdit.svg")))
+        self.edit_trace.setToolTip(tr("Edit the selected trace of the chart."))
 
         self.add_trace_html.setText("")
         self.add_trace_html.setIcon(QIcon(QgsApplication.iconPath("symbologyAdd.svg")))
@@ -112,12 +119,17 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         self.type_graph.currentTextChanged.connect(self.check_form_graph_type)
         self.add_trace.clicked.connect(self.add_new_trace)
         self.remove_trace.clicked.connect(self.remove_selection)
+        self.edit_trace.clicked.connect(self.edit_selected_trace)
+        # A double click on a trace also opens it for edition
+        self.traces.cellDoubleClicked.connect(self.edit_trace_row)
 
         self.lwc_versions[LwcVersions.Lizmap_3_4] = [self.label_graph_34]
         self.lwc_versions[LwcVersions.Lizmap_3_7] = [
             self.label_title_popup,
             self.refresh_if_filtered,
         ]
+        # The edition of a trace is available since LWC 3.11
+        self.lwc_versions[LwcVersions.Lizmap_3_11] = [self.edit_trace]
 
         self.setup_ui()
         self.check_form_graph_type()
@@ -153,53 +165,62 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
 
     def save_collection(self) -> list:
         """Save a collection into JSON"""
-        value = []
-        rows = self.traces.rowCount()
+        return [self._trace_row_data(row) for row in range(self.traces.rowCount())]
 
+    def _trace_row_data(self, row: int) -> dict:
+        """Read the data of a trace from a row of the table.
+
+        :param row: The row of the trace in the table
+        :return: The trace data, with a value for each item of the trace definition
+        """
+        trace_data = {}
         collection_definition = self.config.layer_config["traces"]
-        for row in range(rows):
-            trace_data = {}
-            for i, sub_key in enumerate(collection_definition["items"]):
-                input_type = self.config.layer_config[sub_key]["type"]
-                item = self.traces.item(row, i)
+        for i, sub_key in enumerate(collection_definition["items"]):
+            input_type = self.config.layer_config[sub_key]["type"]
+            item = self.traces.item(row, i)
 
-                if item is None:
-                    # Safeguard
-                    # Do not put if not item, it might be False
-                    raise CellError(f"Cell is not initialized ({row}, {i})")
+            if item is None:
+                # Safeguard
+                # Do not put if not item, it might be False
+                raise CellError(f"Cell is not initialized ({row}, {i})")
 
-                cell = item.data(Qt.ItemDataRole.UserRole)
-                if cell is None:
-                    # Safeguard
-                    # Do not put if not cell, it might be False
-                    raise CellError(f"Cell has no data ({row}, {i})")
+            cell = item.data(Qt.ItemDataRole.UserRole)
+            if cell is None:
+                # Safeguard
+                # Do not put if not cell, it might be False
+                raise CellError(f"Cell has no data ({row}, {i})")
 
-                if input_type == InputType.Field or input_type == InputType.Color:
-                    trace_data[sub_key] = cell
-                else:
-                    raise InputTypeError(f'InputType "{input_type}" not implemented')
+            if input_type in (InputType.Field, InputType.Color, InputType.List):
+                trace_data[sub_key] = cell
+            else:
+                raise InputTypeError(f'InputType "{input_type}" not implemented')
 
-            value.append(trace_data)
-
-        return value
+        return trace_data
 
     def current_layer_changed(self):
         """When the layer is changed."""
         self.x_field.setLayer(self.layer.currentLayer())
         self.traces.setRowCount(0)
 
-    def add_new_trace(self):
-        """Add a new trace in the table after clicking the 'add' button."""
+    def _current_graph_type(self) -> GraphType:
+        """Get the graph type selected in the form.
+
+        :return: The graph type
+        """
         graph = self.type_graph.currentData()
         for item_enum in GraphType:
             if item_enum.value["data"] == graph:
-                graph = item_enum
-                break
-        else:
-            raise UnknownError("Error with list")
+                return item_enum
+        raise UnknownError("Error with list")
 
+    def add_new_trace(self):
+        """Add a new trace in the table after clicking the 'add' button."""
         dialog = TraceDatavizEditionDialog(
-            self.parent, self.layer.currentLayer(), graph, self.primary_keys_collection()
+            self.parent,
+            self.layer.currentLayer(),
+            self._current_graph_type(),
+            self.primary_keys_collection(),
+            self.current_lwc_version(),
         )
         result = dialog.exec()
         if result != QDialog.DialogCode.Accepted:
@@ -242,11 +263,73 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
                 if value:
                     cell.setData(Qt.ItemDataRole.DecorationRole, QColor(value))
 
+            elif input_type == InputType.List:
+                cell.setData(Qt.ItemDataRole.UserRole, value)
+                cell.setData(Qt.ItemDataRole.ToolTipRole, value)
+
+                # Display the label and the icon of the selected item of the list
+                items = self.config.layer_config[key].get("items")
+                if items:
+                    for item_enum in items:
+                        if item_enum.value["data"] == value:
+                            text = item_enum.value["label"]
+                            icon = item_enum.value.get("icon")
+                            break
+                    else:
+                        msg = f'Error with value = "{value}" in list "{key}"'
+                        LOGGER.critical(msg)
+                        raise InputTypeError(msg)
+                    cell.setText(text)
+                    if icon:
+                        cell.setIcon(QIcon(icon))
+                else:
+                    # Some settings are a list, but not using a Python enum yet
+                    # Form filter by instance commit d1bca9c5c1f626893001e5824196dec5fe9a6c9a
+                    # It's not possible for now to have the human display name
+                    # and the icon
+                    cell.setText(value)
+
             else:
                 raise InputTypeError(f'InputType "{input_type}" not implemented')
 
             self.traces.setItem(row, i, cell)
         self.traces.clearSelection()
+
+    def edit_selected_trace(self):
+        """Edit the selected trace after clicking the 'edit' button."""
+        selection = self.traces.selectedIndexes()
+        if len(selection) <= 0:
+            return
+
+        self.edit_trace_row(selection[0].row())
+
+    def edit_trace_row(self, row: int, column: int | None = None):
+        """Edit a trace of the table in the trace dialog.
+
+        :param row: The row of the trace in the table
+        :param column: The column clicked, not used, given by the double click signal
+        """
+        data = self._trace_row_data(row)
+
+        # The Y field of the edited trace can be kept: it is not a duplicate
+        uniques = self.primary_keys_collection()
+        uniques.remove(data["y_field"])
+
+        dialog = TraceDatavizEditionDialog(
+            self.parent,
+            self.layer.currentLayer(),
+            self._current_graph_type(),
+            uniques,
+            self.current_lwc_version(),
+        )
+        dialog.load_form(data)
+        result = dialog.exec()
+        if result != QDialog.DialogCode.Accepted:
+            return
+
+        # Replace the trace in the same row
+        self._edit_trace_row(row, dialog.save_form())
+        self.check_trace_action()
 
     def remove_selection(self):
         """Remove the selected row from the table."""

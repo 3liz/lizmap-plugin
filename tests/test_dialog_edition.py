@@ -18,6 +18,7 @@ from lizmap.forms.layout_edition import LayoutEditionDialog
 from lizmap.forms.locate_layer_edition import LocateLayerEditionDialog
 from lizmap.forms.time_manager_edition import TimeManagerEditionDialog
 from lizmap.forms.tooltip_edition import ToolTipEditionDialog
+from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 
 from .compat import TestCase
 
@@ -96,21 +97,24 @@ class TestEditionDialog(TestCase):
         self.assertEqual(data.get("export_formats"), ['geojson', 'gml'])
 
     def test_load_save_collection_dataviz(self):
-        """Test we can load collection."""
+        """Test we can load and save the collection of traces, with their aggregation."""
         dialog = DatavizEditionDialog()
         assert not dialog.error.isVisible()
         assert dialog.x_field.currentField() == "id"
 
+        # Each trace has its own aggregation
         data = [
             {
                 "color": "#db06b1",
                 "colorfield": "",
+                "trace_aggregation": "sum",
                 "y_field": "distance",
                 "z_field": "",
             },
             {
                 "color": "",
                 "colorfield": "id",
+                "trace_aggregation": "count",
                 "y_field": "cat_name",
                 "z_field": "",
             },
@@ -121,6 +125,19 @@ class TestEditionDialog(TestCase):
 
         result = dialog.save_collection()
         self.assertCountEqual(result, data)
+
+        # Each trace can be read from its row, to be edited
+        self.assertDictEqual(data[1], dialog._trace_row_data(1))
+
+    def test_dataviz_new_features_lwc_3_11(self):
+        """Test the button to edit a trace is highlighted for a LWC version older than 3.11."""
+        # Not available in LWC 3.10
+        dialog = DatavizEditionDialog(lwc_version=LwcVersions.Lizmap_3_10)
+        assert dialog.edit_trace.styleSheet() == NEW_FEATURE_CSS
+
+        # Available in LWC 3.11
+        dialog = DatavizEditionDialog(lwc_version=LwcVersions.Lizmap_3_11)
+        assert dialog.edit_trace.styleSheet() == ""
 
     def test_atlas_dialog(self, layer: QgsVectorLayer):
         """Test atlas dialog."""
