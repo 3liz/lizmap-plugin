@@ -81,6 +81,9 @@ class TestEditionDialog(TestCase):
         result = dialog.save_collection()
         self.assertCountEqual(result, data)
 
+        # Each trace can be read from its row, to be edited
+        self.assertDictEqual(data[1], dialog._trace_row_data(1))
+
     def test_atlas_dialog(self, layer: QgsVectorLayer):
         """Test atlas dialog."""
         dialog = AtlasEditionDialog()

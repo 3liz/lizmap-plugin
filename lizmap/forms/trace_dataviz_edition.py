@@ -6,7 +6,7 @@ from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from lizmap.definitions.base import InputType, InputTypeError
-from lizmap.definitions.dataviz import DatavizDefinitions, GraphType
+from lizmap.definitions.dataviz import AggregationType, DatavizDefinitions, GraphType
 from lizmap.forms.base_edition_dialog import fill_list_widget
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
@@ -144,6 +144,10 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
                 else:
                     definition["widget"].setToNull()
             elif definition["type"] == InputType.List:
+                # An empty aggregation, copied from the chart of a legacy project,
+                # means no aggregation
+                if key == "trace_aggregation" and value == "":
+                    value = AggregationType.No.value["data"]
                 # Select the item with the saved value, keep the default otherwise
                 index = definition["widget"].findData(value)
                 if index >= 0:

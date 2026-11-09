@@ -102,3 +102,8 @@ class TestTraceDialog(TestCase):
         data["z_field"] = ""
         dialog.load_form(data)
         self.assertEqual(data, dialog.save_form())
+
+        # An empty aggregation, from a legacy project, means no aggregation
+        data["trace_aggregation"] = ""
+        dialog.load_form(data)
+        self.assertEqual("no", dialog.trace_aggregation.currentData())
