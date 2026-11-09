@@ -1,15 +1,23 @@
 """Dialog for editing a trace in the dataviz window."""
 
+from __future__ import annotations
+
 from collections import OrderedDict
+from typing import TYPE_CHECKING
 
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QWidget
 
 from lizmap.definitions.base import InputType, InputTypeError
 from lizmap.definitions.dataviz import AggregationType, DatavizDefinitions, GraphType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.base_edition_dialog import fill_list_widget
+from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import load_ui
+
+if TYPE_CHECKING:
+    from qgis.core import QgsVectorLayer
 
 __copyright__ = "Copyright 2020, 3Liz"
 __license__ = "GPL version 3"
@@ -20,12 +28,29 @@ CLASS = load_ui("ui_trace.ui")
 
 
 class TraceDatavizEditionDialog(QDialog, CLASS):
-    def __init__(self, parent, layer, graph, uniques):
+    def __init__(
+        self,
+        parent: QWidget | None,
+        layer: QgsVectorLayer | None,
+        graph: GraphType,
+        uniques: list[str],
+        lwc_version: LwcVersions | None = None,
+    ):
+        """Constructor of the dialog to add or edit a trace of a chart.
+
+        :param parent: The parent widget.
+        :param layer: The vector layer of the chart, used by the field widgets.
+        :param graph: The type of the chart.
+        :param uniques: The Y fields already used by the other traces of the chart.
+        :param lwc_version: The target Lizmap Web Client version, used to highlight the
+            settings which are not available in this version. The latest version if None.
+        """
         super().__init__(parent)
         self.config = DatavizDefinitions()
         self._graph = graph
         self._layer = layer
         self.uniques = uniques
+        self._lwc_version = lwc_version if lwc_version else LwcVersions.latest()
         self.setupUi(self)
         self.setWindowTitle(tr("Dataviz Trace"))
 
@@ -81,6 +106,21 @@ class TraceDatavizEditionDialog(QDialog, CLASS):
         self.label_color.setVisible(not histo_2d)
         self.color_field.setVisible(not histo_2d)
         self.color.setVisible(not histo_2d)
+
+        self.version_lwc()
+
+    def version_lwc(self) -> None:
+        """Highlight the labels of the settings which are not available in the target LWC version.
+
+        Unlike the parent dialog, this dialog does not inherit from BaseEditionDialog,
+        which does it for the definitions with a "version" key.
+        """
+        for definition in self.config.layer_config.values():
+            version = definition.get("version")
+            label = definition.get("label")
+            if not version or not label:
+                continue
+            label.setStyleSheet(NEW_FEATURE_CSS if self._lwc_version < version else "")
 
     def check_y_color_field(self):
         """Enable or disable the color input."""

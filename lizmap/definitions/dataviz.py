@@ -237,6 +237,8 @@ class DatavizDefinitions(BaseDefinitions):
                 'For a few types of charts like "bar" or "pie", you can choose to aggregate the data in the '
                 "graph."
             ),
+            # The aggregation by trace is available since LWC 3.11
+            "version": LwcVersions.Lizmap_3_11,
         }
         self._layer_config["color"] = {
             "plural": "color{}",

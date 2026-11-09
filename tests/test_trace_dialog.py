@@ -6,7 +6,9 @@ import pytest
 from qgis.core import QgsProject, QgsVectorLayer
 
 from lizmap.definitions.dataviz import GraphType
+from lizmap.definitions.definitions import LwcVersions
 from lizmap.forms.trace_dataviz_edition import TraceDatavizEditionDialog
+from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 
 from .compat import TestCase
 
@@ -107,3 +109,19 @@ class TestTraceDialog(TestCase):
         data["trace_aggregation"] = ""
         dialog.load_form(data)
         self.assertEqual("no", dialog.trace_aggregation.currentData())
+
+    def test_new_features_lwc_3_11(self, layer: QgsVectorLayer):
+        """Test the aggregation label is highlighted for a LWC version older than 3.11."""
+        # Not available in LWC 3.10
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Bar, [], LwcVersions.Lizmap_3_10)
+        assert dialog.label_trace_aggregation.styleSheet() == NEW_FEATURE_CSS
+        # The other settings are available
+        assert dialog.label_y_field.styleSheet() == ""
+
+        # Available in LWC 3.11
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Bar, [], LwcVersions.Lizmap_3_11)
+        assert dialog.label_trace_aggregation.styleSheet() == ""
+
+        # Without version, the latest one is used
+        dialog = TraceDatavizEditionDialog(None, layer, GraphType.Bar, [])
+        assert dialog.label_trace_aggregation.styleSheet() == ""

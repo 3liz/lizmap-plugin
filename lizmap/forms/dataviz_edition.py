@@ -128,6 +128,8 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
             self.label_title_popup,
             self.refresh_if_filtered,
         ]
+        # The edition of a trace is available since LWC 3.11
+        self.lwc_versions[LwcVersions.Lizmap_3_11] = [self.edit_trace]
 
         self.setup_ui()
         self.check_form_graph_type()
@@ -214,7 +216,11 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
     def add_new_trace(self):
         """Add a new trace in the table after clicking the 'add' button."""
         dialog = TraceDatavizEditionDialog(
-            self.parent, self.layer.currentLayer(), self._current_graph_type(), self.primary_keys_collection()
+            self.parent,
+            self.layer.currentLayer(),
+            self._current_graph_type(),
+            self.primary_keys_collection(),
+            self.current_lwc_version(),
         )
         result = dialog.exec()
         if result != QDialog.DialogCode.Accepted:
@@ -310,7 +316,11 @@ class DatavizEditionDialog(BaseEditionDialog, CLASS):
         uniques.remove(data["y_field"])
 
         dialog = TraceDatavizEditionDialog(
-            self.parent, self.layer.currentLayer(), self._current_graph_type(), uniques
+            self.parent,
+            self.layer.currentLayer(),
+            self._current_graph_type(),
+            uniques,
+            self.current_lwc_version(),
         )
         dialog.load_form(data)
         result = dialog.exec()
