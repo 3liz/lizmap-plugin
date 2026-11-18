@@ -1521,6 +1521,9 @@ class Lizmap(
             self.dlg.activateWindow()
             return False
 
+        # Read the action file, after the visibility check to not lose the changes in an opened dialog
+        self.dlg.load_actions()
+
         # QGIS Plugin manager
         if QGIS_PLUGIN_MANAGER:
             plugin_manager = QgisPluginManager()

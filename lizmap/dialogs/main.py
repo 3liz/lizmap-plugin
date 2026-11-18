@@ -32,6 +32,7 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import OverrideCursor, iface
 
+from lizmap.actions.panel import ActionsPanel
 from lizmap.definitions.definitions import (
     LwcVersions,
     RepositoryComboData,
@@ -260,8 +261,22 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         self.button_refresh_action.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
         self.button_refresh_action.setText('')
-        self.button_refresh_action.setToolTip(tr('Refresh action detection'))
-        self.button_refresh_action.clicked.connect(self.check_action_file_exists)
+        self.button_refresh_action.setToolTip(tr('Read again the action file'))
+        self.button_refresh_action.clicked.connect(self.reload_actions)
+
+        # Editor of the action file
+        self.actions_panel = ActionsPanel(
+            self,
+            self.table_actions,
+            self.button_add_action,
+            self.button_edit_action,
+            self.button_duplicate_action,
+            self.button_remove_action,
+            self.button_up_action,
+            self.button_down_action,
+            self.label_action_issues,
+            self.project,
+        )
 
         self.button_refresh_thumbnail.setIcon(QIcon(QgsApplication.iconPath('mActionRefresh.svg')))
         self.button_refresh_thumbnail.setText('')
@@ -320,9 +335,10 @@ class LizmapDialog(QDialog, FORM_CLASS):
 
         text = tr(
             "Actions in Lizmap Web Client are similar to <a href=\"{}\">Actions in QGIS</a> but it's using a custom "
-            "format and not the dedicated tab in the vector layer properties dialog. For now, creating an action "
-            "requires manual editing of the action configuration file named below. "
-            "Please check the <a href=\"{}\">Lizmap documentation</a>. There is the 'Feature' scope."
+            "format and not the dedicated tab in the vector layer properties dialog. Each action runs the "
+            "PostgreSQL function 'lizmap_get_data', which must exist in the database. The actions are saved in "
+            "the action configuration file named below, when the Lizmap configuration is saved. "
+            "Please check the <a href=\"{}\">Lizmap documentation</a>."
         ).format(
             "https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html#"
             "actions-properties",
@@ -1208,6 +1224,16 @@ class LizmapDialog(QDialog, FORM_CLASS):
     def action_file(self) -> Path:
         """ Return the path to the current action file. """
         return Path(self.project.fileName() + '.action')
+
+    def load_actions(self):
+        """ Read the action file in the actions panel, if the project is saved. """
+        self.actions_panel.load(self.action_file() if self.project.fileName() else None)
+        self.check_action_file_exists()
+
+    def reload_actions(self):
+        """ Read again the action file, after a confirmation if the actions have been changed. """
+        self.actions_panel.reload(self.action_file() if self.project.fileName() else None)
+        self.check_action_file_exists()
 
     def check_action_file_exists(self) -> bool:
         """ Return boolean if an action file exists for the given project and update UI. """

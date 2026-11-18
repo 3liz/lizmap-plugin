@@ -338,10 +338,10 @@ def _validate_style_value(key: StyleKey, value: JsonScalar) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
 
 
-def _validate_action(action: Action, project: QgsProject) -> list[ActionIssue]:
+def validate_action(action: Action, project: QgsProject) -> list[ActionIssue]:
     """Validate one action against the rules of Lizmap Web Client and the current project.
 
-    The uniqueness of the name is checked by validate_actions.
+    The uniqueness of the name is checked by validate_actions, with all the actions.
 
     :param action: The action.
     :param project: The QGIS project, to check the layers.
@@ -446,6 +446,6 @@ def validate_actions(actions: list[Action], project: QgsProject) -> list[ActionI
             issues.append(ActionIssue(action.name, tr("The name is used by another action.")))
         names.add(action.name)
 
-        issues.extend(_validate_action(action, project))
+        issues.extend(validate_action(action, project))
 
     return issues
