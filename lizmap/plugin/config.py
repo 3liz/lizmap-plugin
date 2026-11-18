@@ -425,23 +425,12 @@ class ConfigFileManager(LizmapProtocol):
                 crs_list[0].append("EPSG:3857")
                 self.project.writeEntry("WMSCrsList", "", crs_list[0])
 
-        # The actions must not have any error, the action file is written with the Lizmap configuration
-        if self.dlg.actions_panel.has_errors():
-            self.dlg.log_panel.append(tr("Actions"), style=Html.H2)
-            self.dlg.log_panel.append(
-                "{}<br><br>{}".format(
-                    tr("Some actions have errors, please check the 'Actions' panel."),
-                    stop_process,
-                ),
-                level=Qgis.MessageLevel.Critical,
-            )
-            return False
-
         # write data in the lizmap json config file
         if not self.write_project_config_file(lwc_version, with_gui):
             return False
 
-        # write the action file, only if the actions have been changed
+        # write the action file, only if the actions have been changed.
+        # Actions with errors are blocking checks, the Lizmap configuration is not written in this case.
         if self.dlg.actions_panel.save():
             self.dlg.log_panel.append(tr("The action file has been updated"), abort=False, time=True)
             self.dlg.check_action_file_exists()

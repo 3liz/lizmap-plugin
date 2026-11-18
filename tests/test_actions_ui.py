@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from qgis.core import QgsProject, QgsVectorLayer
+from qgis.PyQt.QtCore import QFile
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QLabel, QMessageBox, QPushButton, QTableWidget, QWidget
 
@@ -14,6 +15,7 @@ from lizmap.actions.config import Action, ActionCallback, read_actions
 from lizmap.actions.definitions import ActionGeometry, ActionScope, CallbackMethod, StyleKey
 from lizmap.actions.edition_dialog import ActionEditionDialog, color_to_text, option_value_from_text
 from lizmap.actions.panel import ActionsPanel
+from lizmap.widgets.check_project import Checks, Error, TableCheck
 
 from .compat import TestCase
 
@@ -266,3 +268,49 @@ class TestActionsPanel(TestCase):
         self.assertFalse(actions_panel.table.isEnabled())
         actions_panel.add_action()
         self.assertListEqual([], actions_panel.actions)
+
+    def test_layers_removed(self, project: QgsProject, tmp_path: Path):
+        """Layers removed from the project are removed from the actions and their callbacks."""
+        path = tmp_path.joinpath("project.qgs.action")
+        action = complete_action(project)
+        nodes = layer_id(project, "nodes")
+        roads = layer_id(project, "roads")
+        action.layers.append(nodes)
+        path.write_text(json.dumps([action.to_json()]), encoding="utf8")
+
+        actions_panel = panel(project)
+        actions_panel.load(path)
+
+        # Unknown layer, nothing changes
+        actions_panel.layers_removed(["other_layer_id"])
+        self.assertFalse(actions_panel.dirty)
+
+        # The roads layer is removed from the layers and the redraw callback is removed
+        actions_panel.layers_removed([roads])
+        self.assertTrue(actions_panel.dirty)
+        self.assertListEqual([nodes], actions_panel.actions[0].layers)
+        self.assertListEqual([ActionCallback(CallbackMethod.Zoom)], actions_panel.actions[0].callbacks)
+        self.assertFalse(actions_panel.has_errors())
+
+        # Without any layer left, the action has an error
+        actions_panel.layers_removed([nodes])
+        self.assertTrue(actions_panel.has_errors())
+
+
+class TestActionChecks(TestCase):
+    """Issues of the actions in the table of checks."""
+
+    def test_checks(self):
+        """An error is blocking, a warning is not."""
+        table = TableCheck(None)
+        table.setup()
+        checks = Checks()
+
+        table.add_error(Error("merge : The callback 'center' is unknown.", checks.ActionWarning))
+        self.assertFalse(table.has_blocking())
+
+        table.add_error(Error("merge : The title is mandatory.", checks.ActionError))
+        self.assertTrue(table.has_blocking())
+
+        # The icon is a resource of QGIS
+        self.assertTrue(QFile.exists(":/images/themes/default/mAction.svg"))

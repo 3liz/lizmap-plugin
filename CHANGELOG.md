@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* Actions - Add an editor of the actions, saved in the action file used by Lizmap Web Client
+
 ## 5.1.0 - 2026-10-29
 
 * Fix false "Parent folder" error on COG layers with QGIS 3.40

@@ -1109,6 +1109,9 @@ class Lizmap(
         """
         Remove layers from tables when deleted from layer registry
         """
+        # The action file is independent of the CFG file
+        self.dlg.actions_panel.layers_removed(layer_ids)
+
         if not self.dlg.check_cfg_file_exists():
             return
 

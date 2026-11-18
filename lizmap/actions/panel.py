@@ -211,6 +211,29 @@ class ActionsPanel:
         self.issues_label.setText("<br>".join(lines))
         self.issues_label.setVisible(bool(lines))
 
+    def layers_removed(self, layer_ids: list[str]):
+        """Remove the layers deleted from the project in the actions.
+
+        The layers are removed from the action layers, and the callbacks using them are removed.
+        An action without any layer left has an error, the user must fix it.
+
+        :param layer_ids: IDs of the layers removed from the project.
+        """
+        changed = False
+        for action in self.actions:
+            # Layers of the action
+            layers = [layer_id for layer_id in action.layers if layer_id not in layer_ids]
+            # Callbacks with a layer
+            callbacks = [c for c in action.callbacks if c.layer_id not in layer_ids]
+            if layers != action.layers or callbacks != action.callbacks:
+                action.layers = layers
+                action.callbacks = callbacks
+                changed = True
+
+        if changed:
+            self.dirty = True
+        self.refresh()
+
     def _set_actions(self, actions: list[Action], selected_row: int | None = None):
         """Replace the actions after a change by the user.
 

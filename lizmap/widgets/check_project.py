@@ -775,6 +775,31 @@ class Checks:
                 ).format(count=CLOUD_MAX_PARENT_FOLDER, hosting_name=CLOUD_NAME),
             ),
         )
+        self.ActionError = Check(
+            "action_error",
+            tr("Invalid action"),
+            tr(
+                "An action in the 'Actions' panel is not valid : it will fail or will not be displayed in "
+                "Lizmap Web Client."
+            ),
+            ("<ul><li>{}</li></ul>").format(
+                tr("Edit the action in the 'Actions' panel, according to the message."),
+            ),
+            Levels.Project,
+            Severities().blocking,
+            QIcon(":/images/themes/default/mAction.svg"),
+        )
+        self.ActionWarning = Check(
+            "action_warning",
+            tr("Action to check"),
+            tr("An action in the 'Actions' panel works, but its configuration may not be the expected one."),
+            ("<ul><li>{}</li></ul>").format(
+                tr("Check the action in the 'Actions' panel, according to the message."),
+            ),
+            Levels.Project,
+            Severities().normal,
+            QIcon(":/images/themes/default/mAction.svg"),
+        )
 
     def html(self, severity: Severity, lizmap_cloud: bool) -> str:
         """Generate an HTML table, according to the instance."""
