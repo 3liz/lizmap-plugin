@@ -28,6 +28,7 @@ from lizmap.toolbelt.convert import cast_to_group, cast_to_layer
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.layer import is_vector_pg, update_uri
 from lizmap.toolbelt.layer_files import is_remote_source
+from lizmap.toolbelt.version import format_version_integer
 from lizmap.widgets.check_project import (
     RASTER_COUNT_CELL,
     Checks,
@@ -553,6 +554,41 @@ def duplicated_label_legend(project: QgsProject, filter_data: bool = True) -> di
 
     # Keep only duplicated labels within a layer
     return _clean_result(results)
+
+
+SERVER_PLUGIN_DUPLICATED_LABELS_FIXED = "2.15.4"
+
+
+def server_plugin_handles_duplicated_labels(server_metadata: dict | None) -> bool:
+    """ Check if the QGIS Server Lizmap plugin supports duplicated labels in a rule based legend.
+
+    https://github.com/3liz/qgis-lizmap-server-plugin/pull/158
+    If the version is unknown, the check on the labels must still be done.
+    """
+    if not server_metadata:
+        return False
+
+    qgis_server_info = server_metadata.get("qgis_server_info")
+    if not qgis_server_info or "error" in qgis_server_info:
+        return False
+
+    plugin = (qgis_server_info.get("plugins") or {}).get("lizmap_server")
+    if not plugin:
+        return False
+
+    plugin_version = plugin.get("version", "")
+    if not plugin_version or plugin_version.lower().startswith("not"):
+        return False
+
+    if plugin_version in ("master", "dev"):
+        return True
+
+    try:
+        current = int(format_version_integer(plugin_version))
+    except ValueError:
+        return False
+
+    return current >= int(format_version_integer(SERVER_PLUGIN_DUPLICATED_LABELS_FIXED))
 
 
 def _duplicated_label_legend_layer(renderer: QgsFeatureRenderer) -> dict[str, int]:

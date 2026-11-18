@@ -17,6 +17,7 @@ from lizmap.project_checker_tools import (
     duplicated_rule_key_legend,
     french_geopf_authcfg_url_parameters,
     project_invalid_pk,
+    server_plugin_handles_duplicated_labels,
     trailing_layer_group_name,
 )
 from lizmap.widgets.check_project import Error
@@ -241,3 +242,23 @@ class TestProjectTable(TestCase):
 
         data = _duplicated_label_legend_layer(QgsRuleBasedRenderer(root_rule))
         self.assertDictEqual({"label-1": 1, "label": 2, "label-2": 1}, data)
+
+    def test_server_plugin_handles_duplicated_labels(self):
+        """Test the QGIS Server Lizmap plugin version supporting duplicated labels in the legend."""
+
+        def metadata(version: str) -> dict:
+            return {"qgis_server_info": {"plugins": {"lizmap_server": {"version": version}}}}
+
+        self.assertFalse(server_plugin_handles_duplicated_labels(None))
+        self.assertFalse(server_plugin_handles_duplicated_labels({}))
+        self.assertFalse(
+            server_plugin_handles_duplicated_labels({"qgis_server_info": {"error": "NO_ACCESS"}})
+        )
+        self.assertFalse(server_plugin_handles_duplicated_labels({"qgis_server_info": {"plugins": {}}}))
+        self.assertFalse(server_plugin_handles_duplicated_labels(metadata("not found")))
+        self.assertFalse(server_plugin_handles_duplicated_labels(metadata("2.15.3")))
+        self.assertFalse(server_plugin_handles_duplicated_labels(metadata("2.9.10")))
+        self.assertTrue(server_plugin_handles_duplicated_labels(metadata("2.15.4")))
+        self.assertTrue(server_plugin_handles_duplicated_labels(metadata("2.16.0-pre")))
+        self.assertTrue(server_plugin_handles_duplicated_labels(metadata("3.0.0")))
+        self.assertTrue(server_plugin_handles_duplicated_labels(metadata("master")))

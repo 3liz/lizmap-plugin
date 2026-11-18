@@ -80,6 +80,7 @@ from lizmap.project_checker_tools import (  # duplicated_layer_with_filter_legen
     project_safeguards_checks,
     project_tos_layers,
     project_trust_layer_metadata,
+    server_plugin_handles_duplicated_labels,
     set_project_trust_layer_metadata,
     simplify_provider_side,
     trailing_layer_group_name,
@@ -942,7 +943,12 @@ class ProjectManager(LizmapProtocol):
 
                 self.dlg.log_panel.end_table()
 
-            results = duplicated_label_legend(self.project)
+            # Fixed in the QGIS Server Lizmap plugin 2.15.4
+            # https://github.com/3liz/qgis-lizmap-server-plugin/pull/158
+            if server_plugin_handles_duplicated_labels(json_meta):
+                results = {}
+            else:
+                results = duplicated_label_legend(self.project)
             if results:
                 self.dlg.log_panel.append(tr("Duplicated labels in the legend"), Html.H2)
                 self.dlg.log_panel.append("<br>")
