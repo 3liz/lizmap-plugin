@@ -429,6 +429,12 @@ class ConfigFileManager(LizmapProtocol):
         if not self.write_project_config_file(lwc_version, with_gui):
             return False
 
+        # write the action file, only if the actions have been changed.
+        # Actions with errors are blocking checks, the Lizmap configuration is not written in this case.
+        if self.dlg.actions_panel.save():
+            self.dlg.log_panel.append(tr("The action file has been updated"), abort=False, time=True)
+            self.dlg.check_action_file_exists()
+
         msg = tr("Lizmap configuration file has been updated")
         # self.dlg.log_panel.append(tr('All the map parameters are correctly set'), abort=False, time=True)
         self.dlg.log_panel.append("<p>")

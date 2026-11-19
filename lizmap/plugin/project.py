@@ -1269,6 +1269,15 @@ class ProjectManager(LizmapProtocol):
                         )
                     )
 
+        # Actions, from the actions panel
+        for issue in self.dlg.actions_panel.issues():
+            self.dlg.check_results.add_error(
+                Error(
+                    str(issue),
+                    checks.ActionWarning if issue.warning else checks.ActionError,
+                )
+            )
+
         results = use_estimated_metadata(self.project)
         for layer in results:
             self.dlg.check_results.add_error(

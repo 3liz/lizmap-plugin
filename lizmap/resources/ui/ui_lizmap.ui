@@ -4134,17 +4134,96 @@ This is different to the map maximum extent (defined in QGIS project properties,
             </layout>
            </item>
            <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+            <widget class="QTableWidget" name="table_actions">
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::SingleSelection</enum>
              </property>
-            </spacer>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="layout_action_buttons">
+             <item>
+              <widget class="QPushButton" name="button_add_action">
+               <property name="text">
+                <string notr="true">BUTTON_ADD_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_edit_action">
+               <property name="text">
+                <string notr="true">BUTTON_EDIT_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_duplicate_action">
+               <property name="text">
+                <string notr="true">BUTTON_DUPLICATE_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_remove_action">
+               <property name="text">
+                <string notr="true">BUTTON_REMOVE_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_up_action">
+               <property name="text">
+                <string notr="true">BUTTON_UP_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_down_action">
+               <property name="text">
+                <string notr="true">BUTTON_DOWN_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_sql_action">
+               <property name="text">
+                <string notr="true">BUTTON_SQL_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="spacer_action_buttons">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_action_issues">
+             <property name="text">
+              <string notr="true">Issues, set in Python</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::TextSelectableByMouse</set>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
