@@ -29,6 +29,7 @@ from lizmap.actions.config import (
     write_actions,
 )
 from lizmap.actions.edition_dialog import ActionEditionDialog
+from lizmap.actions.sql_dialog import ActionSqlDialog
 from lizmap.toolbelt.i18n import tr
 
 if TYPE_CHECKING:
@@ -56,6 +57,7 @@ class ActionsPanel:
         remove_button: QAbstractButton,
         up_button: QAbstractButton,
         down_button: QAbstractButton,
+        sql_button: QAbstractButton,
         issues_label: QLabel,
         project: QgsProject | None = None,
     ):
@@ -69,6 +71,7 @@ class ActionsPanel:
         :param remove_button: The button to remove the selected action.
         :param up_button: The button to move up the selected action.
         :param down_button: The button to move down the selected action.
+        :param sql_button: The button to open the helper for the PostgreSQL functions.
         :param issues_label: The label displaying the errors and warnings.
         :param project: The QGIS project, the current one by default.
         """
@@ -105,6 +108,12 @@ class ActionsPanel:
             (remove_button, "symbologyRemove.svg", tr("Remove the selected action"), self.remove_action),
             (up_button, "mActionArrowUp.svg", tr("Move up the selected action"), self.move_up),
             (down_button, "mActionArrowDown.svg", tr("Move down the selected action"), self.move_down),
+            (
+                sql_button,
+                "mIconPostgis.svg",
+                tr("Help to write the PostgreSQL functions used by the actions"),
+                self.open_sql_helper,
+            ),
         )
         for button, icon, tooltip, slot in buttons:
             button.setText("")
@@ -233,6 +242,10 @@ class ActionsPanel:
         if changed:
             self.dirty = True
         self.refresh()
+
+    def open_sql_helper(self):
+        """Open the dialog showing the SQL code of the PostgreSQL functions for the actions."""
+        ActionSqlDialog(self.parent, self.project, self.actions).exec()
 
     def _set_actions(self, actions: list[Action], selected_row: int | None = None):
         """Replace the actions after a change by the user.

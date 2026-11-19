@@ -274,6 +274,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
             self.button_remove_action,
             self.button_up_action,
             self.button_down_action,
+            self.button_sql_action,
             self.label_action_issues,
             self.project,
         )

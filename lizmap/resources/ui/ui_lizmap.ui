@@ -4191,6 +4191,13 @@ This is different to the map maximum extent (defined in QGIS project properties,
               </widget>
              </item>
              <item>
+              <widget class="QPushButton" name="button_sql_action">
+               <property name="text">
+                <string notr="true">BUTTON_SQL_ACTION</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="spacer_action_buttons">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>

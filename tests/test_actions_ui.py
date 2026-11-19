@@ -86,7 +86,7 @@ def panel(project: QgsProject) -> ActionsPanel:
     :return: The panel.
     """
     parent = QWidget()
-    widgets = [QPushButton(parent) for _ in range(6)]
+    widgets = [QPushButton(parent) for _ in range(7)]
     actions_panel = ActionsPanel(parent, QTableWidget(parent), *widgets, QLabel(parent), project)
     # Keep a reference to the parent widget
     actions_panel.parent_for_tests = parent
