@@ -1109,6 +1109,9 @@ class Lizmap(
         """
         Remove layers from tables when deleted from layer registry
         """
+        # The action file is independent of the CFG file
+        self.dlg.actions_panel.layers_removed(layer_ids)
+
         if not self.dlg.check_cfg_file_exists():
             return
 
@@ -1520,6 +1523,9 @@ class Lizmap(
             self.dlg.raise_()
             self.dlg.activateWindow()
             return False
+
+        # Read the action file, after the visibility check to not lose the changes in an opened dialog
+        self.dlg.load_actions()
 
         # QGIS Plugin manager
         if QGIS_PLUGIN_MANAGER:
