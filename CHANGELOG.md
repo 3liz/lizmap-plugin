@@ -4,6 +4,7 @@
 
 * Actions - Add an editor of the actions, saved in the action file used by Lizmap Web Client
 * Actions - Add a helper to write the PostgreSQL functions used by the actions
+* Popup - Fix the display of children not saved for some layers in the relations options
 
 ## 5.1.0 - 2026-10-29
 

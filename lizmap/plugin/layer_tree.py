@@ -427,6 +427,8 @@ class LayerTreeManager(LizmapProtocol):
         else:
             self.enable_check_box_in_layer_tab(False)
 
+        self.reset_relation_display_radios()
+
         # i_key can be either a layer name or a group name
         if i_key:
             # get information about the layer or the group from the layerList dictionary
@@ -593,6 +595,25 @@ class LayerTreeManager(LizmapProtocol):
 
             if isinstance(layer, QgsVectorLayer) and not layer.isSpatial():
                 self.layer_options_list["toggled"]["widget"].setEnabled(False)
+
+    def reset_relation_display_radios(self):
+        """Check the "No children displayed" radio button, without saving anything.
+
+        The relation radio buttons are auto-exclusive: Qt refuses to uncheck the checked one with
+        setChecked(False). Without this reset, the option of the previously selected layer stays
+        checked in the UI, and clicking on it for the new layer does not save anything.
+        """
+        radios = (
+            self.dlg.children_no_display,
+            self.dlg.children_lizmap_features_table,
+            self.dlg.popup_display_children,
+        )
+        # Block signals, so the previous values are not saved in the newly selected layer
+        for radio in radios:
+            radio.blockSignals(True)
+        self.dlg.children_no_display.setChecked(True)
+        for radio in radios:
+            radio.blockSignals(False)
 
     def enable_check_box_in_layer_tab(self, value: bool):
         """Enable/Disable checkboxes and fields of the Layer tab."""
