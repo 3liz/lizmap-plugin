@@ -875,3 +875,49 @@ class TestUiLizmapDialog(TestCase):
         output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
         # Short link permalink option should be unchecked in output config file
         self.assertFalse(output["options"].get("short_link_permalink"))
+
+    def test_relation_display_radio_per_layer(self, data: Path):
+        """Test the relation display radio buttons when switching from one layer to another.
+
+        The option checked for a layer must not stay checked in the UI for the next selected layer,
+        otherwise the user cannot choose this option for the second layer.
+        """
+        # Start from an empty project, other tests leave their layers in it
+        project = QgsProject.instance()
+        project.clear()
+
+        # Add a second vector layer, before the one added by the setup
+        points = QgsVectorLayer(str(data.joinpath("points.geojson")), "points", "ogr")
+        project.addMapLayer(points)
+
+        lizmap = self._setup_empty_project(data)
+
+        def select(name: str):
+            """Select the item with the given name in the layer tree."""
+            item = lizmap.dlg.layer_tree.findItems(
+                name, Qt.MatchFlag.MatchExactly | Qt.MatchFlag.MatchRecursive, 0
+            )[0]
+            lizmap.dlg.layer_tree.setCurrentItem(item)
+
+        # Display the table of children for the first layer
+        select("lines")
+        self.assertTrue(lizmap.dlg.children_no_display.isChecked())
+        lizmap.dlg.children_lizmap_features_table.setChecked(True)
+
+        # The second layer has no option, the UI must not keep the one of the first layer
+        select("points")
+        self.assertTrue(lizmap.dlg.children_no_display.isChecked())
+        self.assertFalse(lizmap.dlg.children_lizmap_features_table.isChecked())
+        self.assertFalse(lizmap.dlg.popup_display_children.isChecked())
+
+        # Display the table of children for the second layer too
+        lizmap.dlg.children_lizmap_features_table.setChecked(True)
+
+        # Back to the first layer, its option is restored
+        select("lines")
+        self.assertTrue(lizmap.dlg.children_lizmap_features_table.isChecked())
+
+        output = lizmap.project_config_file(LwcVersions.latest(), check_server=False, ignore_error=True)
+        for layer in ("lines", "points"):
+            self.assertTrue(output["layers"][layer].get("children_lizmap_features_table"))
+            self.assertEqual("False", output["layers"][layer].get("popupDisplayChildren"))
