@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased
+## 5.2.0 - 2026-11-25
 
 * Actions - Add an editor of the actions, saved in the action file used by Lizmap Web Client
 * Actions - Add a helper to write the PostgreSQL functions used by the actions
+* Tables - Sort the layer tables by clicking on a column header
+* Editing - Sort the snapping layers list alphabetically
 * Popup - Fix the display of children not saved for some layers in the relations options
 
 ## 5.1.0 - 2026-10-29
