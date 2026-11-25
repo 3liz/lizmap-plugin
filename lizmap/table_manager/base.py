@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import inspect
 import json
 import logging
@@ -30,6 +31,13 @@ from lizmap.qt_style_sheets import NEW_FEATURE_CSS
 from lizmap.toolbelt.convert import as_boolean
 from lizmap.toolbelt.i18n import tr
 from lizmap.toolbelt.resources import plugin_name
+from lizmap.widgets.sortable_table import (
+    SORT_ROLE,
+    SortableTableWidgetItem,
+    make_table_sortable,
+    reset_table_sort_indicator,
+    sort_table_by_column,
+)
 
 if TYPE_CHECKING:
     from lizmap.dialogs.main import LizmapDialog
@@ -96,6 +104,10 @@ class TableManager:
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
         self.table.cellDoubleClicked.connect(self.edit_existing_row)
+
+        # Allow sorting the rows by clicking on a column header, like the QGIS
+        # attribute table.
+        make_table_sortable(self.table)
 
         # This is a hack to get the layer and then field icons.
         self._layer = None
@@ -269,7 +281,7 @@ class TableManager:
         self._layer = None
         for i, key in enumerate(data.keys()):
             value = data[key]
-            cell = QTableWidgetItem()
+            cell = SortableTableWidgetItem()
 
             input_type = self.definitions.layer_config[key]["type"]
 
@@ -434,6 +446,10 @@ class TableManager:
                 cell.setText(display)
                 cell.setData(Qt.ItemDataRole.UserRole, value)
                 cell.setData(Qt.ItemDataRole.ToolTipRole, value)
+                # Sort on the number, not on the text with the unit.
+                # The value might be a string in an old CFG file.
+                with contextlib.suppress(TypeError, ValueError):
+                    cell.setData(SORT_ROLE, float(value))
 
             elif input_type == InputType.Text:
                 separator = self.definitions.layer_config[key].get("separator", ",")
@@ -491,6 +507,18 @@ class TableManager:
 
         self.table.clearSelection()
 
+    def sort_by_column(self, column: int):
+        """Sort the rows by the clicked column header, toggling ascending/descending.
+
+        This performs a one-shot sort (QTableWidget.sortItems) so it does not
+        interfere with row population or the manual reordering buttons.
+        """
+        sort_table_by_column(self.table, column)
+
+    def _clear_sort_indicator(self):
+        """Reset the header sort indicator after a manual reorder."""
+        reset_table_sort_indicator(self.table)
+
     def move_layer_up(self):
         """Move the selected layer up."""
         row = self.table.currentRow()
@@ -502,6 +530,7 @@ class TableManager:
             self.table.setItem(row - 1, i, self.table.takeItem(row + 1, i))
             self.table.setCurrentCell(row - 1, column)
         self.table.removeRow(row + 1)
+        self._clear_sort_indicator()
 
     def move_layer_down(self):
         """Move the selected layer down."""
@@ -514,6 +543,7 @@ class TableManager:
             self.table.setItem(row + 2, i, self.table.takeItem(row, i))
             self.table.setCurrentCell(row + 2, column)
         self.table.removeRow(row)
+        self._clear_sort_indicator()
 
     def remove_selection(self):
         """Remove the selected row from the table."""

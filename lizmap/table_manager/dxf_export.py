@@ -8,6 +8,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 
 from lizmap.toolbelt.convert import ambiguous_to_bool
 from lizmap.widgets.project_tools import is_layer_published_wfs
+from lizmap.widgets.sortable_table import SortableTableWidgetItem, make_table_sortable
 
 
 class TableManagerDxfExport:
@@ -23,6 +24,9 @@ class TableManagerDxfExport:
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setSelectionBehavior(self.table.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(self.table.SelectionMode.SingleSelection)
+
+        # Allow sorting by clicking on a column header, like the QGIS attribute table.
+        make_table_sortable(self.table)
 
     def load_wfs_layers(self, data: dict):
         """Load all WFS-enabled layers into the table with checkboxes.
@@ -72,7 +76,7 @@ class TableManagerDxfExport:
             self.table.setItem(row, 0, name_item)
 
             # Column 1: Enabled checkbox
-            checkbox_item = QTableWidgetItem()
+            checkbox_item = SortableTableWidgetItem()
             checkbox_item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
             checkbox_item.setCheckState(Qt.CheckState.Checked if enabled else Qt.CheckState.Unchecked)
             self.table.setItem(row, 1, checkbox_item)
@@ -138,7 +142,7 @@ class TableManagerDxfExport:
             self.table.setItem(row, 0, name_item)
 
             # Column 1: Enabled checkbox (default to checked)
-            checkbox_item = QTableWidgetItem()
+            checkbox_item = SortableTableWidgetItem()
             checkbox_item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
             checkbox_item.setCheckState(Qt.CheckState.Checked)
             self.table.setItem(row, 1, checkbox_item)
