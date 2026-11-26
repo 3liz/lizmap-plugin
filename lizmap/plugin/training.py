@@ -114,11 +114,11 @@ class TrainingManager(LizmapProtocol):
         self.dlg.workshop_type.setCurrentWidget(self.dlg.training_panel)
 
         if not current_url:
-            self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(True)
+            self.dlg.set_panel_visible(Panels.Training, False)
             return
 
         if bool([domain for domain in WORKSHOP_DOMAINS if (domain in current_url)]):
-            self.dlg.mOptionsListWidget.item(Panels.Training).setHidden(False)
+            self.dlg.set_panel_visible(Panels.Training, True)
 
         logger.info(
             "Current server has been detected as a training server, set as long workshop by default for now. "

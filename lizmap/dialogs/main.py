@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from qgis.core import (
     Qgis,
@@ -13,7 +13,7 @@ from qgis.core import (
     QgsProject,
     QgsSettings,
 )
-from qgis.gui import QgsFeaturePickerWidget
+from qgis.gui import QgsFeaturePickerWidget, QgsOptionsDialogHighlightWidget
 from qgis.PyQt.QtCore import QSize, Qt, QUrl
 from qgis.PyQt.QtGui import (
     QDesktopServices,
@@ -29,6 +29,7 @@ from qgis.PyQt.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSpacerItem,
+    QWidget,
 )
 from qgis.utils import OverrideCursor, iface
 
@@ -95,12 +96,11 @@ except ModuleNotFoundError:
         WEB_ENGINE = False
         WEBKIT_AVAILABLE = False
 
-if TYPE_CHECKING:
-    from qgis.PyQt.QtWidgets import QWidget
-
-
 FORM_CLASS = load_ui('ui_lizmap.ui')
 LOGGER = logging.getLogger("Lizmap")
+
+# Same minimum length as the search in the QGIS layer properties
+MINIMUM_SEARCH_LENGTH = 3
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
@@ -113,6 +113,7 @@ class LizmapDialog(QDialog, FORM_CLASS):
         """Constructor."""
         super().__init__(parent)
         self.setupUi(self)
+        self.setup_search()
         self.project = QgsProject.instance()
 
         # Should only be used in tests
@@ -459,8 +460,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
         for button in buttons:
             button.setIcon(copy_icon)
 
-        self.mOptionsListWidget.item(Panels.Upload).setHidden(True)
-        self.mOptionsListWidget.item(Panels.Training).setHidden(True)
+        self.set_panel_visible(Panels.Upload, False)
+        self.set_panel_visible(Panels.Training, False)
         self.label_upload_path.setText(tr(
             "Only files located in the <strong>current QGS file directory (or in a sub-directory)</strong>, "
             "having a file weight less than <strong>{}</strong> and having extensions <strong>{}</strong> are "
@@ -964,12 +965,100 @@ class LizmapDialog(QDialog, FORM_CLASS):
         else:
             iface.messageBar().pushWidget(widget, level, duration)
 
+    def setup_search(self):
+        """ Setup the search bar, to find a setting in all panels.
+
+        The search and the highlight are done by QgsOptionsDialogHighlightWidget, the same engine used by QGIS in the
+        layer properties. QgsOptionsDialogBase is not used, its destructor is saving the splitter state, which can
+        crash Python at exit.
+        """
+        # Panels which must stay hidden, whatever the search
+        self._hidden_panels: set[int] = set()
+        # Panels having at least one widget matching the search, None if there isn't any search
+        self._matching_panels: set[int] | None = None
+        # Couples (panel index, highlight widget)
+        self._search_widgets: list[tuple[int, QgsOptionsDialogHighlightWidget]] = []
+
+        self.mSearchLineEdit.setShowSearchIcon(True)
+        self.mSearchLineEdit.setToolTip(tr(
+            'Search a setting in all panels, at least {} characters. Panels without any match are hidden.'
+        ).format(MINIMUM_SEARCH_LENGTH))
+        self.mSearchLineEdit.textChanged.connect(self.search_settings)
+
+    def showEvent(self, event):
+        """ Register widgets for the search bar, some widgets are added after the dialog creation. """
+        super().showEvent(event)
+        self.register_search_widgets()
+
+    def register_search_widgets(self):
+        """ Register all widgets in panels which can be found with the search bar. """
+        # Remove the highlight from the previous widgets
+        for _, widget in self._search_widgets:
+            widget.searchHighlight('')
+
+        self._search_widgets = []
+        for panel in range(self.mOptionsStackedWidget.count()):
+            page = self.mOptionsStackedWidget.widget(panel)
+            for child in page.findChildren(QWidget):
+                # Returns None if the widget is not supported : label, checkbox, button, group box, tree and table
+                widget = QgsOptionsDialogHighlightWidget.createWidget(child)
+                if widget and widget.isValid():
+                    self._search_widgets.append((panel, widget))
+
+        self.search_settings(self.mSearchLineEdit.text())
+
+    def search_settings(self, text: str):
+        """ Highlight widgets matching the search and hide panels without any match. """
+        if len(text) < MINIMUM_SEARCH_LENGTH:
+            text = ''
+
+        self._matching_panels = set() if text else None
+        for panel, widget in self._search_widgets:
+            # searchHighlight must be called on each widget, to highlight or to reset it
+            if widget.searchHighlight(text) and text:
+                self._matching_panels.add(panel)
+
+        if text:
+            # The panel name in the left menu is matching as well
+            for row in range(self.mOptionsListWidget.count()):
+                if text.lower() in self.mOptionsListWidget.item(row).text().lower():
+                    self._matching_panels.add(row)
+
+        self.update_panels_visibility()
+
+    def set_panel_visible(self, panel: int, visible: bool):
+        """ Show or hide a panel in the left menu, the search bar is not displaying a hidden panel. """
+        if visible:
+            self._hidden_panels.discard(panel)
+        else:
+            self._hidden_panels.add(panel)
+        self.update_panels_visibility()
+
+    def update_panels_visibility(self):
+        """ Update the visibility of panels in the left menu, according to hidden panels and to the search. """
+        for row in range(self.mOptionsListWidget.count()):
+            hidden = row in self._hidden_panels
+            if self._matching_panels is not None:
+                hidden = hidden or row not in self._matching_panels
+            self.mOptionsListWidget.item(row).setHidden(hidden)
+
+        current = self.mOptionsListWidget.currentItem()
+        if not current or not current.isHidden():
+            return
+
+        # Select the first visible panel instead
+        for row in range(self.mOptionsListWidget.count()):
+            if not self.mOptionsListWidget.item(row).isHidden():
+                self.mOptionsListWidget.setCurrentRow(row)
+                return
+
     def setup_icons(self):
         """ Setup icons in the left menu. """
         self.mOptionsListWidget.setIconSize(QSize(20, 20))
 
         # If adding a new panel, all mOptionsListWidget.item(X) must be checked
         # definitions/online_help.py about mapping as well
+        # To hide a panel, use set_panel_visible(), not setHidden(), otherwise the search bar will show it again
 
         # Information
         # It must be the first tab, with index 0.

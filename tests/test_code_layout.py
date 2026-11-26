@@ -4,7 +4,7 @@ import re
 
 from pathlib import Path
 
-from lizmap.toolbelt.resources import resources_path
+from lizmap.toolbelt.resources import plugin_path, resources_path
 
 from .compat import TestCase
 
@@ -39,4 +39,17 @@ class TestCodeLayout(TestCase):
 
         self.assertListEqual(
             list_files, [], "Use PyQt connect in Python files, not UI : {}".format(", ".join(list_files))
+        )
+
+    def test_panel_visibility(self):
+        """Test panels are hidden with LizmapDialog.set_panel_visible, to stay hidden after a search."""
+        list_files = []
+        expression = r"mOptionsListWidget\.item\(Panels\.\w+\)\.setHidden\("
+        plugin = plugin_path()
+        for python_file in plugin.rglob("*.py"):
+            if re.search(expression, python_file.read_text()):
+                list_files.append(str(python_file.relative_to(plugin)))
+
+        self.assertListEqual(
+            list_files, [], "Use 'set_panel_visible' instead of 'setHidden' : {}".format(", ".join(list_files))
         )

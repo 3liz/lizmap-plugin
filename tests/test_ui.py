@@ -12,6 +12,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.testing.mocked import get_iface
 
 from lizmap.definitions.definitions import LwcVersions, PredefinedGroup
+from lizmap.definitions.online_help import Panels
 from lizmap.plugin import Lizmap
 
 from .compat import TestCase
@@ -53,6 +54,51 @@ class TestUiLizmapDialog(TestCase):
 
         # lizmap.run()
         # lizmap.get_map_options()
+
+    def test_search_bar(self):
+        """Test the search bar, to find a setting in all panels."""
+        lizmap = Lizmap(get_iface(), lwc_version=LwcVersions.latest())
+        dialog = lizmap.dlg
+        menu = dialog.mOptionsListWidget
+        dialog.register_search_widgets()
+
+        def visible_panels() -> list[int]:
+            return [row for row in range(menu.count()) if not menu.item(row).isHidden()]
+
+        # Upload and training panels are hidden by default
+        all_panels = visible_panels()
+        self.assertNotIn(Panels.Upload, all_panels)
+        self.assertNotIn(Panels.Training, all_panels)
+
+        # Not enough characters, nothing is filtered
+        dialog.mSearchLineEdit.setText("po")
+        self.assertListEqual(all_panels, visible_panels())
+
+        # Only some panels are matching
+        menu.setCurrentRow(Panels.Basemap)
+        dialog.mSearchLineEdit.setText("popup")
+        self.assertIn(Panels.Layers, visible_panels())
+        self.assertNotIn(Panels.Basemap, visible_panels())
+        # The current panel was hidden, the first visible panel is selected instead
+        self.assertEqual(visible_panels()[0], menu.currentRow())
+
+        # The panel name is matching as well
+        dialog.mSearchLineEdit.setText("base-layer")
+        self.assertIn(Panels.Basemap, visible_panels())
+
+        # A hidden panel stays hidden, even with a match inside
+        dialog.mSearchLineEdit.setText("upload")
+        self.assertNotIn(Panels.Upload, visible_panels())
+
+        # All panels are back
+        dialog.mSearchLineEdit.clear()
+        self.assertListEqual(all_panels, visible_panels())
+
+        # Show a hidden panel
+        dialog.set_panel_visible(Panels.Training, True)
+        self.assertIn(Panels.Training, visible_panels())
+        dialog.set_panel_visible(Panels.Training, False)
+        self.assertNotIn(Panels.Training, visible_panels())
 
     def test_legend_options(self, data: Path):
         """Test about reading legend options."""

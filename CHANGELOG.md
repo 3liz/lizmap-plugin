@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* Add a search bar to find a setting in all panels, reusing the QGIS search from the layer properties
+
 ## 5.2.0 - 2026-11-25
 
 * Actions - Add an editor of the actions, saved in the action file used by Lizmap Web Client
