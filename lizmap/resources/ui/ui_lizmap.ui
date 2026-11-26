@@ -49,6 +49,13 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QgsFilterLineEdit" name="mSearchLineEdit">
+         <property name="placeholderText">
+          <string>Search...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QListWidget" name="mOptionsListWidget">
          <property name="minimumSize">
           <size>
@@ -6068,6 +6075,11 @@ This is different to the map maximum extent (defined in QGIS project properties,
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
    <header>qgis.gui</header>
@@ -6123,6 +6135,7 @@ This is different to the map maximum extent (defined in QGIS project properties,
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>add_first_server</tabstop>
   <tabstop>publish_first_map</tabstop>
   <tabstop>table_server</tabstop>

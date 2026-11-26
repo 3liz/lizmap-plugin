@@ -19,3 +19,4 @@ class TestCase:
     assertNotEqual = case.assertNotEqual
     assertIsNone = case.assertIsNone
     assertIn = case.assertIn
+    assertNotIn = case.assertNotIn

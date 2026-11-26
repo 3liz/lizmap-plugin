@@ -103,7 +103,7 @@ class WebDavManager(LizmapProtocol):
         self.dlg.refresh_helper_target_version(self.lwc_version)
 
         def disable_upload_panel():
-            self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(True)
+            self.dlg.set_panel_visible(Panels.Upload, False)
             if self.dlg.mOptionsListWidget.currentRow() == Panels.Upload:
                 self.dlg.mOptionsListWidget.setCurrentRow(Panels.Information)
 
@@ -130,7 +130,7 @@ class WebDavManager(LizmapProtocol):
             self.dlg.button_upload_action.setVisible(True)
             self.dlg.button_upload_media.setVisible(True)
             self.dlg.button_create_media_remote.setVisible(True)
-            self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(False)
+            self.dlg.set_panel_visible(Panels.Upload, True)
         else:
             # self.dlg.group_upload.setVisible(False)
             # self.dlg.send_webdav.setChecked(False)
