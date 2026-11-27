@@ -13,9 +13,11 @@ from dataclasses import dataclass
 from enum import Enum
 from fnmatch import fnmatchcase
 
+# Prefix of the files and directories of the synchronisation itself: downloads in progress,
+# local trash, uploads in progress on the server. They are always excluded, whatever the rules.
+INTERNAL_PREFIX = ".~lizmap-"
+
 DEFAULT_EXCLUDE_PATTERNS: tuple[str, ...] = (
-    # Temporary files of the synchronisation, local downloads and uploads on the server
-    ".~lizmap-*",
     # Version control and Python caches
     ".git/",
     ".svn/",
@@ -47,6 +49,8 @@ class ExclusionReason(Enum):
     Pattern = "pattern"
     Hidden = "hidden"
     Size = "size"
+    # File or directory of the synchronisation itself
+    Internal = "internal"
 
 
 @dataclass(frozen=True)
@@ -91,6 +95,9 @@ class ExcludeRules:
         :return: The exclusion, or None if no directory is excluded.
         """
         for index, segment in enumerate(segments):
+            if segment.startswith(INTERNAL_PREFIX):
+                return Exclusion(ExclusionReason.Internal, segment)
+
             if self.exclude_hidden and segment.startswith("."):
                 return Exclusion(ExclusionReason.Hidden, segment)
 
@@ -129,6 +136,9 @@ class ExcludeRules:
         exclusion = self._directory_exclusion(segments[:-1])
         if exclusion:
             return exclusion
+
+        if name.startswith(INTERNAL_PREFIX):
+            return Exclusion(ExclusionReason.Internal, name)
 
         if self.exclude_hidden and name.startswith("."):
             return Exclusion(ExclusionReason.Hidden, name)

@@ -83,6 +83,9 @@ class RemoteBackend(Protocol):
     def download(self, path: str, local_file: Path, feedback: QgsFeedback | None = None) -> str | None:
         """Fetch a file. The local file is replaced only once the download is complete.
 
+        The local file must be replaced by renaming a temporary file, never rewritten in place,
+        so a hard link to the previous file, as in the local trash, keeps the previous content.
+
         :param path: Relative path on the server.
         :param local_file: The local file to write, its parent directory is created if needed.
         :param feedback: To cancel the request and follow the progress.

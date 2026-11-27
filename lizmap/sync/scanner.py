@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
+from lizmap.sync.filters import INTERNAL_PREFIX
 from lizmap.sync.model import LocalEntry
 from lizmap.sync.paths import InvalidPathError, normalize_relative_path
 
@@ -76,6 +77,36 @@ def _cached_checksum(size: int, mtime_ns: int, base: BaseEntry | None) -> str | 
     return None
 
 
+def stat_local(
+    root: Path,
+    path: str,
+    checksum_max_size: int | None = None,
+    previous: LocalEntry | None = None,
+) -> LocalEntry | None:
+    """Read the current state of a single local file.
+
+    :param root: The local directory.
+    :param path: Normalised relative path of the file.
+    :param checksum_max_size: Files bigger than this size don't get a checksum, None for no limit.
+    :param previous: A previous entry, its checksum is reused if the file didn't change.
+    :return: The entry, None if the file doesn't exist.
+    """
+    file_path = root.joinpath(path)
+    try:
+        stat = file_path.stat()
+    except FileNotFoundError:
+        return None
+
+    checksum = None
+    if checksum_max_size is None or stat.st_size <= checksum_max_size:
+        if previous and previous.size == stat.st_size and previous.mtime_ns == stat.st_mtime_ns:
+            checksum = previous.checksum
+        if checksum is None:
+            checksum = file_checksum(file_path)
+
+    return LocalEntry(path=path, size=stat.st_size, mtime_ns=stat.st_mtime_ns, checksum=checksum)
+
+
 def scan_local(
     root: Path,
     rules: ExcludeRules,
@@ -115,6 +146,10 @@ def scan_local(
         for item in items:
             if feedback and feedback.isCanceled():
                 raise ScanCanceled()
+
+            # Files of the synchronisation itself, such as the trash, are never listed
+            if item.name.startswith(INTERNAL_PREFIX):
+                continue
 
             # Build the normalised relative path
             name = unicodedata.normalize("NFC", item.name)

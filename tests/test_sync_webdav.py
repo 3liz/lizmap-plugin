@@ -9,10 +9,14 @@ the test stack of the Lizmap WebDAV module (``make run`` in its ``tests`` direct
 
 import hashlib
 import os
+import time
 
 from pathlib import Path
 
 import pytest
+
+from qgis.core import QgsApplication, QgsTask
+from qgis.PyQt.QtCore import QCoreApplication
 
 from lizmap.sync.backends.base import BackendError
 from lizmap.sync.backends.webdav import (
@@ -23,6 +27,9 @@ from lizmap.sync.backends.webdav import (
     encode_path,
 )
 from lizmap.sync.filters import ExcludeRules
+from lizmap.sync.model import FileStatus
+from lizmap.sync.state import SyncState
+from lizmap.sync.tasks import CompareTask, SyncTask
 from lizmap.toolbelt.strings import random_string
 
 DAV_URL = os.getenv("LIZMAP_SYNC_DAV_URL", "")
@@ -184,3 +191,48 @@ def test_backend_errors(backend: WebDavBackend, tmp_path: Path):
     with pytest.raises(BackendError) as error:
         other.fetch_manifest()
     assert error.value.http_status == 401
+
+
+def run_task(task: QgsTask, timeout: float = 30) -> bool:
+    """Run a task with the task manager, in a worker thread, and wait for its end.
+
+    :param task: The task.
+    :param timeout: Maximum duration in seconds.
+    :return: True if the task completed successfully.
+    """
+    QgsApplication.taskManager().addTask(task)
+    end = time.time() + timeout
+    finished = (QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated)
+    while task.status() not in finished and time.time() < end:
+        QCoreApplication.processEvents()
+        time.sleep(0.01)
+    return task.status() == QgsTask.TaskStatus.Complete
+
+
+def test_tasks_in_worker_thread(backend: WebDavBackend, tmp_path: Path):
+    """Test the comparison and the synchronisation tasks with the server, in worker threads."""
+    root = tmp_path / "project"
+    root.joinpath("data").mkdir(parents=True)
+    root.joinpath("project.qgs").write_bytes(b"<qgis/>")
+    root.joinpath("data", "zones.gpkg").write_bytes(b"x" * 100_000)
+    state = SyncState(backend.root_url, "tests", str(root))
+    state_file = tmp_path / "state.json"
+
+    # First comparison, everything is missing on the server
+    compare_task = CompareTask(backend, root, ExcludeRules(), state)
+    assert run_task(compare_task), compare_task.error
+    statuses = {diff.path: diff.status for diff in compare_task.result.comparison.diffs}
+    assert statuses == {"data/zones.gpkg": FileStatus.NewLocal, "project.qgs": FileStatus.NewLocal}
+
+    # Synchronisation, the state is saved
+    sync_task = SyncTask(backend, root, compare_task.result, state, state_file)
+    assert run_task(sync_task), (sync_task.error, sync_task.result)
+    assert sync_task.result.success
+    assert state_file.exists()
+    assert sorted(state.entries) == ["data/zones.gpkg", "project.qgs"]
+
+    # Second comparison, with the saved state: everything is synchronised
+    state = SyncState.load(state_file, backend.root_url, "tests", str(root))
+    compare_task = CompareTask(backend, root, ExcludeRules(), state)
+    assert run_task(compare_task), compare_task.error
+    assert {diff.status for diff in compare_task.result.comparison.diffs} == {FileStatus.Identical}

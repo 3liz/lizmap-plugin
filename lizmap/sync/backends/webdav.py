@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import QEventLoop, QFile, QIODevice, QUrl
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from lizmap.sync.backends.base import BackendCanceled, BackendError
+from lizmap.sync.filters import INTERNAL_PREFIX
 from lizmap.sync.manifest import ManifestError, parse_manifest_json
 
 if TYPE_CHECKING:
@@ -32,8 +33,8 @@ if TYPE_CHECKING:
 # Features of the WebDAV module needed by the synchronisation
 REQUIRED_FEATURES = ("manifest", "sha256", "atomic-put")
 
-# Prefix of local temporary files during a download, hidden files excluded from the synchronisation
-DOWNLOAD_PREFIX = ".~lizmap-download-"
+# Prefix of local temporary files during a download, always excluded from the synchronisation
+DOWNLOAD_PREFIX = INTERNAL_PREFIX + "download-"
 
 # HTTP status of a MKCOL on an existing directory
 HTTP_METHOD_NOT_ALLOWED = 405
