@@ -233,7 +233,8 @@ class SyncExecutor:
         elif operation.kind == OperationKind.Download:
             if diff.local:
                 self._keep_in_trash(path, move=False)
-            self.backend.download(path, local_file, feedback)
+            checksum = diff.remote.checksum if diff.remote else None
+            self.backend.download(path, local_file, remote_etag, checksum, feedback)
         elif operation.kind == OperationKind.DeleteRemote:
             self.backend.delete(path, remote_etag, feedback)
         elif operation.kind == OperationKind.DeleteLocal:

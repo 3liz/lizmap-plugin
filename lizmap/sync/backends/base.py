@@ -80,17 +80,26 @@ class RemoteBackend(Protocol):
         """
         ...
 
-    def download(self, path: str, local_file: Path, feedback: QgsFeedback | None = None) -> str | None:
-        """Fetch a file. The local file is replaced only once the download is complete.
+    def download(
+        self,
+        path: str,
+        local_file: Path,
+        etag: str | None = None,
+        checksum: str | None = None,
+        feedback: QgsFeedback | None = None,
+    ) -> str | None:
+        """Fetch a file. The local file is replaced only once the download is complete and verified.
 
         The local file must be replaced by renaming a temporary file, never rewritten in place,
         so a hard link to the previous file, as in the local trash, keeps the previous content.
 
         :param path: Relative path on the server.
         :param local_file: The local file to write, its parent directory is created if needed.
+        :param etag: Expected ETag, the download fails with a conflict if the file changed. None for any version.
+        :param checksum: Expected SHA-256 of the content, verified before replacing the local file, if given.
         :param feedback: To cancel the request and follow the progress.
         :return: The ETag of the downloaded file, if given by the server.
-        :raises BackendError: If the download failed.
+        :raises BackendError: If the download failed, ``is_conflict`` if the file changed on the server.
         """
         ...
 

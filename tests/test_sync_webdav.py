@@ -9,6 +9,8 @@ the test stack of the Lizmap WebDAV module (``make run`` in its ``tests`` direct
 
 import hashlib
 import os
+import socket
+import threading
 import time
 
 from pathlib import Path
@@ -17,9 +19,10 @@ import pytest
 
 from qgis.core import QgsApplication, QgsTask
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtNetwork import QNetworkReply
 
 from lizmap.sync.backends.base import BackendError
-from lizmap.sync.backends.http import error_message
+from lizmap.sync.backends.http import _is_network_error, error_message
 from lizmap.sync.backends.webdav import (
     DOWNLOAD_PREFIX,
     WebDavBackend,
@@ -45,7 +48,14 @@ METADATA = {
         "url": "https://demo.lizmap.com/dav.php",
         "cog_path": "",
         "projects_path": "qgis-projects/",
-        "features": ["manifest", "sha256", "atomic-put", "fs-errors", "delete-empty-only"],
+        "features": [
+            "manifest",
+            "sha256",
+            "atomic-put",
+            "fs-errors",
+            "delete-empty-only",
+            "upload-size-check",
+        ],
         "manifest_version": "1.0",
         "checksum_max_size": 1000,
     }
@@ -164,6 +174,18 @@ def test_backend_scenario(backend: WebDavBackend, tmp_path: Path):
     assert target.read_bytes() == b"second version"
     assert sorted(p.name for p in target.parent.iterdir()) == ["été.txt"]
 
+    # Download of a version modified meanwhile, or of a different content: the local file is kept
+    with pytest.raises(BackendError) as error:
+        backend.download("données/été.txt", target, etag=etag)
+    assert error.value.is_conflict
+    with pytest.raises(BackendError) as error:
+        backend.download("données/été.txt", target, checksum="0" * 64)
+    assert "different" in str(error.value)
+    assert target.read_bytes() == b"second version"
+    assert backend.download(
+        "données/été.txt", target, new_etag, hashlib.sha256(b"second version").hexdigest()
+    )
+
     # Download of a missing file, the local file is kept
     with pytest.raises(BackendError) as error:
         backend.download("données/missing.txt", target)
@@ -273,3 +295,41 @@ def test_shared_media_created(backend: WebDavBackend, tmp_path: Path):
     sync_task = SyncTask(compare_task.results)
     assert run_task(sync_task), (sync_task.errors, sync_task.results)
     assert set(missing.fetch_manifest().files) == {"logo.png"}
+
+
+def test_network_errors():
+    """Test the errors of the network, distinguished from the HTTP statuses."""
+    assert _is_network_error(QNetworkReply.NetworkError.RemoteHostClosedError)
+    assert _is_network_error(QNetworkReply.NetworkError.TimeoutError)
+    assert not _is_network_error(QNetworkReply.NetworkError.NoError)
+    assert not _is_network_error(QNetworkReply.NetworkError.ContentNotFoundError)
+    assert not _is_network_error(QNetworkReply.NetworkError.InternalServerError)
+
+
+def test_interrupted_download(tmp_path: Path):
+    """Test a download interrupted by the server: the local file is kept, without temporary file."""
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(("127.0.0.1", 0))
+    server.listen(1)
+    port = server.getsockname()[1]
+
+    def answer():
+        """Announce 1000 bytes, send 5, then close the connection."""
+        connection, _address = server.accept()
+        connection.recv(65536)
+        connection.sendall(b'HTTP/1.1 200 OK\r\nContent-Length: 1000\r\nETag: "e"\r\n\r\nshort')
+        connection.close()
+        server.close()
+
+    thread = threading.Thread(target=answer, daemon=True)
+    thread.start()
+
+    target = tmp_path / "a.txt"
+    target.write_bytes(b"local version")
+    backend = WebDavBackend(f"http://127.0.0.1:{port}/", credentials=("user", "password"))
+    with pytest.raises(BackendError):
+        backend.download("a.txt", target)
+    thread.join(5)
+
+    assert target.read_bytes() == b"local version"
+    assert [p.name for p in tmp_path.iterdir()] == ["a.txt"]

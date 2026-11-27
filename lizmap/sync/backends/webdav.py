@@ -19,6 +19,7 @@ from lizmap.sync.backends.base import BackendError
 from lizmap.sync.backends.http import HttpClient
 from lizmap.sync.filters import INTERNAL_PREFIX
 from lizmap.sync.manifest import ManifestError, parse_manifest_json
+from lizmap.sync.scanner import file_checksum
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -28,7 +29,14 @@ if TYPE_CHECKING:
     from lizmap.sync.manifest import RemoteManifest
 
 # Features of the WebDAV module needed by the synchronisation
-REQUIRED_FEATURES = ("manifest", "sha256", "atomic-put", "fs-errors", "delete-empty-only")
+REQUIRED_FEATURES = (
+    "manifest",
+    "sha256",
+    "atomic-put",
+    "fs-errors",
+    "delete-empty-only",
+    "upload-size-check",
+)
 
 # Header asking the server to delete a directory only if it's empty
 EMPTY_ONLY_HEADER = {"X-Lizmap-Delete": "empty-only"}
@@ -199,14 +207,24 @@ class WebDavBackend(HttpClient):
         self._check(response, (200, 201, 204), f"Upload '{path}'")
         return response.etag
 
-    def download(self, path: str, local_file: Path, feedback: QgsFeedback | None = None) -> str | None:
-        """Fetch a file. The local file is replaced only once the download is complete.
+    def download(
+        self,
+        path: str,
+        local_file: Path,
+        etag: str | None = None,
+        checksum: str | None = None,
+        feedback: QgsFeedback | None = None,
+    ) -> str | None:
+        """Fetch a file. The local file is replaced only once the download is complete and verified.
 
         :param path: Relative path on the server.
         :param local_file: The local file to write, its parent directory is created if needed.
+        :param etag: Expected ETag, the download fails with a conflict if the file changed. None for any version.
+        :param checksum: Expected SHA-256 of the content, verified before replacing the local file, if given.
         :param feedback: To cancel the request and follow the progress.
         :return: The ETag of the downloaded file, if given by the server.
-        :raises BackendError: If the download failed.
+        :raises BackendError: If the download failed, is incomplete or has a different content,
+            ``is_conflict`` if the file changed on the server.
         """
         local_file.parent.mkdir(parents=True, exist_ok=True)
         temporary = local_file.parent.joinpath(DOWNLOAD_PREFIX + local_file.name)
@@ -217,10 +235,21 @@ class WebDavBackend(HttpClient):
 
         try:
             try:
-                response = self._send("GET", self.url(path), output=output, feedback=feedback)
+                headers = {"If-Match": etag} if etag else {}
+                response = self._send(
+                    "GET", self.url(path), headers=headers, output=output, feedback=feedback
+                )
             finally:
                 output.close()
             self._check(response, (200,), f"Download '{path}'")
+
+            # Never replace the local file with an incomplete or different content
+            if response.length is not None and response.received != response.length:
+                raise BackendError(
+                    f"Download '{path}' : incomplete, {response.received} bytes instead of {response.length}"
+                )
+            if checksum and file_checksum(temporary) != checksum:
+                raise BackendError(f"Download '{path}' : the content is different from the expected one")
 
             # Replace the local file in a single operation
             os.replace(temporary, local_file)

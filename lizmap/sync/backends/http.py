@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 
 from qgis.core import QgsApplication, QgsNetworkAccessManager
 from qgis.PyQt.QtCore import QEventLoop, QIODevice, QUrl
-from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from lizmap.sync.backends.base import BackendCanceled, BackendError
 
@@ -33,11 +33,15 @@ class Response:
     :param status: HTTP status.
     :param body: Body, empty if written in a file.
     :param etag: Value of the ETag header, if any.
+    :param length: Value of the Content-Length header, if any.
+    :param received: Number of bytes of the body received.
     """
 
     status: int
     body: bytes
     etag: str | None
+    length: int | None = None
+    received: int = 0
 
 
 def error_message(body: bytes, default: str) -> str:
@@ -58,6 +62,19 @@ def error_message(body: bytes, default: str) -> str:
     if isinstance(data, dict) and isinstance(data.get("message"), str) and data["message"].strip():
         return data["message"].strip()
     return default
+
+
+def _is_network_error(error: QNetworkReply.NetworkError) -> bool:
+    """Tell if an error of a reply comes from the network, not from an HTTP status.
+
+    Errors from 1 to 199 are connection and proxy errors, such as an interrupted connection.
+    Errors from 201 are HTTP statuses, such as 404, handled with the status of the response.
+
+    :param error: Error of the reply.
+    :return: True for a network error.
+    """
+    code = error.value if hasattr(error, "value") else int(error)
+    return 0 < code < 200
 
 
 class HttpClient:
@@ -118,10 +135,12 @@ class HttpClient:
 
         reply = QgsNetworkAccessManager.instance().sendCustomRequest(request, verb.encode("ascii"), body)
         chunks: list[bytes] = []
+        received = [0]
 
         def read():
             """Read the available data of the response."""
             data = reply.readAll()
+            received[0] += len(data)
             if output is not None:
                 output.write(data)
             else:
@@ -153,12 +172,19 @@ class HttpClient:
                 raise BackendCanceled()
 
             status = reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute)
-            if status is None:
-                # No HTTP response at all
+            if status is None or _is_network_error(reply.error()):
+                # No HTTP response at all, or a connection interrupted during the transfer
                 raise BackendError(reply.errorString())
 
             etag = bytes(reply.rawHeader(b"ETag")).decode("ascii", errors="replace") or None
-            return Response(status=int(status), body=b"".join(chunks), etag=etag)
+            length = reply.header(QNetworkRequest.KnownHeaders.ContentLengthHeader)
+            return Response(
+                status=int(status),
+                body=b"".join(chunks),
+                etag=etag,
+                length=int(length) if length is not None else None,
+                received=received[0],
+            )
         finally:
             if feedback:
                 feedback.canceled.disconnect(reply.abort)

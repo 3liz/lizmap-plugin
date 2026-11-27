@@ -87,15 +87,28 @@ class FakeBackend:
         self.put(path, self.corrupt if self.corrupt is not None else local_file.read_bytes())
         return self.etags[path]
 
-    def download(self, path: str, local_file: Path, feedback: QgsFeedback | None = None) -> str:
+    def download(
+        self,
+        path: str,
+        local_file: Path,
+        etag: str | None = None,
+        checksum: str | None = None,
+        feedback: QgsFeedback | None = None,
+    ) -> str:
         """Write a file locally, by renaming a temporary file like the real backend.
 
         :param path: Relative path.
         :param local_file: Local file.
+        :param etag: Expected ETag.
+        :param checksum: Expected checksum.
         :param feedback: Not used.
         :return: The ETag.
         """
         self.calls.append(("download", path))
+        if etag and etag != self.etags.get(path):
+            raise BackendError("Precondition failed", 412)
+        if checksum and hashlib.sha256(self.files[path]).hexdigest() != checksum:
+            raise BackendError("Different content")
         local_file.parent.mkdir(parents=True, exist_ok=True)
         temporary = local_file.parent / ".~lizmap-download-test"
         temporary.write_bytes(self.files[path])
@@ -539,3 +552,17 @@ def test_missing_local_directory(tmp_path: Path):
     sync = sync_now(backend, root, state, result)
     assert sync.success
     assert (root / "upload" / "photo.jpg").read_bytes() == b"jpg"
+
+
+def test_remote_change_before_download(tmp_path: Path):
+    """Test that a file modified on the server after the comparison is not downloaded."""
+    backend = FakeBackend()
+    backend.put("a.txt", b"v1")
+    state = SyncState("s", "r", str(tmp_path))
+    result = compare_now(backend, tmp_path, state)
+
+    backend.put("a.txt", b"v2, not compared")
+    sync = sync_now(backend, tmp_path, state, result)
+
+    assert sync.conflicts == {"a.txt": "Modified on the server since the comparison"}
+    assert not (tmp_path / "a.txt").exists()
