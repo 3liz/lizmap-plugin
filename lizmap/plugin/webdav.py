@@ -378,7 +378,9 @@ class WebDavManager(LizmapProtocol):
             self.dlg.button_create_media_remote.setVisible(True)
             self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(False)
 
-            # The synchronisation replaces the previous widgets if the WebDAV module supports it
+            # The synchronisation replaces the previous widgets if the WebDAV module supports it.
+            # The previous widgets are kept for the servers without the WebDAV module 1.3: Lizmap Web Client
+            # 3.8, or a newer version with an older module. To remove when these servers are not supported.
             sync = self._sync_server() is not None
             self.sync_panel.setVisible(sync)
             self.dlg.scrollArea_16.setVisible(not sync)
