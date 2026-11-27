@@ -8,6 +8,7 @@ from urllib.parse import unquote
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsExpressionContextUtils,
     QgsProject,
     QgsSettings,
 )
@@ -40,7 +41,15 @@ from ..definitions.online_help import Panels
 from ..definitions.qgis_settings import Settings
 from ..dialogs.server_wizard import CreateFolderWizard
 from ..server_dav import WebDav
+from ..sync.backends.admin_api import (
+    HTTP_FORBIDDEN,
+    HTTP_NOT_FOUND,
+    HTTP_UNAUTHORIZED,
+    LizmapAdminApi,
+)
+from ..sync.backends.base import BackendError
 from ..sync.backends.webdav import WebDavBackend, WebDavServer
+from ..sync.gui.new_repository_dialog import NewRepositoryDialog
 from ..sync.gui.options_dialog import SyncOptionsDialog, load_options, save_options
 from ..sync.gui.project_checks import (
     checkpoint_sqlite,
@@ -120,7 +129,7 @@ class WebDavManager(LizmapProtocol):
             self.dlg.page_upload,
             self.sync_context,
             self.dlg.repository_combo,
-            self.create_new_repository,
+            self.new_repository,
             self.open_sync_options,
         )
         self.sync_panel.synchronised.connect(self._after_synchronisation)
@@ -440,6 +449,52 @@ class WebDavManager(LizmapProtocol):
                     self.dlg.table_files.file_status(row, tr("Error"), tr("Not found on the server"))
                 else:
                     self.dlg.table_files.file_status(row, tr("Error"), error)
+
+    def new_repository(self):
+        """Create a repository from the synchronisation panel.
+
+        With Lizmap Web Client 3.10 or newer, the repository is created with the administration API,
+        in a new directory or in an existing one not used yet. Otherwise, the previous wizard is used.
+        """
+        server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        auth_id = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
+        if not server_url:
+            return
+
+        api = LizmapAdminApi(server_url, auth_id)
+        try:
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
+                paths = api.paths()
+        except BackendError as e:
+            if e.http_status == HTTP_NOT_FOUND:
+                # The API doesn't exist before Lizmap Web Client 3.10
+                self.create_new_repository()
+                return
+            if e.http_status in (HTTP_UNAUTHORIZED, HTTP_FORBIDDEN):
+                message = tr("You must be an administrator of the server to create a repository.")
+            else:
+                message = str(e)
+            self.dlg.display_message_bar(
+                "Lizmap", message, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR
+            )
+            return
+
+        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value) or {}
+        repositories = metadata.get("repositories") or {}
+        existing = repositories.keys() if isinstance(repositories, dict) else []
+        dialog = NewRepositoryDialog(self.dlg, api, paths, existing)
+        if not dialog.exec() or not dialog.created_key:
+            return
+
+        # Selected once the list of the repositories is refreshed from the server
+        QgsExpressionContextUtils.setProjectVariable(self.project, "lizmap_repository", dialog.created_key)
+        self.dlg.refresh_versions_button.click()
+        self.dlg.display_message_bar(
+            "Lizmap",
+            tr("The repository <b>{}</b> has been created.").format(dialog.created_key),
+            level=Qgis.MessageLevel.Success,
+            duration=DURATION_WARNING_BAR,
+        )
 
     def create_new_repository(self):
         """Open wizard to create a new remote repository."""

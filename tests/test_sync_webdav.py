@@ -19,11 +19,11 @@ from qgis.core import QgsApplication, QgsTask
 from qgis.PyQt.QtCore import QCoreApplication
 
 from lizmap.sync.backends.base import BackendError
+from lizmap.sync.backends.http import error_message
 from lizmap.sync.backends.webdav import (
     DOWNLOAD_PREFIX,
     WebDavBackend,
     WebDavServer,
-    _error_message,
     encode_path,
 )
 from lizmap.sync.filters import ExcludeRules
@@ -93,8 +93,14 @@ def test_error_message():
         b"<s:exception>Sabre\\DAV\\Exception\\Forbidden</s:exception>"
         b"<s:message>This file name is reserved.</s:message></d:error>"
     )
-    assert _error_message(body, "default") == "This file name is reserved."
-    assert _error_message(b"<html>502</html>", "default") == "default"
+    assert error_message(body, "default") == "This file name is reserved."
+    assert error_message(b"<html>502</html>", "default") == "default"
+    # JSON error of the API
+    assert (
+        error_message(b'{"code": "Conflict", "status": 409, "message": "Already exists"}', "x")
+        == "Already exists"
+    )
+    assert error_message(b'{"code": "Conflict"}', "default") == "default"
 
 
 def test_temporary_download_excluded():
