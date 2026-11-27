@@ -3,7 +3,7 @@ from typing import (
     TYPE_CHECKING,
     Protocol,
 )
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 
 from qgis.core import (
     Qgis,
@@ -194,7 +194,11 @@ class WebDavManager(LizmapProtocol):
             )
             if answer != QMessageBox.StandardButton.Yes:
                 raise SyncUnavailable(tr("Save the project before the comparison."))
-            self.project.write()
+            # Saved by QGIS Desktop: QgsProject.write() would make QGIS warn later that
+            # the project file has been modified externally
+            self.iface.actionSaveProject().trigger()
+            if self.project.isDirty():
+                raise SyncUnavailable(tr("Save the project before the comparison."))
 
         # Files used by the layers, GeoPackage edits written in the main files
         root = project_file.parent.resolve()
@@ -230,11 +234,17 @@ class WebDavManager(LizmapProtocol):
                 options,
             ),
         ]
+        map_url = (
+            f"{server_url.rstrip('/')}/index.php/view/map?"
+            f"repository={quote(repository_id)}&project={quote(project_file.stem)}"
+        )
         return SyncContext(
             pairs=pairs,
             server_label=server.url,
             protected_paths=frozenset(files),
             project_path=project_file.name,
+            repository_label=repository_label,
+            map_url=map_url,
         )
 
     @staticmethod
@@ -330,10 +340,18 @@ class WebDavManager(LizmapProtocol):
         QgsSettings().setValue(Settings.key(f"{Settings.SyncDirection}/{kind.value}"), direction.value)
 
     def _after_synchronisation(self, project_downloaded: bool):
-        """Warn the user if the open project has been replaced by the synchronisation.
+        """Keep the repository of the project, and warn if the project has been replaced.
 
         :param project_downloaded: True if the project file has been downloaded.
         """
+        # The repository used is restored the next time the dialog is opened, like when saving
+        # the Lizmap configuration
+        repository = self.dlg.current_repository()
+        variables = self.project.customVariables()
+        if repository and variables.get("lizmap_repository") != repository:
+            variables["lizmap_repository"] = repository
+            self.project.setCustomVariables(variables)
+
         if project_downloaded:
             self.dlg.display_message_bar(
                 "Lizmap",
@@ -467,6 +485,8 @@ class WebDavManager(LizmapProtocol):
         try:
             with OverrideCursor(Qt.CursorShape.WaitCursor):
                 paths = api.paths()
+                groups = api.groups()
+                existing = api.repository_keys()
         except BackendError as e:
             if e.http_status == HTTP_NOT_FOUND:
                 # The API doesn't exist before Lizmap Web Client 3.10
@@ -481,16 +501,26 @@ class WebDavManager(LizmapProtocol):
             )
             return
 
-        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value) or {}
-        repositories = metadata.get("repositories") or {}
-        existing = repositories.keys() if isinstance(repositories, dict) else []
-        dialog = NewRepositoryDialog(self.dlg, api, paths, existing)
+        dialog = NewRepositoryDialog(self.dlg, api, paths, existing, groups)
         if not dialog.exec() or not dialog.created_key:
             return
-
         # Selected once the list of the repositories is refreshed from the server
         QgsExpressionContextUtils.setProjectVariable(self.project, "lizmap_repository", dialog.created_key)
         self.dlg.refresh_versions_button.click()
+
+        if dialog.rights_errors:
+            # The repository exists, but maybe nobody can see it yet
+            self.dlg.display_message_bar(
+                "Lizmap",
+                tr("The repository <b>{}</b> has been created, but some rights couldn't be given.").format(
+                    dialog.created_key
+                ),
+                level=Qgis.MessageLevel.Warning,
+                duration=DURATION_WARNING_BAR,
+                more_details="\n".join(dialog.rights_errors),
+            )
+            return
+
         self.dlg.display_message_bar(
             "Lizmap",
             tr("The repository <b>{}</b> has been created.").format(dialog.created_key),

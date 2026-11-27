@@ -278,7 +278,7 @@ def panel_for(
 
     panel = SyncPanel(None, provider)
     panel.questions = []
-    panel.confirm = lambda title, text: panel.questions.append(text) or True
+    panel.confirm = lambda title, text, default_no=False: panel.questions.append(text) or True
     return panel
 
 
@@ -365,7 +365,7 @@ def test_panel_protected_warning(sample: Sample, tmp_path: Path):
     diff = next(d for d in panel.model.sections[0].comparison.diffs if d.path == "media/upload/photo.jpg")
     assert diff.protected
     diff.choose(SyncAction.DeleteRemote)
-    panel.confirm = lambda title, text: panel.questions.append(text) and False
+    panel.confirm = lambda title, text, default_no=False: panel.questions.append(text) and False
     panel.synchronise()
     assert "produced by the server" in panel.questions[0]
     assert "media/upload/photo.jpg" in panel.questions[0]
@@ -559,3 +559,59 @@ def test_panel_options(sample: Sample, tmp_path: Path):
     assert panel.busy
     wait_for(lambda: not panel.busy)
     assert changes == [True, True]
+
+
+def test_panel_first_publication(sample: Sample, tmp_path: Path):
+    """Test the warning when the project is sent for the first time, and the link to the map."""
+    backend, root, state = sample
+    backend.put("other.qgs", b"<qgis/>")
+    panel = panel_for(
+        backend,
+        root,
+        state,
+        tmp_path,
+        project_path="project.qgs",
+        repository_label="Tests",
+        map_url="http://lizmap/index.php/view/map?repository=tests&project=project",
+    )
+    defaults = []
+    panel.confirm = lambda title, text, default_no=False: (
+        panel.questions.append(text) or defaults.append(default_no) or True
+    )
+    panel.compare()
+    wait_for(lambda: not panel.busy)
+
+    # Short name of the local directory, the full path in the tooltip
+    assert panel.label_local_repository.text().endswith(f">{root.name}/</a>")
+    assert panel.label_local_repository.toolTip() == str(root)
+
+    synchronised = []
+    panel.synchronised.connect(synchronised.append)
+    panel.synchronise()
+    wait_for(lambda: synchronised and not panel.busy)
+
+    assert "doesn't exist yet on the server, in the repository <b>Tests</b>" in panel.questions[0]
+    assert "already contains these projects: other" in panel.questions[0]
+    assert defaults == [True]
+    assert "Open the map" in panel.message.text()
+
+
+def test_panel_no_first_publication_warning(sample: Sample, tmp_path: Path):
+    """Test that there isn't any warning when the project already exists on the server."""
+    backend, root, state = sample
+    backend.put("project.qgs", b"<qgis version='old'/>")
+    panel = panel_for(backend, root, state, tmp_path, project_path="project.qgs")
+    defaults = []
+    panel.confirm = lambda title, text, default_no=False: (
+        panel.questions.append(text) or defaults.append(default_no) or True
+    )
+    panel.compare()
+    wait_for(lambda: not panel.busy)
+    panel.model.apply_preference(Preference.Local)
+    synchronised = []
+    panel.synchronised.connect(synchronised.append)
+    panel.synchronise()
+    wait_for(lambda: synchronised and not panel.busy)
+
+    assert "doesn't exist yet" not in panel.questions[0]
+    assert defaults == [False]

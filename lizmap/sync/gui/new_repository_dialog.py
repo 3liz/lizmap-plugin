@@ -13,12 +13,15 @@ from qgis.PyQt.QtWidgets import (
     QFormLayout,
     QLabel,
     QLineEdit,
+    QListWidget,
+    QListWidgetItem,
     QVBoxLayout,
     QWidget,
 )
 from qgis.utils import OverrideCursor
 
 from lizmap.sync.backends.admin_api import (
+    ADMINS_GROUP,
     PATH_AVAILABLE,
     REPOSITORY_FOLDER,
     REPOSITORY_KEY,
@@ -42,6 +45,7 @@ class NewRepositoryDialog(QDialog):
     :param api: The administration API of the server.
     :param paths: Directories in the root of the repositories, with their status.
     :param existing_keys: Identifiers of the existing repositories.
+    :param groups: Groups of users, name by identifier, proposed to view the repository.
     """
 
     def __init__(
@@ -50,11 +54,14 @@ class NewRepositoryDialog(QDialog):
         api: LizmapAdminApi,
         paths: Mapping[str, str],
         existing_keys: Collection[str],
+        groups: Mapping[str, str] | None = None,
     ):
         super().__init__(parent)
         self.api = api
         self.paths = dict(paths)
         self.existing_keys = set(existing_keys)
+        # Errors while giving the rights, the repository is created anyway
+        self.rights_errors: list[str] = []
         self.created_key: str | None = None
         # The identifier and the directory follow the label until the user edits them
         self._key_edited = False
@@ -87,6 +94,21 @@ class NewRepositoryDialog(QDialog):
         )
         self.folder.setToolTip(tr('Directory on the server: letters, digits and "_"'))
         form.addRow(tr("Directory"), self.folder)
+
+        # Groups allowed to view the repository, nobody sees a repository without any group
+        self.groups = QListWidget()
+        self.groups.setToolTip(tr("Groups of users allowed to view the repository"))
+        self.groups.setMaximumHeight(110)
+        for identifier, name in sorted((groups or {}).items(), key=lambda item: item[1].lower()):
+            item = QListWidgetItem(name)
+            item.setData(Qt.ItemDataRole.UserRole, identifier)
+            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+            item.setCheckState(
+                Qt.CheckState.Checked if identifier == ADMINS_GROUP else Qt.CheckState.Unchecked
+            )
+            self.groups.addItem(item)
+        self.groups.itemChanged.connect(self._validate)
+        form.addRow(tr("Viewed by"), self.groups)
         layout.addLayout(form)
 
         self.info = QLabel()
@@ -135,6 +157,17 @@ class NewRepositoryDialog(QDialog):
         self._folder_edited = True
         self._validate()
 
+    def checked_groups(self) -> list[str]:
+        """Groups allowed to view the repository.
+
+        :return: Identifiers of the checked groups.
+        """
+        return [
+            self.groups.item(row).data(Qt.ItemDataRole.UserRole)
+            for row in range(self.groups.count())
+            if self.groups.item(row).checkState() == Qt.CheckState.Checked
+        ]
+
     @property
     def create_directory(self) -> bool:
         """Tell if the directory must be created.
@@ -161,6 +194,8 @@ class NewRepositoryDialog(QDialog):
             error = tr('The directory must contain only letters, digits and "_".')
         elif folder in self.paths and self.paths[folder] != PATH_AVAILABLE:
             error = tr("This directory is already used by another repository.")
+        elif self.groups.count() and not self.checked_groups():
+            error = tr("Choose at least one group, otherwise nobody will see the repository.")
 
         if error:
             self.info.setText(f"<span style='color:{RED}'>{error}</span>")
@@ -186,6 +221,13 @@ class NewRepositoryDialog(QDialog):
         except BackendError as e:
             self.info.setText(f"<span style='color:{RED}'>{e}</span>")
             return
-
         self.created_key = key
+
+        # The rights, the repository exists even if they can't be given
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
+            for group in self.checked_groups():
+                try:
+                    self.api.add_right(key, group)
+                except BackendError as e:
+                    self.rights_errors.append(str(e))
         super().accept()

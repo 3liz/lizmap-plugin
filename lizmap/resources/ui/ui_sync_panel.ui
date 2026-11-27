@@ -24,7 +24,7 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QGridLayout" name="layout_directories" columnstretch="0,1,0,0">
+    <layout class="QGridLayout" name="layout_directories" columnstretch="0,0,1,0">
      <item row="0" column="0">
       <widget class="QLabel" name="label_repository_title">
        <property name="text">

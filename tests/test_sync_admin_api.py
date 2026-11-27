@@ -13,9 +13,16 @@ import os
 import pytest
 
 from qgis.core import QgsFeedback
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialogButtonBox, QPushButton
 
-from lizmap.sync.backends.admin_api import PATH_AVAILABLE, PATH_RESERVED, LizmapAdminApi, repository_key
+from lizmap.sync.backends.admin_api import (
+    PATH_AVAILABLE,
+    PATH_RESERVED,
+    RIGHT_VIEW,
+    LizmapAdminApi,
+    repository_key,
+)
 from lizmap.sync.backends.base import BackendError
 from lizmap.sync.backends.webdav import WebDavBackend
 from lizmap.sync.gui.new_repository_dialog import NewRepositoryDialog
@@ -30,13 +37,28 @@ PASSWORD = os.getenv("LIZMAP_SYNC_PASSWORD", "")
 class FakeApi:
     """Administration API in memory."""
 
-    def __init__(self, error: BackendError | None = None):
-        """Record the created repositories.
+    def __init__(self, error: BackendError | None = None, rights_error: BackendError | None = None):
+        """Record the created repositories and the rights.
 
         :param error: Error raised by the creation, if any.
+        :param rights_error: Error raised when giving a right, if any.
         """
         self.error = error
+        self.rights_error = rights_error
         self.created: list[tuple[str, str, str, bool]] = []
+        self.rights: list[tuple[str, str, str]] = []
+
+    def add_right(self, key: str, group: str, right: str = RIGHT_VIEW, feedback: QgsFeedback | None = None):
+        """Give a right, or fail.
+
+        :param key: Identifier of the repository.
+        :param group: Identifier of the group.
+        :param right: The right.
+        :param feedback: Not used.
+        """
+        if self.rights_error:
+            raise self.rights_error
+        self.rights.append((key, group, right))
 
     def create_repository(
         self, key: str, label: str, folder: str, create_directory: bool, feedback: QgsFeedback | None = None
@@ -82,8 +104,16 @@ def test_new_repository_dialog():
     """Test the suggestions, the validation and the creation in the dialog."""
     api = FakeApi()
     paths = {"tests": PATH_RESERVED, "old_project": PATH_AVAILABLE}
-    dialog = NewRepositoryDialog(None, api, paths, ["tests"])
+    groups = {"admins": "Administrators", "publishers": "Publishers", "__anonymous": "Anonymous"}
+    dialog = NewRepositoryDialog(None, api, paths, ["tests"], groups)
     assert not ok_button(dialog).isEnabled()
+    # Sorted by name, the administrators checked by default
+    assert [dialog.groups.item(i).text() for i in range(dialog.groups.count())] == [
+        "Administrators",
+        "Anonymous",
+        "Publishers",
+    ]
+    assert dialog.checked_groups() == ["admins"]
     # Only the directories not used by a repository are proposed
     assert [dialog.folder.itemText(i) for i in range(dialog.folder.count())] == ["", "old_project"]
 
@@ -116,9 +146,29 @@ def test_new_repository_dialog():
     dialog.label.textEdited.emit("Other")
     assert dialog.key.text() == "urba"
 
+    # At least one group, otherwise nobody sees the repository
+    dialog.groups.item(0).setCheckState(Qt.CheckState.Unchecked)
+    assert not ok_button(dialog).isEnabled()
+    assert "at least one group" in dialog.info.text()
+    dialog.groups.item(0).setCheckState(Qt.CheckState.Checked)
+    dialog.groups.item(2).setCheckState(Qt.CheckState.Checked)
+
     dialog.accept()
     assert api.created == [("urba", "Other", "old_project", False)]
+    assert api.rights == [("urba", "admins", RIGHT_VIEW), ("urba", "publishers", RIGHT_VIEW)]
     assert dialog.created_key == "urba"
+    assert dialog.rights_errors == []
+
+
+def test_new_repository_dialog_rights_error():
+    """Test a right which can't be given, the repository is created anyway."""
+    api = FakeApi(rights_error=BackendError("Forbidden", 403))
+    dialog = NewRepositoryDialog(None, api, {}, [], {"admins": "admins"})
+    dialog.label.setText("Urba")
+    dialog.label.textEdited.emit("Urba")
+    dialog.accept()
+    assert dialog.created_key == "urba"
+    assert dialog.rights_errors == ["Forbidden"]
 
 
 def test_new_repository_dialog_error():
@@ -149,10 +199,15 @@ def test_admin_api(api: LizmapAdminApi):
     assert paths
     assert set(paths.values()) <= {PATH_AVAILABLE, PATH_RESERVED}
 
-    # A new directory
+    assert api.groups()["admins"]
+    assert "tests" in api.repository_keys()
+
+    # A new directory, viewed by the administrators
     key = f"sync_{random_string(8)}"
     api.create_repository(key, "Sync test", key, create_directory=True)
     assert api.paths()[key] == PATH_RESERVED
+    assert key in api.repository_keys()
+    api.add_right(key, "admins")
 
     # The same identifier again
     with pytest.raises(BackendError) as error:

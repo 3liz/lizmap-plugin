@@ -29,6 +29,13 @@ REPOSITORY_FOLDER = re.compile(r"^[a-zA-Z0-9_]+$")
 PATH_AVAILABLE = "Available"
 PATH_RESERVED = "Reserved"
 
+# Right to view a repository, given to the groups chosen when it's created
+RIGHT_VIEW = "lizmap.repositories.view"
+# Group of the administrators, allowed by default to view a new repository
+ADMINS_GROUP = "admins"
+# Type of the private group of each user, not proposed
+PRIVATE_GROUP_TYPE = 2
+
 HTTP_CREATED = 201
 HTTP_NOT_FOUND = 404
 HTTP_UNAUTHORIZED = 401
@@ -78,10 +85,74 @@ class LizmapAdminApi(HttpClient):
             return {}
         return {str(path).strip("/"): str(status) for path, status in data.items()}
 
+    def repository_keys(self, feedback: QgsFeedback | None = None) -> list[str]:
+        """List the identifiers of all repositories, even those the user can't view.
+
+        :param feedback: To cancel the request.
+        :return: The identifiers.
+        :raises BackendError: If the request failed.
+        """
+        response = self._send(
+            "GET", QUrl(self.base_url + "repositories"), headers={"Accept": "application/json"}
+        )
+        self._check(response, (200,), "Repositories")
+        try:
+            data = json.loads(response.body)
+        except ValueError as e:
+            raise BackendError(f"Repositories : {e}") from e
+        return [str(item["key"]) for item in data if isinstance(item, dict) and "key" in item]
+
+    def groups(self, feedback: QgsFeedback | None = None) -> dict[str, str]:
+        """List the groups of users, without the private group of each user.
+
+        :param feedback: To cancel the request.
+        :return: Name by identifier of the group.
+        :raises BackendError: If the request failed.
+        """
+        response = self._send("GET", QUrl(self.base_url + "groups"), headers={"Accept": "application/json"})
+        self._check(response, (200,), "Groups")
+        try:
+            data = json.loads(response.body)
+        except ValueError as e:
+            raise BackendError(f"Groups : {e}") from e
+        return {
+            str(group["id_aclgrp"]): str(group.get("name") or group["id_aclgrp"])
+            for group in data
+            if isinstance(group, dict)
+            and "id_aclgrp" in group
+            and group.get("grouptype") != PRIVATE_GROUP_TYPE
+        }
+
+    def _post_form(self, url: str, fields: dict[str, str], action: str, feedback: QgsFeedback | None = None):
+        """Send a form, like a web form.
+
+        :param url: The URL.
+        :param fields: The fields of the form.
+        :param action: Description of the request, for the error message.
+        :param feedback: To cancel the request.
+        :raises BackendError: With the message of the server if the request failed.
+        """
+        data = QByteArray(urlencode(fields).encode("utf-8"))
+        buffer = QBuffer(data)
+        buffer.open(QIODevice.OpenModeFlag.ReadOnly)
+        try:
+            response = self._send(
+                "POST",
+                QUrl(url),
+                headers={"Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json"},
+                body=buffer,
+                feedback=feedback,
+            )
+        finally:
+            buffer.close()
+        self._check(response, (200, HTTP_CREATED), action)
+
     def create_repository(
         self, key: str, label: str, folder: str, create_directory: bool, feedback: QgsFeedback | None = None
     ):
         """Create a repository.
+
+        Nobody can see it until a group gets the right to view it, see ``add_right``.
 
         :param key: Identifier of the repository, lowercase letters, digits and "_".
         :param label: Label of the repository.
@@ -90,27 +161,23 @@ class LizmapAdminApi(HttpClient):
         :param feedback: To cancel the request.
         :raises BackendError: With the message of the server, 409 if it already exists.
         """
-        body = urlencode(
-            {
-                "label": label,
-                "path": f"{folder}/",
-                "allowUserDefinedThemes": "false",
-                "createDirectory": "true" if create_directory else "false",
-            }
-        ).encode("utf-8")
+        fields = {
+            "label": label,
+            "path": f"{folder}/",
+            "allowUserDefinedThemes": "false",
+            "createDirectory": "true" if create_directory else "false",
+        }
+        url = self.base_url + "repositories/" + quote(key, safe="")
+        self._post_form(url, fields, f"Repository '{key}'", feedback)
 
-        # The form is sent like a web form
-        data = QByteArray(body)
-        buffer = QBuffer(data)
-        buffer.open(QIODevice.OpenModeFlag.ReadOnly)
-        try:
-            response = self._send(
-                "POST",
-                QUrl(self.base_url + "repositories/" + quote(key, safe="")),
-                headers={"Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json"},
-                body=buffer,
-                feedback=feedback,
-            )
-        finally:
-            buffer.close()
-        self._check(response, (200, HTTP_CREATED), f"Repository '{key}'")
+    def add_right(self, key: str, group: str, right: str = RIGHT_VIEW, feedback: QgsFeedback | None = None):
+        """Give a right on a repository to a group.
+
+        :param key: Identifier of the repository.
+        :param group: Identifier of the group.
+        :param right: The right, the right to view the repository by default.
+        :param feedback: To cancel the request.
+        :raises BackendError: With the message of the server, 403 without the right to update repositories.
+        """
+        url = self.base_url + "repositories/" + quote(key, safe="") + "/rights"
+        self._post_form(url, {"group": group, "right": right}, f"Right '{right}' for '{group}'", feedback)

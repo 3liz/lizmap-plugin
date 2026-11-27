@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+* Upload - Synchronise the project directory and the shared media with the server, with the Lizmap WebDAV module 1.3
+* Upload - Create a Lizmap repository from the plugin, with Lizmap Web Client 3.10
+
 ## 5.2.0 - 2026-11-25
 
 * Actions - Add an editor of the actions, saved in the action file used by Lizmap Web Client

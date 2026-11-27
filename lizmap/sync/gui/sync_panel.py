@@ -10,6 +10,7 @@ a "context provider", called when the user clicks on "Compare".
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
+from pathlib import PurePosixPath
 from typing import TYPE_CHECKING
 
 from qgis.core import QgsApplication
@@ -60,6 +61,8 @@ class SyncContext:
     :param protected_paths: Files used by the layers of the open project, relative to the directory
         of the repository.
     :param project_path: The open project, relative to the directory of the repository.
+    :param repository_label: Label of the Lizmap repository, for the messages.
+    :param map_url: URL of the map of the project in Lizmap Web Client.
     """
 
     pairs: list[SyncPair]
@@ -67,6 +70,8 @@ class SyncContext:
     preferences: Mapping[FileStatus, Preference] | None = None
     protected_paths: frozenset[str] = field(default_factory=frozenset)
     project_path: str | None = None
+    repository_label: str = ""
+    map_url: str | None = None
 
     def pair(self, kind: PairKind) -> SyncPair | None:
         """Pair of a given kind.
@@ -259,7 +264,9 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
 
             title.setText(pair.label)
             url = QUrl.fromLocalFile(str(pair.root)).toString()
-            local.setText(f"<a href='{url}'>{pair.root}</a>")
+            # Only the name, a deep path would be too long, the full path in the tooltip
+            local.setText(f"<a href='{url}'>{pair.root.name}/</a>")
+            local.setToolTip(str(pair.root))
             remote.setText(f"⇄ {pair.remote_label}")
             # Without signal, the direction comes from the settings, it's not a choice of the user
             combo.blockSignals(True)
@@ -439,15 +446,17 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
             # The excluded files may change the scan, a new comparison is needed
             self.compare()
 
-    def confirm(self, title: str, text: str) -> bool:
+    def confirm(self, title: str, text: str, default_no: bool = False) -> bool:
         """Ask a question to the user. Can be replaced in tests.
 
         :param title: Title of the dialog.
         :param text: The question, rich text.
+        :param default_no: "No" is the default button, for a risky operation.
         :return: True if the user accepted.
         """
+        default = QMessageBox.StandardButton.No if default_no else QMessageBox.StandardButton.Yes
         answer = QMessageBox.question(
-            self, title, text, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            self, title, text, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, default
         )
         return answer == QMessageBox.StandardButton.Yes
 
@@ -557,6 +566,45 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
             if diff.path in protected and diff.action in (SyncAction.Download, SyncAction.DeleteLocal)
         )
 
+    def _first_publication(self) -> str:
+        """Warn when the open project is sent for the first time in the repository.
+
+        The user may have chosen the wrong repository.
+
+        :return: The warning, rich text, empty if the project already exists on the server or is not sent.
+        """
+        result = self._repository_result()
+        context = self._context
+        if result is None or context is None or not context.project_path:
+            return ""
+        project = context.project_path
+        sent = any(d.path == project and d.action == SyncAction.Upload for d in result.comparison.to_run())
+        if not sent or project in result.manifest.files:
+            return ""
+
+        repository = context.repository_label or result.pair.label
+        text = tr(
+            "The project <b>{project}</b> doesn't exist yet on the server, in the repository <b>{repository}</b>."
+        ).format(project=PurePosixPath(project).stem, repository=repository)
+        if not result.remote_exists:
+            text += " " + tr(
+                "The directory of the repository doesn't exist yet on the server, it will be created."
+            )
+        else:
+            others = sorted(
+                PurePosixPath(path).stem for path in result.manifest.files if path.endswith(".qgs")
+            )
+            if others:
+                text += " " + tr("This repository already contains these projects: {}.").format(
+                    ", ".join(others)
+                )
+            elif not result.manifest.files:
+                text += " " + tr("This repository is empty.")
+        text += "<br>" + tr(
+            "Check that it's the right repository before publishing the project for the first time."
+        )
+        return text
+
     def synchronise(self):
         """Ask for a confirmation, then run the synchronisation of all pairs in the background."""
         if self.busy or not self._results:
@@ -566,8 +614,10 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
         if not operations:
             return
 
-        # Confirmation, with a warning for deletions and files used by the project
-        text = tr("Synchronise {} files?").format(len(operations)) + "<br>" + self.summary.text()
+        # Confirmation, with a warning for the first publication, deletions and files used by the project
+        first_publication = self._first_publication()
+        text = f"<p style='color:{RED}'>{first_publication}</p>" if first_publication else ""
+        text += tr("Synchronise {} files?").format(len(operations)) + "<br>" + self.summary.text()
         deletions = [
             d.path for d in operations if d.action in (SyncAction.DeleteLocal, SyncAction.DeleteRemote)
         ]
@@ -591,7 +641,8 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
                 + "<br>"
                 + tr("You should reload the project after the synchronisation.")
             )
-        if not self.confirm(tr("Synchronisation"), text):
+        # "No" by default for a first publication, the repository may be wrong
+        if not self.confirm(tr("Synchronisation"), text, default_no=bool(first_publication)):
             return
 
         self.progress.setRange(0, 100)
@@ -647,6 +698,17 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
         )
         if project_downloaded:
             lines.append(f"<b>{tr('The project has been downloaded from the server, reload it.')}</b>")
+
+        # Link to the map, once the project has been sent
+        project_sent = bool(
+            repository
+            and project_path
+            and any(op.kind == OperationKind.Upload and op.path == project_path for op in repository.done)
+        )
+        if project_sent and self._context and self._context.map_url:
+            lines.append(
+                tr("<a href='{}'>Open the map</a> in the web browser.").format(self._context.map_url)
+            )
 
         # Refresh the comparison with the same context, the states have been updated
         self._sync_message = "<br>".join(lines)
