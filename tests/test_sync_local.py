@@ -8,8 +8,17 @@ from pathlib import Path
 
 import pytest
 
-from lizmap.sync.filters import ExcludeRules, ExclusionReason
-from lizmap.sync.model import BaseEntry, LocalEntry, RemoteEntry
+from lizmap.sync.filters import (
+    DEFAULT_EXCLUDE_PATTERNS,
+    IGNORE_FILE,
+    ExcludeRules,
+    ExclusionReason,
+    match_rule,
+    parse_rules,
+)
+from lizmap.sync.model import BaseEntry, Direction, LocalEntry, RemoteEntry
+from lizmap.sync.options import SyncOptions, read_rules, read_rules_text, write_rules
+from lizmap.sync.pair import PairKind
 from lizmap.sync.scanner import ScanCanceled, scan_local
 from lizmap.sync.state import StateError, SyncState, state_file_name
 
@@ -48,6 +57,80 @@ def test_custom_patterns():
     assert rules.file_exclusion(".lizmapignore") is None
     assert rules.directory_exclusion("a/tmp")
     assert rules.directory_exclusion("a/data") is None
+
+
+@pytest.mark.parametrize(
+    ("rule", "path", "is_directory", "expected"),
+    [
+        # A name at any depth, for files and directories
+        ("*.bak", "a.bak", False, True),
+        ("*.bak", "x/y/a.BAK", False, True),
+        ("drafts", "x/drafts", True, True),
+        ("drafts", "x/drafts", False, True),
+        # Directories only
+        ("drafts/", "x/drafts", True, True),
+        ("drafts/", "x/drafts", False, False),
+        # Anchored at the root
+        ("/exports/", "exports", True, True),
+        ("/exports/", "x/exports", True, False),
+        ("data/*.csv", "data/a.csv", False, True),
+        ("data/*.csv", "data/sub/a.csv", False, False),
+        ("data/*.csv", "x/data/a.csv", False, False),
+        # Any number of directories
+        ("**/old/*.tif", "old/a.tif", False, True),
+        ("**/old/*.tif", "x/y/old/a.tif", False, True),
+        ("media/upload/**", "media/upload/x/y.jpg", False, True),
+    ],
+)
+def test_match_rule(rule, path, is_directory, expected):
+    """Test the syntax of the rules."""
+    assert match_rule(path, rule, is_directory) == expected
+
+
+def test_rules_exclude_files_and_directories():
+    """Test rules excluding a directory, with its content, and a file."""
+    rules = ExcludeRules(patterns=("drafts", "/exports/"))
+    assert rules.file_exclusion("x/drafts/a.qgs").detail == "drafts"
+    assert rules.file_exclusion("drafts").detail == "drafts"
+    assert rules.file_exclusion("exports/a.csv").detail == "/exports/"
+    assert rules.file_exclusion("x/exports/a.csv") is None
+
+
+def test_parse_rules():
+    """Test the parsing of the text written by the user."""
+    rules, invalid = parse_rules("# comment\n\n  *.bak  \n/exports/\n!keep.bak\nbad\\path\n/\n")
+    assert rules == ("*.bak", "/exports/")
+    assert invalid == ["!keep.bak", "bad\\path", "/"]
+
+
+def test_rules_file(tmp_path: Path):
+    """Test the rules file of a directory, never excluded and created if needed."""
+    root = tmp_path / "media"
+    assert read_rules_text(root) is None
+    assert read_rules(root) == (DEFAULT_EXCLUDE_PATTERNS, [])
+
+    write_rules(root, "# comment\n*.tif")
+    assert read_rules_text(root) == "# comment\n*.tif\n"
+    assert read_rules(root) == (("*.tif",), [])
+
+    # The rules file is synchronised, even if the hidden files are excluded
+    scan = scan_local(root, ExcludeRules(patterns=("*.tif",)))
+    assert list(scan.files) == [IGNORE_FILE]
+    assert ExcludeRules().file_exclusion(IGNORE_FILE) is None
+    assert ExcludeRules().file_exclusion(f"sub/{IGNORE_FILE}") is not None
+
+
+def test_options_pair_settings():
+    """Test the settings of the pairs built from the options."""
+    options = SyncOptions(exclude_hidden=False, max_size=10, download_threshold=None)
+    settings = options.pair_settings(PairKind.SharedMedia)
+    assert settings.direction == Direction.PullOnly
+    assert settings.protected_patterns == ("upload/**",)
+    assert settings.download_threshold is None
+    assert options.pair_settings(PairKind.SharedMedia, Direction.TwoWay).direction == Direction.TwoWay
+
+    rules = options.exclude_rules(("*.tif",))
+    assert rules == ExcludeRules(patterns=("*.tif",), exclude_hidden=False, max_size=10)
 
 
 def write(path: Path, content: bytes):

@@ -18,7 +18,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from lizmap.sync.filters import ExclusionReason, match_glob
+from lizmap.sync.filters import ExclusionReason, match_rule
 from lizmap.sync.model import (
     Direction,
     FileDiff,
@@ -301,7 +301,8 @@ def compare(
     :param rules: Exclusion rules, nothing is excluded if None.
     :param preferences: Default preference by status, ``DEFAULT_PREFERENCES`` is used for missing ones.
     :param direction: Allowed direction of the transfers.
-    :param protected_patterns: Glob patterns of the files produced by the server, see ``FileDiff.protected``.
+    :param protected_patterns: Rules of the files produced by the server, see ``FileDiff.protected``
+        and the syntax in ``filters``.
     :param download_threshold: Files missing locally and bigger than this size, in bytes, are not
         downloaded by default. None for no limit.
     :return: The comparison, with the default action chosen for each file.
@@ -336,7 +337,7 @@ def compare(
             base=base_entry,
             allowed_actions=allowed_actions(status, local_entry, remote_entry, direction),
             exclusion=exclusion,
-            protected=any(match_glob(path, pattern) for pattern in protected_patterns),
+            protected=any(match_rule(path, pattern) for pattern in protected_patterns),
         )
 
         # The default action depends on the allowed actions, so it's set once the diff is built

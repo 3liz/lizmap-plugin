@@ -1,9 +1,9 @@
-from dataclasses import replace
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Protocol,
 )
+from urllib.parse import unquote
 
 from qgis.core import (
     Qgis,
@@ -41,7 +41,7 @@ from ..definitions.qgis_settings import Settings
 from ..dialogs.server_wizard import CreateFolderWizard
 from ..server_dav import WebDav
 from ..sync.backends.webdav import WebDavBackend, WebDavServer
-from ..sync.filters import ExcludeRules
+from ..sync.gui.options_dialog import SyncOptionsDialog, load_options, save_options
 from ..sync.gui.project_checks import (
     checkpoint_sqlite,
     layers_with_pending_edits,
@@ -49,7 +49,8 @@ from ..sync.gui.project_checks import (
 )
 from ..sync.gui.sync_panel import SyncContext, SyncPanel, SyncUnavailable
 from ..sync.model import Direction
-from ..sync.pair import DEFAULT_SETTINGS, PairKind, SyncPair
+from ..sync.options import SyncOptions, read_rules, read_rules_text, write_rules
+from ..sync.pair import PairKind, SyncPair
 from ..sync.state import StateError, SyncState, state_file_name
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import (
@@ -116,7 +117,11 @@ class WebDavManager(LizmapProtocol):
 
         # Synchronisation, replacing the previous widgets when the WebDAV module supports it
         self.sync_panel = SyncPanel(
-            self.dlg.page_upload, self.sync_context, self.dlg.repository_combo, self.create_new_repository
+            self.dlg.page_upload,
+            self.sync_context,
+            self.dlg.repository_combo,
+            self.create_new_repository,
+            self.open_sync_options,
         )
         self.sync_panel.synchronised.connect(self._after_synchronisation)
         self.sync_panel.directionChanged.connect(self._save_sync_direction)
@@ -193,27 +198,35 @@ class WebDavManager(LizmapProtocol):
         repository_label = self.dlg.repository_combo.currentText() or repository_id
 
         # The repository, and the "media" directory shared by all repositories, "../media" locally
+        options = load_options()
         pairs = [
             self._sync_pair(
                 PairKind.Repository,
-                tr("Repository \"{}\"").format(repository_label),
+                tr('Repository "{}"').format(repository_label),
                 WebDavBackend(url, auth_id),
-                url,
+                unquote(url[len(server.url) :]),
                 root,
                 server_url,
                 repository_id,
+                options,
             ),
             self._sync_pair(
                 PairKind.SharedMedia,
                 tr("Shared media"),
                 WebDavBackend(server.shared_media_url(), auth_id),
-                server.shared_media_url(),
+                unquote(server.shared_media_url()[len(server.url) :]),
                 root.parent.joinpath("media"),
                 server_url,
                 SHARED_MEDIA_STATE,
+                options,
             ),
         ]
-        return SyncContext(pairs=pairs, protected_paths=frozenset(files), project_path=project_file.name)
+        return SyncContext(
+            pairs=pairs,
+            server_label=server.url,
+            protected_paths=frozenset(files),
+            project_path=project_file.name,
+        )
 
     @staticmethod
     def _sync_pair(
@@ -224,16 +237,18 @@ class WebDavManager(LizmapProtocol):
         root: Path,
         server_url: str,
         state_key: str,
+        options: SyncOptions,
     ) -> SyncPair:
         """Build a pair of directories, with its state and its settings.
 
         :param kind: Kind of pair.
         :param label: Name displayed in the tree.
         :param backend: The directory on the server.
-        :param remote_label: URL of the directory on the server.
+        :param remote_label: Path of the directory on the WebDAV server.
         :param root: The local directory.
         :param server_url: URL of the Lizmap server.
         :param state_key: Identifier of the remote directory in the state, such as the repository.
+        :param options: The options of the synchronisation.
         :return: The pair.
         """
         # State of the last synchronisation, in the QGIS profile
@@ -246,11 +261,15 @@ class WebDavManager(LizmapProtocol):
             logger.warning(f"Synchronisation state ignored : {e}")
             state = SyncState(server_url, state_key, str(root))
 
-        # Direction chosen by the user, other settings by default for now
-        settings = DEFAULT_SETTINGS[kind]
+        # Direction chosen by the user, then the options
         saved = QgsSettings().value(Settings.key(f"{Settings.SyncDirection}/{kind.value}"), "", str)
-        if saved in {direction.value for direction in Direction}:
-            settings = replace(settings, direction=Direction(saved))
+        direction = Direction(saved) if saved in {d.value for d in Direction} else None
+        settings = options.pair_settings(kind, direction)
+
+        # Excluded files, from the rules file of the directory
+        patterns, invalid = read_rules(root)
+        if invalid:
+            logger.warning(f"Synchronisation, unsupported rules in {root} : {', '.join(invalid)}")
 
         return SyncPair(
             kind=kind,
@@ -259,10 +278,38 @@ class WebDavManager(LizmapProtocol):
             root=root,
             state=state,
             state_file=state_file,
-            rules=ExcludeRules(),
+            rules=options.exclude_rules(patterns),
             settings=settings,
             remote_label=remote_label,
         )
+
+    def open_sync_options(self) -> bool:
+        """Edit the options of the synchronisation.
+
+        The excluded files are written in the rules file of each directory, the other options
+        are personal settings.
+
+        :return: True if the user changed the options.
+        """
+        if not self.project.fileName():
+            self.dlg.display_message_bar(
+                "Lizmap", tr("Save the project first."), level=Qgis.MessageLevel.Warning
+            )
+            return False
+
+        root = Path(self.project.fileName()).parent.resolve()
+        roots = {PairKind.Repository: root, PairKind.SharedMedia: root.parent.joinpath("media")}
+        labels = {PairKind.Repository: tr("Repository"), PairKind.SharedMedia: tr("Shared media")}
+        rules = {kind: (labels[kind], read_rules_text(path)) for kind, path in roots.items()}
+
+        dialog = SyncOptionsDialog(self.dlg, load_options(), rules)
+        if not dialog.exec():
+            return False
+
+        save_options(dialog.options())
+        for kind, text in dialog.changed_rules().items():
+            write_rules(roots[kind], text)
+        return True
 
     @staticmethod
     def _save_sync_direction(kind: PairKind, direction: Direction):

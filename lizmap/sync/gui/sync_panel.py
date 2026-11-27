@@ -13,24 +13,15 @@ from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
 from qgis.core import QgsApplication
-from qgis.gui import QgsCollapsibleGroupBox, QgsFilterLineEdit
 from qgis.PyQt.QtCore import QModelIndex, QPersistentModelIndex, QPoint, Qt, QUrl, pyqtSignal, pyqtSlot
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView,
     QComboBox,
-    QHBoxLayout,
     QHeaderView,
     QLabel,
     QMenu,
     QMessageBox,
-    QPlainTextEdit,
-    QProgressBar,
-    QPushButton,
-    QSizePolicy,
-    QToolButton,
-    QTreeView,
-    QVBoxLayout,
     QWidget,
 )
 
@@ -43,6 +34,7 @@ from lizmap.sync.pair import PairKind
 from lizmap.sync.plan import OperationKind
 from lizmap.sync.tasks import CompareTask, SyncTask, recompare
 from lizmap.toolbelt.i18n import tr
+from lizmap.toolbelt.resources import load_ui
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -50,6 +42,8 @@ if TYPE_CHECKING:
     from lizmap.sync.model import FileStatus
     from lizmap.sync.pair import SyncPair
     from lizmap.sync.tasks import CompareResult
+
+FORM_CLASS = load_ui("ui_sync_panel.ui")
 
 
 class SyncUnavailable(Exception):
@@ -61,6 +55,7 @@ class SyncContext:
     """Everything needed to compare and synchronise, given by the plugin.
 
     :param pairs: The pairs of directories, the repository first.
+    :param server_label: URL of the WebDAV server, the remote directories of the pairs are relative to it.
     :param preferences: Default preference by status, the default ones if None.
     :param protected_paths: Files used by the layers of the open project, relative to the directory
         of the repository.
@@ -68,6 +63,7 @@ class SyncContext:
     """
 
     pairs: list[SyncPair]
+    server_label: str = ""
     preferences: Mapping[FileStatus, Preference] | None = None
     protected_paths: frozenset[str] = field(default_factory=frozenset)
     project_path: str | None = None
@@ -81,7 +77,7 @@ class SyncContext:
         return next((pair for pair in self.pairs if pair.kind == kind), None)
 
 
-class SyncPanel(QWidget):
+class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
     """Compare the local directory with the server, choose the actions, then synchronise.
 
     :param parent: Parent widget.
@@ -89,6 +85,7 @@ class SyncPanel(QWidget):
         for the user if the synchronisation is not possible.
     :param repository_combo: Combobox of the repositories in the dialog, mirrored at the top of the panel.
     :param new_repository: Called when the user wants to create a new repository.
+    :param open_options: Called when the user wants to edit the options, returns True if they changed.
     """
 
     # Emitted after a synchronisation, with True if the open project has been downloaded
@@ -102,9 +99,11 @@ class SyncPanel(QWidget):
         context_provider: Callable[[], SyncContext],
         repository_combo: QComboBox | None = None,
         new_repository: Callable[[], None] | None = None,
+        open_options: Callable[[], bool] | None = None,
     ):
         super().__init__(parent)
         self._provider = context_provider
+        self._open_options = open_options
         self._source_combo = repository_combo
         self._context: SyncContext | None = None
         self._results: list[CompareResult] = []
@@ -118,49 +117,45 @@ class SyncPanel(QWidget):
     # Interface
 
     def _build_interface(self, new_repository: Callable[[], None] | None):
-        """Build the widgets.
+        """Set up the widgets of the Designer file.
 
         :param new_repository: Called when the user wants to create a new repository.
         """
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
+        self.setupUi(self)
 
         # Repository, mirroring the combobox of the dialog
-        row = QHBoxLayout()
-        row.addWidget(QLabel(tr("Lizmap repository")))
-        self.repository = QComboBox()
-        self.repository.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        row.addWidget(self.repository)
-        self.new_repository_button = QToolButton()
         self.new_repository_button.setIcon(QgsApplication.getThemeIcon("/mActionNewFolder.svg"))
-        self.new_repository_button.setToolTip(tr("Create a new Lizmap repository"))
         self.new_repository_button.setVisible(new_repository is not None)
         if new_repository:
             self.new_repository_button.clicked.connect(new_repository)
-        row.addWidget(self.new_repository_button)
-        layout.addLayout(row)
         self._mirror_repository_combo()
 
-        # Local and remote directories
-        self.directories = QLabel()
-        self.directories.setWordWrap(True)
-        self.directories.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
-        self.directories.setOpenExternalLinks(True)
-        layout.addWidget(self.directories)
-
-        # Direction of each pair, filled by the comparison
-        self.directions = QWidget()
-        self.directions_layout = QHBoxLayout(self.directions)
-        self.directions_layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.directions)
+        # Widgets of each pair of directories, in the grid
+        self.pair_widgets: dict[PairKind, tuple[QLabel, QLabel, QLabel, QComboBox]] = {
+            PairKind.Repository: (
+                self.label_pair_repository,
+                self.label_local_repository,
+                self.label_remote_repository,
+                self.direction_repository,
+            ),
+            PairKind.SharedMedia: (
+                self.label_pair_shared_media,
+                self.label_local_shared_media,
+                self.label_remote_shared_media,
+                self.direction_shared_media,
+            ),
+        }
+        for kind, (_title, _local, _remote, combo) in self.pair_widgets.items():
+            for direction in Direction:
+                combo.addItem(direction_label(direction), direction.value)
+            # A change compares again, without any request
+            combo.currentIndexChanged.connect(
+                lambda _index, k=kind, c=combo: self._direction_changed(k, Direction(c.currentData()))
+            )
 
         # Comparison and filters
-        row = QHBoxLayout()
-        self.compare_button = QPushButton(QgsApplication.getThemeIcon("/mActionRefresh.svg"), tr("Compare"))
-        self.compare_button.setToolTip(tr("Compare the local directories of the project with the server"))
+        self.compare_button.setIcon(QgsApplication.getThemeIcon("/mActionRefresh.svg"))
         self.compare_button.clicked.connect(self.compare)
-        row.addWidget(self.compare_button)
-        self.filter_mode = QComboBox()
         for mode, label in (
             (FilterMode.Changes, tr("Differences")),
             (FilterMode.Actions, tr("Files to synchronise")),
@@ -168,90 +163,50 @@ class SyncPanel(QWidget):
             (FilterMode.All, tr("All files")),
         ):
             self.filter_mode.addItem(label, mode.value)
-        row.addWidget(self.filter_mode)
-        self.search = QgsFilterLineEdit()
         self.search.setShowSearchIcon(True)
-        self.search.setPlaceholderText(tr("Search a file"))
-        row.addWidget(self.search)
-        layout.addLayout(row)
 
         # Tree of the files
         self.model = SyncTreeModel(self)
         self.proxy = SyncFilterProxy(self)
         self.proxy.setSourceModel(self.model)
-        self.tree = QTreeView()
         self.tree.setModel(self.proxy)
         self.tree.setItemDelegateForColumn(Column.Action, ActionDelegate(self.tree))
         self.tree.setEditTriggers(
             QAbstractItemView.EditTrigger.SelectedClicked | QAbstractItemView.EditTrigger.DoubleClicked
         )
-        self.tree.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
-        self.tree.setAlternatingRowColors(True)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self._context_menu)
         # All columns fit their content, a horizontal scroll bar is better than truncated names
         header = self.tree.header()
         header.setStretchLastSection(False)
         header.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
-        layout.addWidget(self.tree, 1)
 
         self.filter_mode.currentIndexChanged.connect(self._filter_changed)
         self.search.valueChanged.connect(self._filter_changed)
         self.model.actionsChanged.connect(self._update_summary)
 
-        # Bulk choices, on all files
-        row = QHBoxLayout()
+        # Bulk choices on all files, the options and the synchronisation on the same row
         self.bulk_buttons = []
-        for label, tooltip, preference in (
-            (tr("Prefer local"), tr("The local version wins for all files"), Preference.Local),
-            (tr("Prefer server"), tr("The server version wins for all files"), Preference.Remote),
-            (tr("No action"), tr("Do nothing for all files"), Preference.Nothing),
-            (tr("Default choices"), tr("Restore the default choices"), None),
+        for button, tooltip, preference in (
+            (self.button_prefer_local, tr("The local version wins for all files"), Preference.Local),
+            (self.button_prefer_server, tr("The server version wins for all files"), Preference.Remote),
+            (self.button_no_action, tr("Do nothing for all files"), Preference.Nothing),
+            (self.button_default_choices, tr("Restore the default choices"), None),
         ):
-            button = QPushButton(label)
             button.setToolTip(
                 tooltip + "\n" + tr("Use a right click in the list for the selected files only.")
             )
             button.clicked.connect(lambda _checked, p=preference: self._apply_to(QModelIndex(), p))
-            row.addWidget(button)
             self.bulk_buttons.append(button)
-        row.addStretch()
-        layout.addLayout(row)
-
-        self.summary = QLabel()
-        self.summary.setWordWrap(True)
-        layout.addWidget(self.summary)
-
-        # Synchronisation
-        row = QHBoxLayout()
-        self.sync_button = QPushButton(QgsApplication.getThemeIcon("/mActionStart.svg"), tr("Synchronise"))
+        self.options_button.setIcon(QgsApplication.getThemeIcon("/mActionOptions.svg"))
+        self.options_button.setVisible(self._open_options is not None)
+        self.options_button.clicked.connect(self.edit_options)
+        self.sync_button.setIcon(QgsApplication.getThemeIcon("/mActionStart.svg"))
         self.sync_button.clicked.connect(self.synchronise)
-        row.addWidget(self.sync_button)
-        self.progress = QProgressBar()
-        self.progress.setVisible(False)
-        row.addWidget(self.progress, 1)
-        self.cancel_button = QPushButton(tr("Cancel"))
-        self.cancel_button.setVisible(False)
+
         self.cancel_button.clicked.connect(self.cancel)
-        row.addWidget(self.cancel_button)
-        row.addStretch()
-        layout.addLayout(row)
-
-        self.message = QLabel()
-        self.message.setWordWrap(True)
-        self.message.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
-        self.message.setOpenExternalLinks(True)
-        layout.addWidget(self.message)
-
-        # Detailed log
-        self.log_group = QgsCollapsibleGroupBox(tr("Detailed log"))
-        self.log_group.setCollapsed(True)
-        log_layout = QVBoxLayout(self.log_group)
-        self.log = QPlainTextEdit()
-        self.log.setReadOnly(True)
-        self.log.setMaximumHeight(150)
-        log_layout.addWidget(self.log)
-        layout.addWidget(self.log_group)
+        self.progress.setVisible(False)
+        self.cancel_button.setVisible(False)
 
         self._set_directories(None)
 
@@ -259,6 +214,7 @@ class SyncPanel(QWidget):
         """Share the model of the combobox of the dialog, and keep both current items in sync."""
         if self._source_combo is None:
             self.repository.setVisible(False)
+            self.label_repository_title.setVisible(False)
             return
 
         self.repository.setModel(self._source_combo.model())
@@ -285,39 +241,30 @@ class SyncPanel(QWidget):
         self.repository.currentIndexChanged.connect(to_dialog)
 
     def _set_directories(self, context: SyncContext | None):
-        """Display the local and remote directories, and the direction of each pair.
+        """Display the WebDAV server, then the local and remote directories and the direction of each pair.
 
         :param context: The context, None if not known yet.
         """
-        # Remove the previous directions
-        while self.directions_layout.count():
-            item = self.directions_layout.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+        self.label_help.setVisible(context is None)
+        self.label_server_title.setVisible(context is not None)
+        self.label_server.setText(context.server_label if context else "")
+        self.label_server.setVisible(context is not None)
 
-        if context is None:
-            self.directories.setText(tr("Click on <b>Compare</b> to list the differences with the server."))
-            self.directions.setVisible(False)
-            return
+        for kind, (title, local, remote, combo) in self.pair_widgets.items():
+            pair = context.pair(kind) if context else None
+            for widget in (title, local, remote, combo):
+                widget.setVisible(pair is not None)
+            if pair is None:
+                continue
 
-        lines = []
-        for pair in context.pairs:
-            local = QUrl.fromLocalFile(str(pair.root)).toString()
-            lines.append(f"<b>{pair.label}</b> : <a href='{local}'>{pair.root}</a> ⇄ {pair.remote_label}")
-
-            # Direction, a change compares again without any request
-            self.directions_layout.addWidget(QLabel(pair.label))
-            combo = QComboBox()
-            for direction in Direction:
-                combo.addItem(direction_label(direction), direction.value)
+            title.setText(pair.label)
+            url = QUrl.fromLocalFile(str(pair.root)).toString()
+            local.setText(f"<a href='{url}'>{pair.root}</a>")
+            remote.setText(f"⇄ {pair.remote_label}")
+            # Without signal, the direction comes from the settings, it's not a choice of the user
+            combo.blockSignals(True)
             combo.setCurrentIndex(combo.findData(pair.settings.direction.value))
-            combo.currentIndexChanged.connect(
-                lambda _index, c=combo, k=pair.kind: self._direction_changed(k, Direction(c.currentData()))
-            )
-            self.directions_layout.addWidget(combo)
-        self.directions_layout.addStretch()
-        self.directions.setVisible(True)
-        self.directories.setText("<br>".join(lines))
+            combo.blockSignals(False)
 
     def _direction_changed(self, kind: PairKind, direction: Direction):
         """Apply the new direction of a pair to its comparison.
@@ -360,12 +307,14 @@ class SyncPanel(QWidget):
         busy = self.busy
         has_actions = any(section.comparison.to_run() for section in self.model.sections)
         self.compare_button.setEnabled(not busy)
+        self.options_button.setEnabled(not busy)
         self.repository.setEnabled(not busy)
         self.new_repository_button.setEnabled(not busy)
         self.sync_button.setEnabled(not busy and has_actions)
         for button in self.bulk_buttons:
             button.setEnabled(not busy and bool(self.model.sections))
-        self.directions.setEnabled(not busy)
+        for _title, _local, _remote, combo in self.pair_widgets.values():
+            combo.setEnabled(not busy)
         self.tree.setEnabled(not busy)
         self.progress.setVisible(busy)
         self.cancel_button.setVisible(busy)
@@ -481,6 +430,14 @@ class SyncPanel(QWidget):
             action.triggered.connect(lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(folder))))
 
         menu.exec(self.tree.viewport().mapToGlobal(position))
+
+    def edit_options(self):
+        """Edit the options, then compare again if a comparison is displayed."""
+        if self.busy or self._open_options is None:
+            return
+        if self._open_options() and self._results:
+            # The excluded files may change the scan, a new comparison is needed
+            self.compare()
 
     def confirm(self, title: str, text: str) -> bool:
         """Ask a question to the user. Can be replaced in tests.

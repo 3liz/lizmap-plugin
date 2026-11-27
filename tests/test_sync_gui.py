@@ -16,13 +16,22 @@ from qgis.PyQt.QtWidgets import QComboBox, QStyleOptionViewItem, QWidget
 
 from lizmap.sync.backends.base import BackendError
 from lizmap.sync.diff import Comparison
+from lizmap.sync.filters import DEFAULT_EXCLUDE_PATTERNS, parse_rules
 from lizmap.sync.gui.action_delegate import ActionDelegate
 from lizmap.sync.gui.filter_proxy import FilterMode, SyncFilterProxy
+from lizmap.sync.gui.options_dialog import (
+    MEGABYTE,
+    SyncOptionsDialog,
+    default_rules_text,
+    load_options,
+    save_options,
+)
 from lizmap.sync.gui.project_checks import checkpoint_sqlite, layers_with_pending_edits, project_files
 from lizmap.sync.gui.sync_panel import SyncContext, SyncPanel, SyncUnavailable
 from lizmap.sync.gui.tree_model import DIFF_ROLE, SECTION_ROLE, Column, SyncTreeModel, TreeSection
 from lizmap.sync.manifest import RemoteManifest
 from lizmap.sync.model import Direction, FileStatus, Preference, SyncAction
+from lizmap.sync.options import SyncOptions
 from lizmap.sync.pair import PairKind, PairSettings
 from lizmap.sync.state import SyncState
 
@@ -282,6 +291,9 @@ def test_panel_compare_and_synchronise(sample: Sample, tmp_path: Path):
     panel.compare()
     wait_for(lambda: not panel.busy)
     assert panel.sync_button.isEnabled()
+    # Only the repository, the row of the shared media is hidden
+    assert panel.direction_repository.isVisibleTo(panel)
+    assert not panel.direction_shared_media.isVisibleTo(panel)
     assert "Upload : 2" in panel.summary.text()
     assert "Download : 1" in panel.summary.text()
 
@@ -323,7 +335,8 @@ def test_panel_shared_media(sample: Sample, tmp_path: Path):
 
     # Two-way, compared again without any request: the logo is sent
     calls = len(media.calls)
-    combos = panel.directions.findChildren(QComboBox)
+    combos = [panel.direction_repository, panel.direction_shared_media]
+    assert panel.direction_shared_media.isVisibleTo(panel)
     assert [combo.currentData() for combo in combos] == ["two_way", "pull_only"]
     combos[1].setCurrentIndex(combos[1].findData("two_way"))
     assert directions == [(PairKind.SharedMedia, Direction.TwoWay)]
@@ -484,3 +497,65 @@ def test_checkpoint_sqlite(tmp_path: Path):
     assert checkpoint_sqlite([database, tmp_path / "other.csv"]) == {}
     assert wal.stat().st_size == 0
     connection.close()
+
+
+def test_options_dialog():
+    """Test the options dialog: values, unsupported lines, changed rules, defaults."""
+    options = SyncOptions(
+        exclude_hidden=False,
+        max_size=20 * MEGABYTE,
+        download_threshold=None,
+        protected_repository=("media/upload/**", "forms/**"),
+    )
+    rules = {PairKind.Repository: ("Repository", "*.tif\n"), PairKind.SharedMedia: ("Shared media", None)}
+    dialog = SyncOptionsDialog(None, options, rules)
+
+    assert dialog.options() == options
+    assert dialog.rules_editors[PairKind.SharedMedia].toPlainText() == default_rules_text()
+    assert dialog.changed_rules() == {}
+
+    dialog.rules_editors[PairKind.Repository].setPlainText("*.tif\n!keep.tif\n")
+    assert "!keep.tif" in dialog.invalid_label.text()
+    assert dialog.changed_rules() == {PairKind.Repository: "*.tif\n!keep.tif\n"}
+
+    dialog.restore_defaults()
+    assert dialog.options() == SyncOptions()
+    assert dialog.invalid_label.text() == ""
+    assert dialog.changed_rules() == {PairKind.Repository: default_rules_text()}
+
+    # The default text gives the default rules, the comments are ignored
+    assert parse_rules(default_rules_text()) == (DEFAULT_EXCLUDE_PATTERNS, [])
+
+
+def test_options_settings():
+    """Test the personal options saved in the QGIS settings."""
+    options = SyncOptions(
+        exclude_hidden=False,
+        max_size=3 * MEGABYTE,
+        download_threshold=None,
+        protected_shared_media=("upload/**", "photos/"),
+    )
+    save_options(options)
+    assert load_options() == options
+    save_options(SyncOptions())
+    assert load_options() == SyncOptions()
+
+
+def test_panel_options(sample: Sample, tmp_path: Path):
+    """Test the options button: a new comparison after a change."""
+    backend, root, state = sample
+    panel = panel_for(backend, root, state, tmp_path)
+    changes = []
+    panel._open_options = lambda: changes.append(True) or True
+    panel.options_button.setVisible(True)
+
+    # No comparison yet, nothing to refresh
+    panel.edit_options()
+    assert not panel.busy
+
+    panel.compare()
+    wait_for(lambda: not panel.busy)
+    panel.edit_options()
+    assert panel.busy
+    wait_for(lambda: not panel.busy)
+    assert changes == [True, True]

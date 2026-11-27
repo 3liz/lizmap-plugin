@@ -1,10 +1,16 @@
 """Exclusion rules of the synchronisation.
 
-Patterns follow a simplified ".gitignore" syntax, matched without taking care of the case:
+The rules are written one per line, matched without taking care of the case:
 
-* a pattern ending with "/" matches a directory name at any depth, for instance ".git/",
-* a pattern containing a "/" matches the whole relative path, for instance "data/raw/*.csv",
-* any other pattern matches the file name at any depth, for instance "*.bak".
+* "*" matches any characters except "/", "?" a single character, "**" any number of directories,
+* a rule without "/" matches a file or a directory name at any depth, for instance "*.bak" or "drafts",
+* a rule ending with "/" matches only directories, for instance "drafts/",
+* a rule starting with "/" or containing a "/" is anchored at the root of the synchronised
+  directory, for instance "/exports/" or "data/raw/*.csv",
+* empty lines and lines starting with "#" are ignored.
+
+The rules of a directory are kept in the file ``IGNORE_FILE`` at its root. This file is
+synchronised like the other files, so the rules are shared with the other users.
 """
 
 from __future__ import annotations
@@ -13,12 +19,14 @@ import re
 
 from dataclasses import dataclass
 from enum import Enum
-from fnmatch import fnmatchcase
 from functools import cache
 
 # Prefix of the files and directories of the synchronisation itself: downloads in progress,
 # local trash, uploads in progress on the server. They are always excluded, whatever the rules.
 INTERNAL_PREFIX = ".~lizmap-"
+
+# File keeping the exclusion rules, at the root of a synchronised directory. Never excluded.
+IGNORE_FILE = ".lizmapignore"
 
 DEFAULT_EXCLUDE_PATTERNS: tuple[str, ...] = (
     # Version control and Python caches
@@ -61,21 +69,11 @@ class Exclusion:
     """Exclusion of a path.
 
     :param reason: Why the path is excluded.
-    :param detail: The matching pattern, the hidden segment or the size limit in bytes.
+    :param detail: The matching rule, the hidden name or the size limit in bytes.
     """
 
     reason: ExclusionReason
     detail: str
-
-
-def _match(value: str, pattern: str) -> bool:
-    """Match a value with a pattern, case insensitive.
-
-    :param value: A file or directory name, or a relative path.
-    :param pattern: A glob pattern.
-    :return: True if the value matches.
-    """
-    return fnmatchcase(value.lower(), pattern.lower())
 
 
 @cache
@@ -117,10 +115,82 @@ def match_glob(path: str, pattern: str) -> bool:
 
 
 @dataclass(frozen=True)
+class _Rule:
+    """A parsed exclusion rule.
+
+    :param text: The rule as written by the user.
+    :param glob: The glob pattern, without the leading and trailing "/".
+    :param directory_only: The rule matches only directories.
+    :param anchored: The rule matches the whole path from the root, not a name at any depth.
+    """
+
+    text: str
+    glob: str
+    directory_only: bool
+    anchored: bool
+
+    def matches(self, path: str, is_directory: bool) -> bool:
+        """Match a file or a directory.
+
+        :param path: Normalised relative path.
+        :param is_directory: True for a directory.
+        :return: True if the rule matches.
+        """
+        if self.directory_only and not is_directory:
+            return False
+        value = path if self.anchored else path.rsplit("/", 1)[-1]
+        return match_glob(value, self.glob)
+
+
+@cache
+def _parse_rule(text: str) -> _Rule:
+    """Parse a rule.
+
+    :param text: The rule, already stripped and valid.
+    :return: The parsed rule.
+    """
+    directory_only = text.endswith("/")
+    glob = text.strip("/")
+    anchored = text.startswith("/") or "/" in glob
+    return _Rule(text, glob, directory_only, anchored)
+
+
+def match_rule(path: str, rule: str, is_directory: bool = False) -> bool:
+    """Match a file or a directory with a single rule, see the module documentation.
+
+    :param path: Normalised relative path.
+    :param rule: The rule.
+    :param is_directory: True for a directory.
+    :return: True if the rule matches.
+    """
+    return _parse_rule(rule).matches(path, is_directory)
+
+
+def parse_rules(content: str) -> tuple[tuple[str, ...], list[str]]:
+    """Read the rules written by the user, one per line.
+
+    :param content: The text, with comments.
+    :return: The valid rules, and the lines which are not supported.
+    """
+    rules = []
+    invalid = []
+    for line in content.splitlines():
+        rule = line.strip()
+        if not rule or rule.startswith("#"):
+            continue
+        # Exceptions and backslashes are not supported
+        if rule.startswith("!") or "\\" in rule or rule.strip("/") == "":
+            invalid.append(rule)
+            continue
+        rules.append(rule)
+    return tuple(rules), invalid
+
+
+@dataclass(frozen=True)
 class ExcludeRules:
     """Rules telling which files are not synchronised.
 
-    :param patterns: Glob patterns, see the module documentation.
+    :param patterns: The rules, see the module documentation.
     :param exclude_hidden: Exclude files and directories starting with a ".".
     :param max_size: Files bigger than this size, in bytes, are excluded. None for no limit.
     """
@@ -129,39 +199,35 @@ class ExcludeRules:
     exclude_hidden: bool = True
     max_size: int | None = None
 
-    def _directory_exclusion(self, segments: list[str]) -> Exclusion | None:
-        """Check directory names against the hidden rule and the directory patterns.
+    def _exclusion(self, path: str, is_directory: bool) -> Exclusion | None:
+        """Check a single file or directory, without its parents.
 
-        :param segments: Directory names, from the top-level one.
-        :return: The exclusion, or None if no directory is excluded.
+        :param path: Normalised relative path.
+        :param is_directory: True for a directory.
+        :return: The exclusion, or None.
         """
-        for index, segment in enumerate(segments):
-            if segment.startswith(INTERNAL_PREFIX):
-                return Exclusion(ExclusionReason.Internal, segment)
-
-            if self.exclude_hidden and segment.startswith("."):
-                return Exclusion(ExclusionReason.Hidden, segment)
-
-            for pattern in self.patterns:
-                if not pattern.endswith("/"):
-                    continue
-                directory_pattern = pattern[:-1]
-                if "/" in directory_pattern:
-                    # Anchored pattern, compare with the path of the directory
-                    value = "/".join(segments[: index + 1])
-                else:
-                    value = segment
-                if _match(value, directory_pattern):
-                    return Exclusion(ExclusionReason.Pattern, pattern)
+        name = path.rsplit("/", 1)[-1]
+        if name.startswith(INTERNAL_PREFIX):
+            return Exclusion(ExclusionReason.Internal, name)
+        if self.exclude_hidden and name.startswith("."):
+            return Exclusion(ExclusionReason.Hidden, name)
+        for pattern in self.patterns:
+            if _parse_rule(pattern).matches(path, is_directory):
+                return Exclusion(ExclusionReason.Pattern, pattern)
         return None
 
     def directory_exclusion(self, path: str) -> Exclusion | None:
-        """Check if a directory is excluded, to skip it while scanning.
+        """Check if a directory or one of its parents is excluded, to skip it while scanning.
 
         :param path: Normalised relative path of the directory.
         :return: The exclusion, or None if the directory is synchronised.
         """
-        return self._directory_exclusion(path.split("/"))
+        segments = path.split("/")
+        for index in range(len(segments)):
+            exclusion = self._exclusion("/".join(segments[: index + 1]), True)
+            if exclusion:
+                return exclusion
+        return None
 
     def file_exclusion(self, path: str, size: int | None = None) -> Exclusion | None:
         """Check if a file is excluded.
@@ -170,27 +236,20 @@ class ExcludeRules:
         :param size: Size in bytes, if known.
         :return: The exclusion, or None if the file is synchronised.
         """
-        segments = path.split("/")
-        name = segments[-1]
+        # The rules themselves are always synchronised
+        if path == IGNORE_FILE:
+            return None
 
         # A parent directory is excluded
-        exclusion = self._directory_exclusion(segments[:-1])
+        parent = path.rsplit("/", 1)[0] if "/" in path else ""
+        if parent:
+            exclusion = self.directory_exclusion(parent)
+            if exclusion:
+                return exclusion
+
+        exclusion = self._exclusion(path, False)
         if exclusion:
             return exclusion
-
-        if name.startswith(INTERNAL_PREFIX):
-            return Exclusion(ExclusionReason.Internal, name)
-
-        if self.exclude_hidden and name.startswith("."):
-            return Exclusion(ExclusionReason.Hidden, name)
-
-        # File patterns, either on the name or on the whole path
-        for pattern in self.patterns:
-            if pattern.endswith("/"):
-                continue
-            value = path if "/" in pattern else name
-            if _match(value, pattern):
-                return Exclusion(ExclusionReason.Pattern, pattern)
 
         if self.max_size is not None and size is not None and size > self.max_size:
             return Exclusion(ExclusionReason.Size, str(self.max_size))
