@@ -37,6 +37,15 @@ from ..definitions.definitions import LwcVersions
 from ..definitions.online_help import Panels
 from ..dialogs.server_wizard import CreateFolderWizard
 from ..server_dav import WebDav
+from ..sync.backends.webdav import WebDavBackend, WebDavServer
+from ..sync.filters import ExcludeRules
+from ..sync.gui.project_checks import (
+    checkpoint_sqlite,
+    layers_with_pending_edits,
+    project_files,
+)
+from ..sync.gui.sync_panel import SyncContext, SyncPanel, SyncUnavailable
+from ..sync.state import StateError, SyncState, state_file_name
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import (
     load_icon,
@@ -64,6 +73,7 @@ class LizmapProtocol(Protocol):
 
 class WebDavManager(LizmapProtocol):
     _webdav: WebDav
+    sync_panel: SyncPanel
 
     # Called on __init__()
     def initialize_webdav(self):
@@ -95,6 +105,115 @@ class WebDavManager(LizmapProtocol):
         self.dlg.button_upload_media.clicked.connect(self.upload_media)
         self.dlg.button_create_media_remote.clicked.connect(self.create_media_dir_remote)
         self.dlg.button_create_media_local.clicked.connect(self.create_media_dir_local)
+
+        # Synchronisation, replacing the previous widgets when the WebDAV module supports it
+        self.sync_panel = SyncPanel(
+            self.dlg.page_upload, self.sync_context, self.dlg.repository_combo, self.create_new_repository
+        )
+        self.sync_panel.synchronised.connect(self._after_synchronisation)
+        self.sync_panel.setVisible(False)
+        layout = self.dlg.page_upload.layout()
+        layout.insertWidget(0, self.sync_panel)
+        # The automatic upload when saving stays visible with both interfaces
+        layout.addWidget(self.dlg.send_webdav)
+
+    def _sync_server(self) -> WebDavServer | None:
+        """WebDAV capabilities of the current server, if it supports the synchronisation.
+
+        :return: The capabilities, None if the WebDAV module is missing or too old.
+        """
+        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        server = WebDavServer.from_metadata(metadata)
+        return server if server and server.supports_sync else None
+
+    def sync_context(self) -> SyncContext:
+        """Build the context of the synchronisation, after checking the project.
+
+        Called by the synchronisation panel when the user clicks on "Compare".
+
+        :return: The context.
+        :raises SyncUnavailable: With a message for the user if the synchronisation is not possible.
+        """
+        server = self._sync_server()
+        if server is None:
+            raise SyncUnavailable(tr("The WebDAV module of the server must be upgraded to synchronise."))
+
+        # Repository on the server
+        repository_id = self.dlg.current_repository(RepositoryComboData.Id)
+        repository_path = self.dlg.current_repository(RepositoryComboData.Path)
+        if not repository_id:
+            raise SyncUnavailable(tr("Choose a Lizmap repository."))
+        try:
+            url = server.repository_url(repository_path)
+        except ValueError:
+            raise SyncUnavailable(
+                tr(
+                    "The directory of the repository <b>{}</b> is outside of the root directory of the "
+                    "repositories on the server, it can't be synchronised."
+                ).format(repository_id)
+            ) from None
+
+        # The project must be saved, as a QGS file
+        if not self.project.fileName():
+            raise SyncUnavailable(tr("Save the project first."))
+        project_file = Path(self.project.fileName())
+        if project_file.suffix.lower() != ".qgs":
+            raise SyncUnavailable(tr("Lizmap Web Client needs a QGS project, not a QGZ one."))
+        pending = layers_with_pending_edits(self.project)
+        if pending:
+            raise SyncUnavailable(tr("Save the edits of these layers first: {}").format(", ".join(pending)))
+        if self.project.isDirty():
+            answer = QMessageBox.question(
+                self.dlg,
+                tr("Unsaved project"),
+                tr("The project has unsaved changes. Do you want to save it before the comparison?"),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            )
+            if answer != QMessageBox.StandardButton.Yes:
+                raise SyncUnavailable(tr("Save the project before the comparison."))
+            self.project.write()
+
+        # Files used by the layers, GeoPackage edits written in the main files
+        root = project_file.parent.resolve()
+        files = project_files(self.project, root)
+        for path, error in checkpoint_sqlite(list(files.values())).items():
+            logger.warning(f"Synchronisation, checkpoint of {path} : {error}")
+
+        # State of the last synchronisation, in the QGIS profile
+        server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        state_file = Path(QgsApplication.qgisSettingsDirPath()).joinpath(
+            "lizmap", "sync", state_file_name(server_url, repository_id, str(root))
+        )
+        try:
+            state = SyncState.load(state_file, server_url, repository_id, str(root))
+        except StateError as e:
+            logger.warning(f"Synchronisation state ignored : {e}")
+            state = SyncState(server_url, repository_id, str(root))
+
+        auth_id = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
+        return SyncContext(
+            backend=WebDavBackend(url, auth_id),
+            root=root,
+            state=state,
+            state_file=state_file,
+            rules=ExcludeRules(),
+            remote_label=url,
+            protected_paths=frozenset(files),
+            project_path=project_file.name,
+        )
+
+    def _after_synchronisation(self, project_downloaded: bool):
+        """Warn the user if the open project has been replaced by the synchronisation.
+
+        :param project_downloaded: True if the project file has been downloaded.
+        """
+        if project_downloaded:
+            self.dlg.display_message_bar(
+                "Lizmap",
+                tr("The project file has been replaced by the version of the server, reopen the project."),
+                level=Qgis.MessageLevel.Warning,
+                duration=DURATION_WARNING_BAR,
+            )
 
     def check_webdav(self):
         """Check if we can enable or the webdav, according to the current selected server."""
@@ -131,7 +250,14 @@ class WebDavManager(LizmapProtocol):
             self.dlg.button_upload_media.setVisible(True)
             self.dlg.button_create_media_remote.setVisible(True)
             self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(False)
+
+            # The synchronisation replaces the previous widgets if the WebDAV module supports it
+            sync = self._sync_server() is not None
+            self.sync_panel.setVisible(sync)
+            self.dlg.scrollArea_16.setVisible(not sync)
         else:
+            self.sync_panel.setVisible(False)
+            self.dlg.scrollArea_16.setVisible(True)
             # self.dlg.group_upload.setVisible(False)
             # self.dlg.send_webdav.setChecked(False)
             # self.dlg.send_webdav.setEnabled(False)

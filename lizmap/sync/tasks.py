@@ -99,6 +99,8 @@ class CompareTask(QgsTask):
         self.feedback = QgsFeedback()
         self.result: CompareResult | None = None
         self.error: str | None = None
+        # HTTP status of the error, 404 if the directory doesn't exist on the server
+        self.error_status: int | None = None
 
     def run(self) -> bool:
         """Run the comparison, in a worker thread.
@@ -111,7 +113,11 @@ class CompareTask(QgsTask):
             )
         except ScanCanceled:
             return False
-        except (BackendError, OSError) as e:
+        except BackendError as e:
+            self.error = str(e)
+            self.error_status = e.http_status
+            return False
+        except OSError as e:
             self.error = str(e)
             return False
         return True
