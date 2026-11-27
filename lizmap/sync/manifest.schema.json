@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs.lizmap.com/schemas/sync-manifest/1.0.json",
+  "title": "Lizmap synchronisation manifest",
+  "description": "Recursive listing of a directory on the server, returned in a single request. Version 1.0 is served by the Lizmap WebDAV module 1.3, with GET on a collection and the 'manifest' query parameter.",
+  "type": "object",
+  "required": ["version", "root", "generated_at", "checksum_algorithm", "checksum_max_size", "dirs", "files"],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "description": "Version of the manifest format, 'MAJOR.MINOR'. A client must refuse an unknown major version and ignore unknown properties.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "root": {
+      "description": "Listed directory, relative to the WebDAV root, with a trailing slash. Empty for the root itself.",
+      "type": "string",
+      "pattern": "^$|^[^/\\\\].*/$"
+    },
+    "generated_at": {
+      "description": "Generation time of the manifest, in seconds since the epoch (UTC).",
+      "type": "integer",
+      "minimum": 0
+    },
+    "checksum_algorithm": {
+      "description": "Algorithm used for the 'checksum' property of the files.",
+      "type": "string",
+      "enum": ["sha256"]
+    },
+    "checksum_max_size": {
+      "description": "Files bigger than this size, in bytes, do not have a checksum. Null if there isn't any limit.",
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "dirs": {
+      "description": "All sub-directories, empty ones included, relative to 'root', without trailing slash.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/relativePath"}
+    },
+    "files": {
+      "description": "All files, recursively. Temporary files of the server, such as partial uploads, are not listed.",
+      "type": "array",
+      "items": {"$ref": "#/$defs/file"}
+    }
+  },
+  "$defs": {
+    "relativePath": {
+      "description": "Relative path with '/' as separator, in the Unicode NFC form, without '.' or '..' segments.",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*//)(?!(.*/)?\\.{1,2}(/|$)).*[^/]$"
+    },
+    "file": {
+      "type": "object",
+      "required": ["path", "size", "mtime", "etag", "checksum"],
+      "additionalProperties": true,
+      "properties": {
+        "path": {"$ref": "#/$defs/relativePath"},
+        "size": {
+          "description": "Size in bytes.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "mtime": {
+          "description": "Last modification time on the server, in seconds since the epoch (UTC).",
+          "type": "integer",
+          "minimum": 0
+        },
+        "etag": {
+          "description": "Same value as the HTTP ETag header of the file, quotes included, usable with 'If-Match'.",
+          "type": "string",
+          "minLength": 1
+        },
+        "checksum": {
+          "description": "Checksum of the content in lowercase hexadecimal, or null if the file is bigger than 'checksum_max_size'.",
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "version": "1.0",
+      "root": "urbanism/",
+      "generated_at": 1795772400,
+      "checksum_algorithm": "sha256",
+      "checksum_max_size": 104857600,
+      "dirs": ["data", "media", "media/js", "media/js/plu"],
+      "files": [
+        {
+          "path": "plu.qgs",
+          "size": 182334,
+          "mtime": 1795686131,
+          "etag": "\"6c1f0a9e3b\"",
+          "checksum": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "path": "data/orthophoto.tif",
+          "size": 2147483648,
+          "mtime": 1795686000,
+          "etag": "\"a81b2c3d4e\"",
+          "checksum": null
+        }
+      ]
+    }
+  ]
+}
