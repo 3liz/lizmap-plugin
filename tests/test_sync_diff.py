@@ -9,9 +9,10 @@ from lizmap.sync.diff import (
     compare,
     resolve_action,
 )
-from lizmap.sync.filters import ExcludeRules
+from lizmap.sync.filters import ExcludeRules, match_glob
 from lizmap.sync.model import (
     BaseEntry,
+    Direction,
     FileDiff,
     FileStatus,
     LocalEntry,
@@ -362,3 +363,106 @@ def test_default_preferences_never_delete():
     for status, preference in DEFAULT_PREFERENCES.items():
         if status in (FileStatus.DeletedLocal, FileStatus.DeletedRemote, FileStatus.Conflict):
             assert preference == Preference.Nothing
+
+
+@pytest.mark.parametrize(
+    ("direction", "local_entry", "remote_entry", "expected"),
+    [
+        (Direction.PullOnly, local(), remote(), (SyncAction.Nothing, SyncAction.Download)),
+        (Direction.PullOnly, local(), None, (SyncAction.Nothing, SyncAction.DeleteLocal)),
+        (Direction.PullOnly, None, remote(), (SyncAction.Nothing, SyncAction.Download)),
+        (Direction.PushOnly, local(), remote(), (SyncAction.Nothing, SyncAction.Upload)),
+        (Direction.PushOnly, local(), None, (SyncAction.Nothing, SyncAction.Upload)),
+        (Direction.PushOnly, None, remote(), (SyncAction.Nothing, SyncAction.DeleteRemote)),
+    ],
+)
+def test_allowed_actions_direction(direction, local_entry, remote_entry, expected):
+    """Test the actions allowed by a direction."""
+    assert allowed_actions(FileStatus.Different, local_entry, remote_entry, direction) == expected
+
+
+def test_compare_direction():
+    """Test the default actions with a direction: a new local file is not sent in pull only mode."""
+    local_files = entries(LocalEntry("a.png", 1, 1, SHA_A))
+    remote_files = entries(RemoteEntry("b.png", 1, 1, '"r"', SHA_B))
+
+    comparison = compare(local_files, remote_files, {}, direction=Direction.PullOnly)
+
+    result = {diff.path: (diff.action, diff.allowed_actions) for diff in comparison.diffs}
+    assert result == {
+        "a.png": (SyncAction.Nothing, (SyncAction.Nothing, SyncAction.DeleteLocal)),
+        "b.png": (SyncAction.Download, (SyncAction.Nothing, SyncAction.Download)),
+    }
+
+
+def test_compare_protected():
+    """Test the files produced by the server, never deleted nor overwritten on the server by default."""
+    local_files = entries(
+        LocalEntry("media/upload/a.jpg", 1, 1, SHA_A),
+        LocalEntry("media/upload/sub/new.jpg", 1, 1, SHA_A),
+    )
+    remote_files = entries(
+        RemoteEntry("media/upload/a.jpg", 2, 1, '"r"', SHA_B),
+        RemoteEntry("media/upload/b.jpg", 2, 1, '"r"', SHA_B),
+    )
+    base_entries = {
+        "media/upload/a.jpg": BaseEntry(2, 1, SHA_B, 2, 1, '"r"', SHA_B, 0),
+        "media/upload/b.jpg": BaseEntry(2, 1, SHA_B, 2, 1, '"r"', SHA_B, 0),
+    }
+    comparison = compare(local_files, remote_files, base_entries, protected_patterns=("media/upload/**",))
+    result = {diff.path: (diff.status, diff.protected, diff.action) for diff in comparison.diffs}
+    assert result == {
+        # Modified locally: the upload would overwrite the file of the server
+        "media/upload/a.jpg": (FileStatus.LocalModified, True, SyncAction.Nothing),
+        # Deleted locally: never deleted on the server by the bulk choices
+        "media/upload/b.jpg": (FileStatus.DeletedLocal, True, SyncAction.Nothing),
+        # A new file is sent, nothing is overwritten
+        "media/upload/sub/new.jpg": (FileStatus.NewLocal, True, SyncAction.Upload),
+    }
+
+    comparison.apply_preference(Preference.Local)
+    assert [diff.action for diff in comparison.diffs] == [
+        SyncAction.Nothing,
+        SyncAction.Nothing,
+        SyncAction.Upload,
+    ]
+
+    # An explicit choice, file by file, is still possible
+    comparison.diffs[1].choose(SyncAction.DeleteRemote)
+    assert comparison.diffs[1].action == SyncAction.DeleteRemote
+
+
+def test_compare_download_threshold():
+    """Test that big files missing locally are not downloaded by default."""
+    remote_files = entries(
+        RemoteEntry("small.jpg", 10, 1, '"r"', SHA_A),
+        RemoteEntry("big.tif", 1000, 1, '"r"', None),
+    )
+    comparison = compare({}, remote_files, {}, download_threshold=100)
+    assert {diff.path: diff.action for diff in comparison.diffs} == {
+        "big.tif": SyncAction.Nothing,
+        "small.jpg": SyncAction.Download,
+    }
+
+    # Still possible with the bulk choices
+    comparison.apply_preference(Preference.Remote)
+    assert comparison.diffs[0].action == SyncAction.Download
+
+
+@pytest.mark.parametrize(
+    ("path", "pattern", "expected"),
+    [
+        ("media/upload/a.jpg", "media/upload/**", True),
+        ("media/upload/x/y/a.jpg", "media/upload/**", True),
+        ("MEDIA/Upload/a.jpg", "media/upload/**", True),
+        ("other/media/upload/a.jpg", "media/upload/**", False),
+        ("media/uploads/a.jpg", "media/upload/**", False),
+        ("a/b/c.jpg", "**/*.jpg", True),
+        ("c.jpg", "**/*.jpg", True),
+        ("a/c.jpg", "*.jpg", False),
+        ("media/js/a.js", "media/*/a.js", True),
+    ],
+)
+def test_match_glob(path, pattern, expected):
+    """Test the glob patterns with "**"."""
+    assert match_glob(path, pattern) == expected

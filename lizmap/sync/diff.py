@@ -18,8 +18,9 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from lizmap.sync.filters import ExclusionReason
+from lizmap.sync.filters import ExclusionReason, match_glob
 from lizmap.sync.model import (
+    Direction,
     FileDiff,
     FileStatus,
     Preference,
@@ -187,23 +188,37 @@ def classify(local: LocalEntry | None, remote: RemoteEntry | None, base: BaseEnt
     raise ValueError("The file must exist at least on one side.")
 
 
+# Actions forbidden by a direction
+_FORBIDDEN_ACTIONS = {
+    Direction.TwoWay: (),
+    Direction.PullOnly: (SyncAction.Upload, SyncAction.DeleteRemote),
+    Direction.PushOnly: (SyncAction.Download, SyncAction.DeleteLocal),
+}
+
+
 def allowed_actions(
-    status: FileStatus, local: LocalEntry | None, remote: RemoteEntry | None
+    status: FileStatus,
+    local: LocalEntry | None,
+    remote: RemoteEntry | None,
+    direction: Direction = Direction.TwoWay,
 ) -> tuple[SyncAction, ...]:
     """List the actions which can be chosen for a file.
 
     :param status: Status of the file.
     :param local: The local entry, if the file exists locally.
     :param remote: The remote entry, if the file exists on the server.
+    :param direction: Allowed direction of the transfers.
     :return: The allowed actions, "Nothing" first.
     """
     if status in _FROZEN_STATUSES:
         return (SyncAction.Nothing,)
     if local and remote:
-        return SyncAction.Nothing, SyncAction.Upload, SyncAction.Download
-    if local:
-        return SyncAction.Nothing, SyncAction.Upload, SyncAction.DeleteLocal
-    return SyncAction.Nothing, SyncAction.Download, SyncAction.DeleteRemote
+        actions: tuple[SyncAction, ...] = (SyncAction.Nothing, SyncAction.Upload, SyncAction.Download)
+    elif local:
+        actions = (SyncAction.Nothing, SyncAction.Upload, SyncAction.DeleteLocal)
+    else:
+        actions = (SyncAction.Nothing, SyncAction.Download, SyncAction.DeleteRemote)
+    return tuple(action for action in actions if action not in _FORBIDDEN_ACTIONS[direction])
 
 
 def resolve_action(diff: FileDiff, preference: Preference) -> SyncAction:
@@ -230,6 +245,12 @@ def resolve_action(diff: FileDiff, preference: Preference) -> SyncAction:
             action = SyncAction.Download
 
     if action not in diff.allowed_actions:
+        return SyncAction.Nothing
+
+    # A file produced by the server is deleted or overwritten only by an explicit choice
+    if diff.protected and (
+        action == SyncAction.DeleteRemote or (action == SyncAction.Upload and diff.remote)
+    ):
         return SyncAction.Nothing
     return action
 
@@ -268,6 +289,9 @@ def compare(
     base: Mapping[str, BaseEntry],
     rules: ExcludeRules | None = None,
     preferences: Mapping[FileStatus, Preference] | None = None,
+    direction: Direction = Direction.TwoWay,
+    protected_patterns: tuple[str, ...] = (),
+    download_threshold: int | None = None,
 ) -> Comparison:
     """Compare the local files with the files on the server.
 
@@ -276,6 +300,10 @@ def compare(
     :param base: Entries of the last synchronisation, by normalised relative path.
     :param rules: Exclusion rules, nothing is excluded if None.
     :param preferences: Default preference by status, ``DEFAULT_PREFERENCES`` is used for missing ones.
+    :param direction: Allowed direction of the transfers.
+    :param protected_patterns: Glob patterns of the files produced by the server, see ``FileDiff.protected``.
+    :param download_threshold: Files missing locally and bigger than this size, in bytes, are not
+        downloaded by default. None for no limit.
     :return: The comparison, with the default action chosen for each file.
     """
     preferences = {**DEFAULT_PREFERENCES, **(preferences or {})}
@@ -306,11 +334,20 @@ def compare(
             local=local_entry,
             remote=remote_entry,
             base=base_entry,
-            allowed_actions=allowed_actions(status, local_entry, remote_entry),
+            allowed_actions=allowed_actions(status, local_entry, remote_entry, direction),
             exclusion=exclusion,
+            protected=any(match_glob(path, pattern) for pattern in protected_patterns),
         )
+
         # The default action depends on the allowed actions, so it's set once the diff is built
-        diff.default_action = resolve_action(diff, preferences.get(status, Preference.Nothing))
+        preference = preferences.get(status, Preference.Nothing)
+        too_big = (
+            status == FileStatus.NewRemote
+            and download_threshold is not None
+            and remote_entry is not None
+            and remote_entry.size > download_threshold
+        )
+        diff.default_action = SyncAction.Nothing if too_big else resolve_action(diff, preference)
         diff.reset()
         comparison.diffs.append(diff)
 

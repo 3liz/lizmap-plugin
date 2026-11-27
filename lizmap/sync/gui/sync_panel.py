@@ -1,4 +1,7 @@
-"""Panel of the synchronisation between the local directory of the project and a Lizmap repository.
+"""Panel of the synchronisation between the local directories of the project and the server.
+
+Several pairs of directories are synchronised together, each one is a root of the tree:
+the Lizmap repository of the project, and the shared "media" directory.
 
 The panel doesn't know the Lizmap dialog nor the QGIS project: everything needed is given by
 a "context provider", called when the user clicks on "Compare".
@@ -6,7 +9,7 @@ a "context provider", called when the user clicks on "Compare".
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING
 
 from qgis.core import QgsApplication
@@ -31,27 +34,22 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
-from lizmap.sync.backends.base import BackendError
 from lizmap.sync.gui.action_delegate import ActionDelegate
 from lizmap.sync.gui.filter_proxy import FilterMode, SyncFilterProxy
-from lizmap.sync.gui.presentation import GREEN, RED, action_label, file_size
-from lizmap.sync.gui.tree_model import DIFF_ROLE, Column, SyncTreeModel
-from lizmap.sync.model import Preference, SyncAction
+from lizmap.sync.gui.presentation import GREEN, RED, action_label, direction_label, file_size
+from lizmap.sync.gui.tree_model import DIFF_ROLE, SECTION_ROLE, Column, SyncTreeModel, TreeSection
+from lizmap.sync.model import Direction, Preference, SyncAction
+from lizmap.sync.pair import PairKind
 from lizmap.sync.plan import OperationKind
-from lizmap.sync.tasks import CompareTask, SyncTask
+from lizmap.sync.tasks import CompareTask, SyncTask, recompare
 from lizmap.toolbelt.i18n import tr
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
-    from pathlib import Path
 
-    from lizmap.sync.backends.base import RemoteBackend
-    from lizmap.sync.filters import ExcludeRules
     from lizmap.sync.model import FileStatus
-    from lizmap.sync.state import SyncState
+    from lizmap.sync.pair import SyncPair
     from lizmap.sync.tasks import CompareResult
-
-HTTP_NOT_FOUND = 404
 
 
 class SyncUnavailable(Exception):
@@ -62,26 +60,25 @@ class SyncUnavailable(Exception):
 class SyncContext:
     """Everything needed to compare and synchronise, given by the plugin.
 
-    :param backend: The directory on the server.
-    :param root: The local directory.
-    :param state: State of the last synchronisation.
-    :param state_file: Where to save the state.
-    :param rules: The exclusion rules.
-    :param remote_label: URL of the directory on the server, displayed to the user.
+    :param pairs: The pairs of directories, the repository first.
     :param preferences: Default preference by status, the default ones if None.
-    :param protected_paths: Files used by the layers of the open project, relative to the local directory.
-    :param project_path: The open project, relative to the local directory.
+    :param protected_paths: Files used by the layers of the open project, relative to the directory
+        of the repository.
+    :param project_path: The open project, relative to the directory of the repository.
     """
 
-    backend: RemoteBackend
-    root: Path
-    state: SyncState
-    state_file: Path
-    rules: ExcludeRules
-    remote_label: str = ""
+    pairs: list[SyncPair]
     preferences: Mapping[FileStatus, Preference] | None = None
     protected_paths: frozenset[str] = field(default_factory=frozenset)
     project_path: str | None = None
+
+    def pair(self, kind: PairKind) -> SyncPair | None:
+        """Pair of a given kind.
+
+        :param kind: The kind.
+        :return: The pair, None if not synchronised.
+        """
+        return next((pair for pair in self.pairs if pair.kind == kind), None)
 
 
 class SyncPanel(QWidget):
@@ -96,6 +93,8 @@ class SyncPanel(QWidget):
 
     # Emitted after a synchronisation, with True if the open project has been downloaded
     synchronised = pyqtSignal(bool)
+    # Emitted when the user changes the direction of a pair, with the PairKind and the Direction
+    directionChanged = pyqtSignal(object, object)
 
     def __init__(
         self,
@@ -108,7 +107,7 @@ class SyncPanel(QWidget):
         self._provider = context_provider
         self._source_combo = repository_combo
         self._context: SyncContext | None = None
-        self._result: CompareResult | None = None
+        self._results: list[CompareResult] = []
         self._task: CompareTask | SyncTask | None = None
         # Result of the last synchronisation, displayed with the next comparison
         self._sync_message = ""
@@ -149,10 +148,16 @@ class SyncPanel(QWidget):
         self.directories.setOpenExternalLinks(True)
         layout.addWidget(self.directories)
 
+        # Direction of each pair, filled by the comparison
+        self.directions = QWidget()
+        self.directions_layout = QHBoxLayout(self.directions)
+        self.directions_layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.directions)
+
         # Comparison and filters
         row = QHBoxLayout()
         self.compare_button = QPushButton(QgsApplication.getThemeIcon("/mActionRefresh.svg"), tr("Compare"))
-        self.compare_button.setToolTip(tr("Compare the local directory of the project with the server"))
+        self.compare_button.setToolTip(tr("Compare the local directories of the project with the server"))
         self.compare_button.clicked.connect(self.compare)
         row.addWidget(self.compare_button)
         self.filter_mode = QComboBox()
@@ -280,20 +285,65 @@ class SyncPanel(QWidget):
         self.repository.currentIndexChanged.connect(to_dialog)
 
     def _set_directories(self, context: SyncContext | None):
-        """Display the local and remote directories.
+        """Display the local and remote directories, and the direction of each pair.
 
         :param context: The context, None if not known yet.
         """
+        # Remove the previous directions
+        while self.directions_layout.count():
+            item = self.directions_layout.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+
         if context is None:
             self.directories.setText(tr("Click on <b>Compare</b> to list the differences with the server."))
+            self.directions.setVisible(False)
             return
 
-        local = QUrl.fromLocalFile(str(context.root)).toString()
-        self.directories.setText(
-            "<b>{}</b> <a href='{}'>{}</a><br><b>{}</b> {}".format(
-                tr("Local"), local, context.root, tr("Server"), context.remote_label
+        lines = []
+        for pair in context.pairs:
+            local = QUrl.fromLocalFile(str(pair.root)).toString()
+            lines.append(f"<b>{pair.label}</b> : <a href='{local}'>{pair.root}</a> ⇄ {pair.remote_label}")
+
+            # Direction, a change compares again without any request
+            self.directions_layout.addWidget(QLabel(pair.label))
+            combo = QComboBox()
+            for direction in Direction:
+                combo.addItem(direction_label(direction), direction.value)
+            combo.setCurrentIndex(combo.findData(pair.settings.direction.value))
+            combo.currentIndexChanged.connect(
+                lambda _index, c=combo, k=pair.kind: self._direction_changed(k, Direction(c.currentData()))
             )
-        )
+            self.directions_layout.addWidget(combo)
+        self.directions_layout.addStretch()
+        self.directions.setVisible(True)
+        self.directories.setText("<br>".join(lines))
+
+    def _direction_changed(self, kind: PairKind, direction: Direction):
+        """Apply the new direction of a pair to its comparison.
+
+        :param kind: The kind of pair.
+        :param direction: The new direction.
+        """
+        self.directionChanged.emit(kind, direction)
+        for index, result in enumerate(self._results):
+            if result.pair.kind == kind:
+                settings = replace(result.pair.settings, direction=direction)
+                preferences = self._context.preferences if self._context else None
+                self._results[index] = recompare(result, settings, preferences)
+        if self._results:
+            self._display_results()
+
+    def _pair_of(self, index: QModelIndex) -> SyncPair | None:
+        """Pair of a row of the tree.
+
+        :param index: Index in the proxy.
+        :return: The pair, None if unknown.
+        """
+        while index.parent().isValid():
+            index = index.parent()
+        kind = index.data(SECTION_ROLE)
+        return self._context.pair(kind) if self._context and kind else None
 
     # State of the widgets
 
@@ -308,13 +358,14 @@ class SyncPanel(QWidget):
     def _update_buttons(self):
         """Enable or disable the widgets according to the current state."""
         busy = self.busy
-        has_actions = bool(self.model.comparison and self.model.comparison.to_run())
+        has_actions = any(section.comparison.to_run() for section in self.model.sections)
         self.compare_button.setEnabled(not busy)
         self.repository.setEnabled(not busy)
         self.new_repository_button.setEnabled(not busy)
         self.sync_button.setEnabled(not busy and has_actions)
         for button in self.bulk_buttons:
-            button.setEnabled(not busy and self.model.comparison is not None)
+            button.setEnabled(not busy and bool(self.model.sections))
+        self.directions.setEnabled(not busy)
         self.tree.setEnabled(not busy)
         self.progress.setVisible(busy)
         self.cancel_button.setVisible(busy)
@@ -334,16 +385,23 @@ class SyncPanel(QWidget):
         """
         self.log.appendPlainText(text)
 
-    def _update_summary(self):
+    def _update_summary(self) -> None:
         """Display the number of files and bytes to transfer, by action."""
-        comparison = self.model.comparison
-        if comparison is None:
+        if not self.model.sections:
             self.summary.setText("")
             self._update_buttons()
             return
 
+        # Sum of the summaries of all pairs
+        totals: dict[SyncAction, list[int]] = {}
+        for section in self.model.sections:
+            for action, (count, size) in section.comparison.summary().items():
+                total = totals.setdefault(action, [0, 0])
+                total[0] += count
+                total[1] += size
+
         parts = []
-        for action, (count, size) in comparison.summary().items():
+        for action, (count, size) in totals.items():
             text = f"{action_label(action)} : {count}"
             if action in (SyncAction.Upload, SyncAction.Download):
                 text += f" ({file_size(size)})"
@@ -361,9 +419,9 @@ class SyncPanel(QWidget):
         """Forget the comparison, for instance when the repository changed."""
         if self.busy:
             return
-        self._result = None
+        self._results = []
         self._context = None
-        self.model.set_comparison(None)
+        self.model.set_sections([])
         self._set_directories(None)
         self._show_message("")
 
@@ -415,9 +473,10 @@ class SyncPanel(QWidget):
 
         # Open the local directory of the clicked file
         diff = indexes[0].data(DIFF_ROLE)
-        if self._context and diff and diff.local:
+        pair = self._pair_of(indexes[0])
+        if pair and diff and diff.local:
             menu.addSeparator()
-            folder = self._context.root.joinpath(diff.path).parent
+            folder = pair.root.joinpath(diff.path).parent
             action = menu.addAction(tr("Open the local directory"))
             action.triggered.connect(lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(folder))))
 
@@ -438,7 +497,7 @@ class SyncPanel(QWidget):
     # Comparison
 
     def compare(self):
-        """Compare the local directory with the server, in the background."""
+        """Compare the local directories with the server, in the background."""
         if self.busy:
             return
 
@@ -456,91 +515,97 @@ class SyncPanel(QWidget):
         :param context: The context of the synchronisation.
         """
         self._context = context
+        self._results = []
         self._set_directories(context)
-        self.model.set_comparison(None)
+        self.model.set_sections([])
         self._show_message(tr("Comparison in progress…"))
         self.progress.setRange(0, 0)
 
-        task = CompareTask(context.backend, context.root, context.rules, context.state, context.preferences)
-        task.taskCompleted.connect(self._compare_completed)
-        task.taskTerminated.connect(self._compare_terminated)
+        task = CompareTask(context.pairs, context.preferences)
+        task.taskCompleted.connect(self._compare_finished)
+        task.taskTerminated.connect(self._compare_finished)
         self._task = task
         self._update_buttons()
         QgsApplication.taskManager().addTask(task)
 
-    def _compare_completed(self):
-        """Display the comparison."""
-        task = self._task
-        self._task = None
-        if not isinstance(task, CompareTask) or task.result is None:
-            return
-
-        self._result = task.result
-        self.model.set_comparison(task.result.comparison)
+    def _display_results(self):
+        """Display the comparisons, one root by pair."""
+        sections = []
+        for result in self._results:
+            notes = []
+            if not result.remote_exists:
+                notes.append(tr("missing on the server, created by the first upload"))
+            if not result.pair.root.is_dir():
+                notes.append(tr("missing locally, created by the first download"))
+            tooltip = f"{result.pair.root}\n{result.pair.remote_label}"
+            sections.append(
+                TreeSection(result.pair.kind, result.pair.label, result.comparison, ", ".join(notes), tooltip)
+            )
+        self.model.set_sections(sections)
         self.tree.expandAll()
-        for path, error in task.result.local.errors.items():
-            self._append_log(f"{path} : {error}")
 
-        # The result of a synchronisation stays visible, above the new comparison
-        message = tr("{} files compared.").format(len(task.result.comparison.diffs))
-        if self._sync_message:
-            message = self._sync_message + "<br>" + message
-            self._sync_message = ""
-        self._show_message(message)
-        self._update_summary()
-
-    def _compare_terminated(self):
-        """Display the error of the comparison, or create the directory on the server if missing."""
+    def _compare_finished(self):
+        """Display the comparison, or the errors."""
         task = self._task
         self._task = None
         self._update_buttons()
         if not isinstance(task, CompareTask):
             return
 
-        if task.error is None:
-            self._show_message(tr("Comparison canceled."))
-            return
+        self._results = task.results
+        self._display_results()
+        for result in task.results:
+            for path, error in result.local.errors.items():
+                self._append_log(f"{result.pair.label} : {path} : {error}")
 
-        if task.error_status == HTTP_NOT_FOUND and self._context:
-            question = tr(
-                "The directory of the repository doesn't exist yet on the server. Do you want to create it?"
-            )
-            if self.confirm(tr("Missing directory"), question):
-                try:
-                    self._context.backend.make_directory("")
-                except BackendError as e:
-                    self._show_message(str(e), RED)
-                    return
-                self.compare()
-                return
-
-        self._show_message(task.error, RED)
+        # Errors of some pairs, the other ones are displayed
+        lines = []
+        if self._sync_message:
+            lines.append(self._sync_message)
+            self._sync_message = ""
+        labels = {pair.kind: pair.label for pair in self._context.pairs} if self._context else {}
+        for kind, error in task.errors.items():
+            lines.append(f"<span style='color:{RED}'>{labels.get(kind, kind)} : {error}</span>")
+        if task.results:
+            count = sum(len(result.comparison.diffs) for result in task.results)
+            lines.append(tr("{} files compared.").format(count))
+        elif not task.errors:
+            lines.append(tr("Comparison canceled."))
+        self._show_message("<br>".join(lines))
+        self._update_summary()
 
     # Synchronisation
+
+    def _repository_result(self) -> CompareResult | None:
+        """Comparison of the repository of the project.
+
+        :return: The comparison, None if not available.
+        """
+        return next((r for r in self._results if r.pair.kind == PairKind.Repository), None)
 
     def _protected_operations(self) -> list[str]:
         """List the files used by the open project which will be replaced or deleted locally.
 
-        :return: The relative paths.
+        :return: The relative paths, in the directory of the repository.
         """
-        if self._result is None or self._context is None:
+        result = self._repository_result()
+        if result is None or self._context is None:
             return []
         protected = set(self._context.protected_paths)
         if self._context.project_path:
             protected.add(self._context.project_path)
         return sorted(
             diff.path
-            for diff in self._result.comparison.to_run()
+            for diff in result.comparison.to_run()
             if diff.path in protected and diff.action in (SyncAction.Download, SyncAction.DeleteLocal)
         )
 
     def synchronise(self):
-        """Ask for a confirmation, then run the synchronisation in the background."""
-        if self.busy or self._result is None or self._context is None:
+        """Ask for a confirmation, then run the synchronisation of all pairs in the background."""
+        if self.busy or not self._results:
             return
 
-        comparison = self._result.comparison
-        operations = comparison.to_run()
+        operations = [diff for result in self._results for diff in result.comparison.to_run()]
         if not operations:
             return
 
@@ -551,6 +616,14 @@ class SyncPanel(QWidget):
         ]
         if deletions:
             text += "<br><br><b>" + tr("{} files will be deleted.").format(len(deletions)) + "</b>"
+        protected_files = [d.path for d in operations if d.protected and d.action != SyncAction.Download]
+        if protected_files:
+            text += (
+                "<br><br><b>"
+                + tr("These files have been produced by the server, such as files sent with a web form:")
+                + "</b><br>"
+                + "<br>".join(protected_files[:10])
+            )
         protected = self._protected_operations()
         if protected:
             text += (
@@ -567,8 +640,7 @@ class SyncPanel(QWidget):
         self.progress.setRange(0, 100)
         self.progress.setValue(0)
         self._show_message(tr("Synchronisation in progress…"))
-        context = self._context
-        task = SyncTask(context.backend, context.root, self._result, context.state, context.state_file)
+        task = SyncTask(self._results)
         # A method of the panel, not a lambda: the signal comes from the worker thread,
         # the progress bar must be updated in the thread of the interface
         task.progressChanged.connect(self._task_progress)
@@ -589,37 +661,37 @@ class SyncPanel(QWidget):
         for message in task.messages:
             self._append_log(message)
 
-        result = task.result
-        if result is None:
-            self._show_message(task.error or tr("Synchronisation canceled."), RED)
-            return
-
-        # Summary of the result
+        # Summary of the result of all pairs
+        labels = {pair.kind: pair.label for pair in self._context.pairs} if self._context else {}
+        results = task.results
         lines = []
-        if result.success:
+        canceled = any(result.canceled for result in results.values())
+        if results and not task.errors and all(result.success for result in results.values()):
             lines.append(f"<span style='color:{GREEN}'>{tr('Synchronisation done.')}</span>")
-        elif result.canceled:
+        elif canceled or not results:
             lines.append(f"<span style='color:{RED}'>{tr('Synchronisation canceled.')}</span>")
-        for path, reason in {**result.conflicts, **result.errors}.items():
-            lines.append(f"<span style='color:{RED}'>{path} : {reason}</span>")
-        if result.trash:
-            url = QUrl.fromLocalFile(str(result.trash)).toString()
-            lines.append(
-                tr("Previous versions of local files are kept in the <a href='{}'>trash</a>.").format(url)
-            )
+        for kind, error in task.errors.items():
+            lines.append(f"<span style='color:{RED}'>{labels.get(kind, kind)} : {error}</span>")
+        for kind, result in results.items():
+            for path, reason in {**result.conflicts, **result.errors}.items():
+                lines.append(f"<span style='color:{RED}'>{labels.get(kind, kind)} : {path} : {reason}</span>")
+            if result.trash:
+                url = QUrl.fromLocalFile(str(result.trash)).toString()
+                lines.append(
+                    tr("Previous versions of local files are kept in the <a href='{}'>trash</a>.").format(url)
+                )
 
+        repository = results.get(PairKind.Repository)
+        project_path = self._context.project_path if self._context else None
         project_downloaded = bool(
-            self._context
-            and self._context.project_path
-            and any(
-                op.kind == OperationKind.Download and op.path == self._context.project_path
-                for op in result.done
-            )
+            repository
+            and project_path
+            and any(op.kind == OperationKind.Download and op.path == project_path for op in repository.done)
         )
         if project_downloaded:
             lines.append(f"<b>{tr('The project has been downloaded from the server, reload it.')}</b>")
 
-        # Refresh the comparison with the same context, the state has been updated
+        # Refresh the comparison with the same context, the states have been updated
         self._sync_message = "<br>".join(lines)
         self.synchronised.emit(project_downloaded)
         if self._context:

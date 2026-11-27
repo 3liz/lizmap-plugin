@@ -85,12 +85,15 @@ class SyncFilterProxy(QSortFilterProxyModel):
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
         """Accept a row of the source model.
 
-        Directories are refused here, the recursive filtering displays them if a file is accepted.
+        The roots of the sections are always displayed. Directories are refused here,
+        the recursive filtering displays them if a file is accepted.
 
         :param source_row: Row in the source model.
         :param source_parent: Parent index in the source model.
         :return: True if the row is displayed.
         """
+        if not source_parent.isValid():
+            return True
         index = self.sourceModel().index(source_row, 0, source_parent)
         diff = index.data(DIFF_ROLE)
         return diff is not None and self.accepts(diff)

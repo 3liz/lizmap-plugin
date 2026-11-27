@@ -115,6 +115,14 @@ class WebDavServer:
         relative = f"{self.projects_path.strip('/')}/{repository_path.strip('/')}".strip("/")
         return self.url + encode_path(relative) + "/"
 
+    def shared_media_url(self) -> str:
+        """URL of the "media" directory shared by all repositories, at the root of the repositories.
+
+        :return: The URL, with a trailing slash.
+        """
+        relative = f"{self.projects_path.strip('/')}/media".strip("/")
+        return self.url + encode_path(relative) + "/"
+
 
 @dataclass
 class _Response:

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from enum import IntEnum
 from typing import TYPE_CHECKING, Any
 
 from qgis.PyQt.QtCore import QAbstractItemModel, QModelIndex, QObject, Qt, pyqtSignal
+from qgis.PyQt.QtGui import QFont
 
 from lizmap.sync.diff import resolve_action
 from lizmap.sync.gui.presentation import (
@@ -31,6 +33,26 @@ if TYPE_CHECKING:
 
 # Role giving the FileDiff of a file, None for a directory
 DIFF_ROLE = Qt.ItemDataRole.UserRole + 1
+# Role giving the key of a section, on its root row only
+SECTION_ROLE = Qt.ItemDataRole.UserRole + 2
+
+
+@dataclass
+class TreeSection:
+    """A root of the tree, such as a pair of directories.
+
+    :param key: Identifier of the section, such as the kind of pair.
+    :param label: Name displayed on the root row.
+    :param comparison: The comparison of the section.
+    :param note: Short information displayed in the status column of the root row.
+    :param tooltip: Details displayed in the tooltip of the root row.
+    """
+
+    key: Any
+    label: str
+    comparison: Comparison
+    note: str = ""
+    tooltip: str = ""
 
 
 class Column(IntEnum):
@@ -57,6 +79,8 @@ class _Node:
         self.diff = diff
         self.children: list[_Node] = []
         self.row = 0
+        # Set on the root row of a section only
+        self.section: TreeSection | None = None
 
     def files(self) -> Iterator[FileDiff]:
         """Iterate over the files of the subtree.
@@ -89,31 +113,36 @@ class SyncTreeModel(QAbstractItemModel):
     def __init__(self, parent: QObject | None = None):
         super().__init__(parent)
         self._root = _Node("", None)
-        self._comparison: Comparison | None = None
+        self._sections: list[TreeSection] = []
 
     @property
-    def comparison(self) -> Comparison | None:
-        """The displayed comparison.
+    def sections(self) -> list[TreeSection]:
+        """The displayed sections.
 
-        :return: The comparison, None if there isn't any.
+        :return: The sections, empty if there isn't any comparison.
         """
-        return self._comparison
+        return self._sections
 
-    def set_comparison(self, comparison: Comparison | None):
-        """Display a comparison.
+    def set_sections(self, sections: list[TreeSection]):
+        """Display the comparisons, one root row by section.
 
-        :param comparison: The comparison, None to clear the tree.
+        :param sections: The sections, empty to clear the tree.
         """
         self.beginResetModel()
-        self._comparison = comparison
+        self._sections = sections
         self._root = _Node("", None)
 
-        if comparison:
-            directories: dict[str, _Node] = {"": self._root}
-            for diff in comparison.diffs:
+        for row, section in enumerate(sections):
+            section_node = _Node(section.label, self._root)
+            section_node.section = section
+            section_node.row = row
+            self._root.children.append(section_node)
+
+            directories: dict[str, _Node] = {"": section_node}
+            for diff in section.comparison.diffs:
                 # Create the missing parent directories
                 segments = diff.path.split("/")
-                parent = self._root
+                parent = section_node
                 for depth in range(len(segments) - 1):
                     path = "/".join(segments[: depth + 1])
                     if path not in directories:
@@ -121,10 +150,22 @@ class SyncTreeModel(QAbstractItemModel):
                         parent.children.append(directories[path])
                     parent = directories[path]
                 parent.children.append(_Node(segments[-1], parent, diff))
-            self._root.sort()
+            # The sections keep their order, their content is sorted
+            section_node.sort()
 
         self.endResetModel()
         self.actionsChanged.emit()
+
+    def section_index(self, key: Any) -> QModelIndex:
+        """Index of the root row of a section.
+
+        :param key: Key of the section.
+        :return: The index, invalid if the section is not displayed.
+        """
+        for node in self._root.children:
+            if node.section and node.section.key == key:
+                return self.createIndex(node.row, 0, node)
+        return QModelIndex()
 
     def _node(self, index: QModelIndex) -> _Node:
         """Node of an index.
@@ -228,9 +269,47 @@ class SyncTreeModel(QAbstractItemModel):
         node = self._node(index)
         if role == DIFF_ROLE:
             return node.diff
+        if role == SECTION_ROLE:
+            return node.section.key if node.section else None
+        if node.section:
+            return self._section_data(node, node.section, index.column(), role)
         if node.diff is None:
             return self._directory_data(node, index.column(), role)
         return self._file_data(node, node.diff, index.column(), role)
+
+    @staticmethod
+    def _action_count(node: _Node) -> str:
+        """Number of actions in a subtree.
+
+        :param node: The directory or the section.
+        :return: The text, empty if there isn't any action.
+        """
+        count = sum(1 for diff in node.files() if diff.action != SyncAction.Nothing)
+        return tr("{} action(s)").format(count) if count else ""
+
+    def _section_data(self, node: _Node, section: TreeSection, column: int, role: int) -> Any:
+        """Content of a cell of the root row of a section.
+
+        :param node: The root row.
+        :param section: The section.
+        :param column: The column.
+        :param role: The role.
+        :return: The value.
+        """
+        if role == Qt.ItemDataRole.ToolTipRole:
+            return section.tooltip or None
+        if role == Qt.ItemDataRole.FontRole:
+            font = QFont()
+            font.setBold(True)
+            return font
+        if column == Column.Name:
+            if role == Qt.ItemDataRole.DisplayRole:
+                return section.label
+            if role == Qt.ItemDataRole.DecorationRole:
+                return folder_icon()
+        elif column == Column.Status and role == Qt.ItemDataRole.DisplayRole:
+            return " - ".join(text for text in (self._action_count(node), section.note) if text)
+        return None
 
     def _directory_data(self, node: _Node, column: int, role: int) -> Any:
         """Content of a cell of a directory.
@@ -246,8 +325,7 @@ class SyncTreeModel(QAbstractItemModel):
             if role == Qt.ItemDataRole.DecorationRole:
                 return folder_icon()
         elif column == Column.Status and role == Qt.ItemDataRole.DisplayRole:
-            count = sum(1 for diff in node.files() if diff.action != SyncAction.Nothing)
-            return tr("{} action(s)").format(count) if count else ""
+            return self._action_count(node)
         return None
 
     @staticmethod

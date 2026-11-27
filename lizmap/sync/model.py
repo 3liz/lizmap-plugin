@@ -45,6 +45,17 @@ class SyncAction(Enum):
     DeleteLocal = "delete_local"
 
 
+class Direction(Enum):
+    """Allowed direction of the transfers between a local directory and the server."""
+
+    # Uploads, downloads and deletions on both sides
+    TwoWay = "two_way"
+    # The server is the reference: only downloads and local deletions
+    PullOnly = "pull_only"
+    # The local directory is the reference: only uploads and deletions on the server
+    PushOnly = "push_only"
+
+
 class Preference(Enum):
     """Which side wins, used for the default actions and the bulk buttons."""
 
@@ -137,6 +148,8 @@ class FileDiff:
     :param allowed_actions: Actions which can be chosen for this file.
     :param default_action: Action given by the preferences.
     :param exclusion: Human readable reason of the exclusion, for the "Excluded" status.
+    :param protected: The file is produced by the server, such as a file sent with a web form:
+        the default and bulk choices never delete nor overwrite it on the server.
     """
 
     path: str
@@ -147,6 +160,7 @@ class FileDiff:
     allowed_actions: tuple[SyncAction, ...]
     default_action: SyncAction = SyncAction.Nothing
     exclusion: str | None = None
+    protected: bool = False
     # The action chosen by the user, initialised with the default action
     action: SyncAction = field(init=False)
 

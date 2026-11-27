@@ -28,9 +28,12 @@ from lizmap.sync.backends.webdav import (
 )
 from lizmap.sync.filters import ExcludeRules
 from lizmap.sync.model import FileStatus
+from lizmap.sync.pair import PairKind
 from lizmap.sync.state import SyncState
 from lizmap.sync.tasks import CompareTask, SyncTask
 from lizmap.toolbelt.strings import random_string
+
+from .test_sync_executor import make_pair
 
 DAV_URL = os.getenv("LIZMAP_SYNC_DAV_URL", "")
 USER = os.getenv("LIZMAP_SYNC_USER", "")
@@ -227,22 +230,40 @@ def test_tasks_in_worker_thread(backend: WebDavBackend, tmp_path: Path):
     root.joinpath("data", "zones.gpkg").write_bytes(b"x" * 100_000)
     state = SyncState(backend.root_url, "tests", str(root))
     state_file = tmp_path / "state.json"
+    pair = make_pair(backend, root, state, state_file=state_file)
 
     # First comparison, everything is missing on the server
-    compare_task = CompareTask(backend, root, ExcludeRules(), state)
-    assert run_task(compare_task), compare_task.error
-    statuses = {diff.path: diff.status for diff in compare_task.result.comparison.diffs}
+    compare_task = CompareTask([pair])
+    assert run_task(compare_task), compare_task.errors
+    statuses = {diff.path: diff.status for diff in compare_task.results[0].comparison.diffs}
     assert statuses == {"data/zones.gpkg": FileStatus.NewLocal, "project.qgs": FileStatus.NewLocal}
 
     # Synchronisation, the state is saved
-    sync_task = SyncTask(backend, root, compare_task.result, state, state_file)
-    assert run_task(sync_task), (sync_task.error, sync_task.result)
-    assert sync_task.result.success
+    sync_task = SyncTask(compare_task.results)
+    assert run_task(sync_task), (sync_task.errors, sync_task.results)
+    assert sync_task.results[PairKind.Repository].success
     assert state_file.exists()
     assert sorted(state.entries) == ["data/zones.gpkg", "project.qgs"]
 
     # Second comparison, with the saved state: everything is synchronised
-    state = SyncState.load(state_file, backend.root_url, "tests", str(root))
-    compare_task = CompareTask(backend, root, ExcludeRules(), state)
-    assert run_task(compare_task), compare_task.error
-    assert {diff.status for diff in compare_task.result.comparison.diffs} == {FileStatus.Identical}
+    pair.state = SyncState.load(state_file, backend.root_url, "tests", str(root))
+    compare_task = CompareTask([pair])
+    assert run_task(compare_task), compare_task.errors
+    assert {diff.status for diff in compare_task.results[0].comparison.diffs} == {FileStatus.Identical}
+
+
+def test_shared_media_created(backend: WebDavBackend, tmp_path: Path):
+    """Test a pair whose directory doesn't exist on the server, created by the first upload."""
+    root = tmp_path / "media"
+    root.joinpath("logo.png").parent.mkdir(parents=True)
+    root.joinpath("logo.png").write_bytes(b"png")
+    missing = WebDavBackend(backend.root_url + "media", credentials=backend.credentials)
+    pair = make_pair(missing, root, SyncState("s", "media", str(root)), kind=PairKind.SharedMedia)
+
+    compare_task = CompareTask([pair])
+    assert run_task(compare_task), compare_task.errors
+    assert not compare_task.results[0].remote_exists
+
+    sync_task = SyncTask(compare_task.results)
+    assert run_task(sync_task), (sync_task.errors, sync_task.results)
+    assert set(missing.fetch_manifest().files) == {"logo.png"}

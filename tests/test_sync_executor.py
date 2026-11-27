@@ -12,11 +12,12 @@ from lizmap.sync.backends.base import BackendError
 from lizmap.sync.executor import TRASH_DIRECTORY, SyncExecutor, SyncResult, purge_trash
 from lizmap.sync.filters import ExcludeRules
 from lizmap.sync.manifest import RemoteManifest
-from lizmap.sync.model import FileStatus, RemoteEntry, SyncAction
+from lizmap.sync.model import Direction, FileStatus, RemoteEntry, SyncAction
+from lizmap.sync.pair import PairKind, PairSettings, SyncPair
 from lizmap.sync.paths import parent_directories
 from lizmap.sync.plan import OperationKind, build_plan
 from lizmap.sync.state import SyncState
-from lizmap.sync.tasks import CompareResult, compare_directories
+from lizmap.sync.tasks import CompareResult, compare_pair, recompare
 
 
 class FakeBackend:
@@ -138,15 +139,53 @@ def write(path: Path, content: bytes):
     path.write_bytes(content)
 
 
-def compare_now(backend: FakeBackend, root: Path, state: SyncState) -> CompareResult:
+# Settings of the tests: two-way, without protected files nor download threshold
+TEST_SETTINGS = PairSettings(download_threshold=None)
+
+
+def make_pair(
+    backend: FakeBackend,
+    root: Path,
+    state: SyncState,
+    settings: PairSettings = TEST_SETTINGS,
+    kind: PairKind = PairKind.Repository,
+    state_file: Path | None = None,
+) -> SyncPair:
+    """Build a pair of directories for the tests.
+
+    :param backend: The backend.
+    :param root: The local directory.
+    :param state: The state.
+    :param settings: The settings of the pair.
+    :param kind: The kind of pair.
+    :param state_file: Where to save the state, next to the local directory if None.
+    :return: The pair.
+    """
+    return SyncPair(
+        kind=kind,
+        label=kind.value,
+        backend=backend,
+        root=root,
+        state=state,
+        state_file=state_file or root.parent / f"{root.name}-{kind.value}-state.json",
+        rules=ExcludeRules(),
+        settings=settings,
+        remote_label="memory",
+    )
+
+
+def compare_now(
+    backend: FakeBackend, root: Path, state: SyncState, settings: PairSettings = TEST_SETTINGS
+) -> CompareResult:
     """Compare with the default rules and preferences.
 
     :param backend: The backend.
     :param root: The local directory.
     :param state: The state.
+    :param settings: The settings of the pair.
     :return: The comparison.
     """
-    return compare_directories(backend, root, ExcludeRules(), state)
+    return compare_pair(make_pair(backend, root, state, settings))
 
 
 def sync_now(
@@ -445,3 +484,58 @@ def test_silent_failures_detected(tmp_path: Path):
     # The deleted file is still known, the next comparison is right
     assert "old.txt" in state.entries
     assert [op.path for op in sync.done] == []
+
+
+def test_build_plan_create_root(tmp_path: Path):
+    """Test the creation of the root directory, missing on the server, before the first upload."""
+    backend = FakeBackend()
+    write(tmp_path / "a.txt", b"a")
+    write(tmp_path / "d" / "b.txt", b"b")
+    state = SyncState("s", "r", str(tmp_path))
+    result = compare_now(backend, tmp_path, state)
+
+    plan = build_plan(result.comparison, result.manifest.dirs, create_root=True)
+    assert [(op.kind, op.path) for op in plan] == [
+        (OperationKind.MakeRemoteDirectory, ""),
+        (OperationKind.MakeRemoteDirectory, "d"),
+        (OperationKind.Upload, "a.txt"),
+        (OperationKind.Upload, "d/b.txt"),
+    ]
+
+    # The root directory is verified by the manifest itself
+    sync = SyncExecutor(backend, tmp_path, state).run(result.comparison, plan)
+    assert sync.success, sync.errors
+
+
+def test_recompare_direction(tmp_path: Path):
+    """Test a new comparison with another direction, without any request."""
+    backend = FakeBackend()
+    backend.put("remote.txt", b"r")
+    write(tmp_path / "local.txt", b"l")
+    state = SyncState("s", "r", str(tmp_path))
+    result = compare_now(backend, tmp_path, state)
+    calls = len(backend.calls)
+
+    pulled = recompare(result, PairSettings(Direction.PullOnly, (), None))
+
+    assert {diff.path: diff.action for diff in pulled.comparison.diffs} == {
+        "local.txt": SyncAction.Nothing,
+        "remote.txt": SyncAction.Download,
+    }
+    assert pulled.pair.settings.direction == Direction.PullOnly
+    assert len(backend.calls) == calls
+
+
+def test_missing_local_directory(tmp_path: Path):
+    """Test a pair whose local directory doesn't exist yet, such as the shared media."""
+    backend = FakeBackend()
+    backend.put("upload/photo.jpg", b"jpg")
+    root = tmp_path / "media"
+    state = SyncState("s", "media", str(root))
+
+    result = compare_now(backend, root, state, PairSettings(Direction.PullOnly, ("upload/**",), None))
+    assert statuses(result) == {"upload/photo.jpg": FileStatus.NewRemote}
+
+    sync = sync_now(backend, root, state, result)
+    assert sync.success
+    assert (root / "upload" / "photo.jpg").read_bytes() == b"jpg"

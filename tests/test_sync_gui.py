@@ -9,22 +9,24 @@ from pathlib import Path
 
 import pytest
 
-from qgis.core import QgsFeature, QgsProject, QgsVectorLayer
+from qgis.core import QgsFeature, QgsFeedback, QgsProject, QgsVectorLayer
 from qgis.PyQt.QtCore import QAbstractItemModel, QCoreApplication, QModelIndex, Qt
 from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.PyQt.QtWidgets import QComboBox, QStyleOptionViewItem, QWidget
 
 from lizmap.sync.backends.base import BackendError
-from lizmap.sync.filters import ExcludeRules
+from lizmap.sync.diff import Comparison
 from lizmap.sync.gui.action_delegate import ActionDelegate
 from lizmap.sync.gui.filter_proxy import FilterMode, SyncFilterProxy
 from lizmap.sync.gui.project_checks import checkpoint_sqlite, layers_with_pending_edits, project_files
 from lizmap.sync.gui.sync_panel import SyncContext, SyncPanel, SyncUnavailable
-from lizmap.sync.gui.tree_model import DIFF_ROLE, Column, SyncTreeModel
-from lizmap.sync.model import FileStatus, Preference, SyncAction
+from lizmap.sync.gui.tree_model import DIFF_ROLE, SECTION_ROLE, Column, SyncTreeModel, TreeSection
+from lizmap.sync.manifest import RemoteManifest
+from lizmap.sync.model import Direction, FileStatus, Preference, SyncAction
+from lizmap.sync.pair import PairKind, PairSettings
 from lizmap.sync.state import SyncState
 
-from .test_sync_executor import FakeBackend, compare_now, write
+from .test_sync_executor import FakeBackend, compare_now, make_pair, write
 
 
 def wait_for(condition: Callable[[], bool], timeout: float = 20):
@@ -75,34 +77,53 @@ def model_rows(model: QAbstractItemModel, parent: QModelIndex = QModelIndex(), d
     return rows
 
 
+def load(model: SyncTreeModel, *comparisons: Comparison):
+    """Display comparisons in the model, one section each.
+
+    :param model: The model.
+    :param comparisons: The comparisons.
+    """
+    model.set_sections([TreeSection(index, f"Section {index}", c) for index, c in enumerate(comparisons)])
+
+
 def test_tree_model(sample: Sample):
     """Test the structure, the data and the edition of the tree model."""
     backend, root, state = sample
     model = SyncTreeModel()
     QAbstractItemModelTester(model, QAbstractItemModelTester.FailureReportingMode.Fatal, model)
-    model.set_comparison(compare_now(backend, root, state).comparison)
+    comparison = compare_now(backend, root, state).comparison
+    model.set_sections([TreeSection("repository", "Repository", comparison, "a note", "a tooltip")])
 
-    # Directories first
+    # A root by section, then directories first
     assert model_rows(model) == [
-        "data",
-        "  zones.gpkg",
-        "media",
-        "  logo.png",
-        "project.qgs",
-        "project.qgs.cfg",
-        "project.qgs~",
+        "Repository",
+        "  data",
+        "    zones.gpkg",
+        "  media",
+        "    logo.png",
+        "  project.qgs",
+        "  project.qgs.cfg",
+        "  project.qgs~",
     ]
 
-    data = model.index(0, 0)
+    section = model.index(0, 0)
+    assert section.data(SECTION_ROLE) == "repository"
+    assert model.index(0, Column.Status).data() == "3 action(s) - a note"
+    assert section.data(Qt.ItemDataRole.ToolTipRole) == "a tooltip"
+    assert model.section_index("repository") == section
+    assert not model.section_index("other").isValid()
+
+    data = model.index(0, 0, section)
     zones = model.index(0, 0, data)
     assert model.index(0, Column.Status, data).data() == "Missing on the server"
     assert model.index(0, Column.Action, data).data(Qt.ItemDataRole.EditRole) == SyncAction.Upload
-    assert model.index(0, Column.Status).data() == "1 action(s)"
+    assert model.index(0, Column.Status, section).data() == "1 action(s)"
     assert zones.data(DIFF_ROLE).path == "data/zones.gpkg"
+    assert zones.data(SECTION_ROLE) is None
     assert model.index(0, Column.Remote, data).data() == "-"
 
     # Only files with several possible actions are editable
-    excluded = model.index(4, Column.Action)
+    excluded = model.index(4, Column.Action, section)
     assert excluded.data(DIFF_ROLE).status == FileStatus.Excluded
     assert not (model.flags(excluded) & Qt.ItemFlag.ItemIsEditable)
     action = model.index(0, Column.Action, data)
@@ -110,7 +131,7 @@ def test_tree_model(sample: Sample):
 
     # Edition of an action, the summary of the directory changes
     assert model.setData(action, SyncAction.Nothing)
-    assert model.index(0, Column.Status).data() == ""
+    assert model.index(0, Column.Status, section).data() == ""
     assert not model.setData(action, SyncAction.Download)
 
     # Bulk changes on a directory, then on all files
@@ -119,45 +140,77 @@ def test_tree_model(sample: Sample):
     model.reset_actions()
     assert action.data(Qt.ItemDataRole.EditRole) == SyncAction.Upload
 
-    model.set_comparison(None)
+    model.set_sections([])
     assert model.rowCount() == 0
+
+
+def test_tree_model_sections(sample: Sample, tmp_path: Path):
+    """Test several sections, the bulk changes apply to all of them."""
+    backend, root, state = sample
+    media = FakeBackend()
+    media.put("upload/photo.jpg", b"jpg")
+    media_root = tmp_path.parent / f"{tmp_path.name}-media"
+    model = SyncTreeModel()
+    QAbstractItemModelTester(model, QAbstractItemModelTester.FailureReportingMode.Fatal, model)
+    load(
+        model,
+        compare_now(backend, root, state).comparison,
+        compare_now(media, media_root, SyncState("s", "m", str(media_root))).comparison,
+    )
+
+    assert [model.index(row, 0).data() for row in range(model.rowCount())] == ["Section 0", "Section 1"]
+    assert model_rows(model, model.index(1, 0)) == ["upload", "  photo.jpg"]
+    model.apply_preference(Preference.Nothing)
+    assert all(
+        diff.action == SyncAction.Nothing for section in model.sections for diff in section.comparison.diffs
+    )
 
 
 def test_filter_proxy(sample: Sample):
     """Test the filter modes and the search."""
     backend, root, state = sample
     model = SyncTreeModel()
-    model.set_comparison(compare_now(backend, root, state).comparison)
+    load(model, compare_now(backend, root, state).comparison)
     proxy = SyncFilterProxy()
     proxy.setSourceModel(model)
     QAbstractItemModelTester(proxy, QAbstractItemModelTester.FailureReportingMode.Fatal, proxy)
 
     # Identical and excluded files are hidden by default
-    assert model_rows(proxy) == ["data", "  zones.gpkg", "media", "  logo.png", "project.qgs"]
+    assert model_rows(proxy) == [
+        "Section 0",
+        "  data",
+        "    zones.gpkg",
+        "  media",
+        "    logo.png",
+        "  project.qgs",
+    ]
 
     proxy.set_mode(FilterMode.All)
-    assert len(model_rows(proxy)) == 7
+    assert len(model_rows(proxy)) == 8
 
     proxy.set_text("LOGO")
-    assert model_rows(proxy) == ["media", "  logo.png"]
+    assert model_rows(proxy) == ["Section 0", "  media", "    logo.png"]
 
+    # The root of a section stays visible
     proxy.set_text("")
     proxy.set_mode(FilterMode.Problems)
-    assert model_rows(proxy) == []
+    assert model_rows(proxy) == ["Section 0"]
 
     # A file without action disappears from the files to synchronise
     proxy.set_mode(FilterMode.Actions)
-    assert len(model_rows(proxy)) == 5
-    model.setData(model.index(0, Column.Action, model.index(0, 0)), SyncAction.Nothing)
-    assert model_rows(proxy) == ["media", "  logo.png", "project.qgs"]
+    assert len(model_rows(proxy)) == 6
+    section = model.index(0, 0)
+    model.setData(model.index(0, Column.Action, model.index(0, 0, section)), SyncAction.Nothing)
+    assert model_rows(proxy) == ["Section 0", "  media", "    logo.png", "  project.qgs"]
 
 
 def test_action_delegate(sample: Sample):
     """Test the combobox editing the action of a file."""
     backend, root, state = sample
     model = SyncTreeModel()
-    model.set_comparison(compare_now(backend, root, state).comparison)
-    index = model.index(0, Column.Action, model.index(1, 0))
+    load(model, compare_now(backend, root, state).comparison)
+    section = model.index(0, 0)
+    index = model.index(0, Column.Action, model.index(1, 0, section))
     delegate = ActionDelegate()
     parent = QWidget()
 
@@ -174,37 +227,45 @@ def test_action_delegate(sample: Sample):
     delegate.setModelData(editor, model, index)
     assert index.data(Qt.ItemDataRole.EditRole) == SyncAction.DeleteRemote
 
-    # No editor for a directory
-    assert delegate.createEditor(parent, QStyleOptionViewItem(), model.index(1, Column.Action)) is None
+    # No editor for a directory nor a section
+    assert (
+        delegate.createEditor(parent, QStyleOptionViewItem(), model.index(1, Column.Action, section)) is None
+    )
+    assert delegate.createEditor(parent, QStyleOptionViewItem(), model.index(0, Column.Action)) is None
 
 
-def panel_for(backend: FakeBackend, root: Path, state: SyncState, tmp_path: Path, **kwargs) -> SyncPanel:
+def panel_for(
+    backend: FakeBackend,
+    root: Path,
+    state: SyncState,
+    tmp_path: Path,
+    media: FakeBackend | None = None,
+    **kwargs,
+) -> SyncPanel:
     """Build a panel with a context in memory, accepting all questions.
 
-    :param backend: The backend.
-    :param root: The local directory.
-    :param state: The state.
-    :param tmp_path: Temporary directory of the test, the state file is written next to it,
-        outside the synchronised directory.
+    :param backend: The backend of the repository.
+    :param root: The local directory of the repository.
+    :param state: The state of the repository.
+    :param tmp_path: Temporary directory of the test, the state files and the shared media are
+        written next to it, outside the synchronised directory.
+    :param media: The backend of the shared media, no shared media if None.
     :param kwargs: Extra parameters of the context.
     :return: The panel.
     """
-    state_file = tmp_path.parent / f"{tmp_path.name}-state.json"
+    pairs = [make_pair(backend, root, state)]
+    if media:
+        media_root = tmp_path.parent / f"{tmp_path.name}-media"
+        media_state = SyncState("s", "media", str(media_root))
+        settings = PairSettings(Direction.PullOnly, ("upload/**",), None)
+        pairs.append(make_pair(media, media_root, media_state, settings, PairKind.SharedMedia))
 
     def provider() -> SyncContext:
         """Context of the tests.
 
         :return: The context.
         """
-        return SyncContext(
-            backend=backend,
-            root=root,
-            state=state,
-            state_file=state_file,
-            rules=ExcludeRules(),
-            remote_label="memory",
-            **kwargs,
-        )
+        return SyncContext(pairs=pairs, **kwargs)
 
     panel = SyncPanel(None, provider)
     panel.questions = []
@@ -235,9 +296,66 @@ def test_panel_compare_and_synchronise(sample: Sample, tmp_path: Path):
     assert "Synchronisation done." in panel.message.text()
     assert backend.files["data/zones.gpkg"] == b"gpkg"
     assert (root / "media" / "logo.png").read_bytes() == b"logo"
-    assert (tmp_path.parent / f"{tmp_path.name}-state.json").exists()
+    assert (tmp_path.parent / f"{tmp_path.name}-repository-state.json").exists()
     assert panel.summary.text() == "Nothing to synchronise."
     assert not panel.sync_button.isEnabled()
+
+
+def test_panel_shared_media(sample: Sample, tmp_path: Path):
+    """Test the shared media, in download only mode, with a protected file, then a change of direction."""
+    backend, root, state = sample
+    media = FakeBackend()
+    media.put("upload/photo.jpg", b"jpg")
+    media_root = tmp_path.parent / f"{tmp_path.name}-media"
+    write(media_root / "logo.png", b"local logo")
+    panel = panel_for(backend, root, state, tmp_path, media=media)
+    directions = []
+    panel.directionChanged.connect(lambda kind, direction: directions.append((kind, direction)))
+
+    panel.compare()
+    wait_for(lambda: not panel.busy)
+    assert panel.model.rowCount() == 2
+    media_section = panel.model.section_index(PairKind.SharedMedia)
+    assert media_section.data() == "shared_media"
+    actions = {d.path: d.action for d in panel.model.sections[1].comparison.diffs}
+    # Download only: the local logo is not sent
+    assert actions == {"logo.png": SyncAction.Nothing, "upload/photo.jpg": SyncAction.Download}
+
+    # Two-way, compared again without any request: the logo is sent
+    calls = len(media.calls)
+    combos = panel.directions.findChildren(QComboBox)
+    assert [combo.currentData() for combo in combos] == ["two_way", "pull_only"]
+    combos[1].setCurrentIndex(combos[1].findData("two_way"))
+    assert directions == [(PairKind.SharedMedia, Direction.TwoWay)]
+    actions = {d.path: d.action for d in panel.model.sections[1].comparison.diffs}
+    assert actions == {"logo.png": SyncAction.Upload, "upload/photo.jpg": SyncAction.Download}
+    assert len(media.calls) == calls
+
+    synchronised = []
+    panel.synchronised.connect(synchronised.append)
+    panel.synchronise()
+    wait_for(lambda: synchronised and not panel.busy)
+    assert "Synchronisation done." in panel.message.text()
+    assert (media_root / "upload" / "photo.jpg").read_bytes() == b"jpg"
+    assert media.files["logo.png"] == b"local logo"
+
+
+def test_panel_protected_warning(sample: Sample, tmp_path: Path):
+    """Test the warning when a file produced by the server is deleted by an explicit choice."""
+    backend, root, state = sample
+    backend.put("media/upload/photo.jpg", b"jpg")
+    panel = panel_for(backend, root, state, tmp_path)
+    panel._provider().pairs[0].settings = PairSettings(protected_patterns=("media/upload/**",))
+    panel.compare()
+    wait_for(lambda: not panel.busy)
+
+    diff = next(d for d in panel.model.sections[0].comparison.diffs if d.path == "media/upload/photo.jpg")
+    assert diff.protected
+    diff.choose(SyncAction.DeleteRemote)
+    panel.confirm = lambda title, text: panel.questions.append(text) and False
+    panel.synchronise()
+    assert "produced by the server" in panel.questions[0]
+    assert "media/upload/photo.jpg" in panel.questions[0]
 
 
 def test_panel_protected_files(sample: Sample, tmp_path: Path):
@@ -277,7 +395,7 @@ def test_panel_unavailable(tmp_path: Path):
 
 
 def test_panel_missing_directory(sample: Sample, tmp_path: Path):
-    """Test the creation of the directory on the server when it doesn't exist yet."""
+    """Test a directory missing on the server, created by the first upload."""
     _backend, root, state = sample
 
     class MissingDirectory(FakeBackend):
@@ -285,7 +403,7 @@ def test_panel_missing_directory(sample: Sample, tmp_path: Path):
 
         exists = False
 
-        def fetch_manifest(self, feedback=None):
+        def fetch_manifest(self, feedback: QgsFeedback | None = None) -> RemoteManifest:
             """Fail until the directory is created.
 
             :param feedback: Not used.
@@ -295,7 +413,7 @@ def test_panel_missing_directory(sample: Sample, tmp_path: Path):
                 raise BackendError("Not found", 404)
             return super().fetch_manifest(feedback)
 
-        def make_directory(self, path, feedback=None):
+        def make_directory(self, path: str, feedback: QgsFeedback | None = None):
             """Create the directory of the repository.
 
             :param path: Relative path, empty for the directory itself.
@@ -305,10 +423,19 @@ def test_panel_missing_directory(sample: Sample, tmp_path: Path):
                 self.exists = True
             super().make_directory(path, feedback)
 
-    panel = panel_for(MissingDirectory(), root, state, tmp_path)
+    backend = MissingDirectory()
+    panel = panel_for(backend, root, state, tmp_path)
     panel.compare()
-    wait_for(lambda: panel.model.comparison is not None)
-    assert "doesn't exist yet" in panel.questions[0]
+    wait_for(lambda: not panel.busy)
+    assert "missing on the server" in panel.model.index(0, Column.Status).data()
+
+    synchronised = []
+    panel.synchronised.connect(synchronised.append)
+    panel.synchronise()
+    wait_for(lambda: synchronised and not panel.busy)
+    assert ("mkdir", "") in backend.calls
+    assert "data/zones.gpkg" in backend.files
+    assert "Synchronisation done." in panel.message.text()
 
 
 def test_panel_repository_mirror():

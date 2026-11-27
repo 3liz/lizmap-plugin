@@ -9,9 +9,12 @@ Patterns follow a simplified ".gitignore" syntax, matched without taking care of
 
 from __future__ import annotations
 
+import re
+
 from dataclasses import dataclass
 from enum import Enum
 from fnmatch import fnmatchcase
+from functools import cache
 
 # Prefix of the files and directories of the synchronisation itself: downloads in progress,
 # local trash, uploads in progress on the server. They are always excluded, whatever the rules.
@@ -73,6 +76,44 @@ def _match(value: str, pattern: str) -> bool:
     :return: True if the value matches.
     """
     return fnmatchcase(value.lower(), pattern.lower())
+
+
+@cache
+def _glob_regex(pattern: str) -> re.Pattern:
+    """Translate a glob pattern into a regular expression.
+
+    :param pattern: The pattern: "*" and "?" don't match "/", "**" matches any number of directories.
+    :return: The compiled expression, case insensitive.
+    """
+    regex = ""
+    index = 0
+    while index < len(pattern):
+        if pattern.startswith("**/", index):
+            regex += "(?:.*/)?"
+            index += 3
+        elif pattern.startswith("**", index):
+            regex += ".*"
+            index += 2
+        elif pattern[index] == "*":
+            regex += "[^/]*"
+            index += 1
+        elif pattern[index] == "?":
+            regex += "[^/]"
+            index += 1
+        else:
+            regex += re.escape(pattern[index])
+            index += 1
+    return re.compile(regex + r"\Z", re.IGNORECASE)
+
+
+def match_glob(path: str, pattern: str) -> bool:
+    """Match a relative path with a glob pattern supporting "**", such as "media/upload/**".
+
+    :param path: Normalised relative path.
+    :param pattern: The pattern, anchored at the root of the synchronised directory.
+    :return: True if the path matches.
+    """
+    return _glob_regex(pattern).match(path) is not None
 
 
 @dataclass(frozen=True)

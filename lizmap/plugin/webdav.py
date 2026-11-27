@@ -1,3 +1,4 @@
+from dataclasses import replace
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -8,6 +9,7 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsProject,
+    QgsSettings,
 )
 
 if TYPE_CHECKING:
@@ -35,6 +37,7 @@ from lizmap.definitions.definitions import (
 
 from ..definitions.definitions import LwcVersions
 from ..definitions.online_help import Panels
+from ..definitions.qgis_settings import Settings
 from ..dialogs.server_wizard import CreateFolderWizard
 from ..server_dav import WebDav
 from ..sync.backends.webdav import WebDavBackend, WebDavServer
@@ -45,6 +48,8 @@ from ..sync.gui.project_checks import (
     project_files,
 )
 from ..sync.gui.sync_panel import SyncContext, SyncPanel, SyncUnavailable
+from ..sync.model import Direction
+from ..sync.pair import DEFAULT_SETTINGS, PairKind, SyncPair
 from ..sync.state import StateError, SyncState, state_file_name
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import (
@@ -57,6 +62,9 @@ if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
 from .. import logger
+
+# Identifier of the shared media in the state of the synchronisation, instead of a repository
+SHARED_MEDIA_STATE = "__shared_media__"
 
 
 class LizmapProtocol(Protocol):
@@ -111,6 +119,7 @@ class WebDavManager(LizmapProtocol):
             self.dlg.page_upload, self.sync_context, self.dlg.repository_combo, self.create_new_repository
         )
         self.sync_panel.synchronised.connect(self._after_synchronisation)
+        self.sync_panel.directionChanged.connect(self._save_sync_direction)
         self.sync_panel.setVisible(False)
         layout = self.dlg.page_upload.layout()
         layout.insertWidget(0, self.sync_panel)
@@ -179,28 +188,90 @@ class WebDavManager(LizmapProtocol):
         for path, error in checkpoint_sqlite(list(files.values())).items():
             logger.warning(f"Synchronisation, checkpoint of {path} : {error}")
 
-        # State of the last synchronisation, in the QGIS profile
         server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        auth_id = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
+        repository_label = self.dlg.repository_combo.currentText() or repository_id
+
+        # The repository, and the "media" directory shared by all repositories, "../media" locally
+        pairs = [
+            self._sync_pair(
+                PairKind.Repository,
+                tr("Repository \"{}\"").format(repository_label),
+                WebDavBackend(url, auth_id),
+                url,
+                root,
+                server_url,
+                repository_id,
+            ),
+            self._sync_pair(
+                PairKind.SharedMedia,
+                tr("Shared media"),
+                WebDavBackend(server.shared_media_url(), auth_id),
+                server.shared_media_url(),
+                root.parent.joinpath("media"),
+                server_url,
+                SHARED_MEDIA_STATE,
+            ),
+        ]
+        return SyncContext(pairs=pairs, protected_paths=frozenset(files), project_path=project_file.name)
+
+    @staticmethod
+    def _sync_pair(
+        kind: PairKind,
+        label: str,
+        backend: WebDavBackend,
+        remote_label: str,
+        root: Path,
+        server_url: str,
+        state_key: str,
+    ) -> SyncPair:
+        """Build a pair of directories, with its state and its settings.
+
+        :param kind: Kind of pair.
+        :param label: Name displayed in the tree.
+        :param backend: The directory on the server.
+        :param remote_label: URL of the directory on the server.
+        :param root: The local directory.
+        :param server_url: URL of the Lizmap server.
+        :param state_key: Identifier of the remote directory in the state, such as the repository.
+        :return: The pair.
+        """
+        # State of the last synchronisation, in the QGIS profile
         state_file = Path(QgsApplication.qgisSettingsDirPath()).joinpath(
-            "lizmap", "sync", state_file_name(server_url, repository_id, str(root))
+            "lizmap", "sync", state_file_name(server_url, state_key, str(root))
         )
         try:
-            state = SyncState.load(state_file, server_url, repository_id, str(root))
+            state = SyncState.load(state_file, server_url, state_key, str(root))
         except StateError as e:
             logger.warning(f"Synchronisation state ignored : {e}")
-            state = SyncState(server_url, repository_id, str(root))
+            state = SyncState(server_url, state_key, str(root))
 
-        auth_id = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
-        return SyncContext(
-            backend=WebDavBackend(url, auth_id),
+        # Direction chosen by the user, other settings by default for now
+        settings = DEFAULT_SETTINGS[kind]
+        saved = QgsSettings().value(Settings.key(f"{Settings.SyncDirection}/{kind.value}"), "", str)
+        if saved in {direction.value for direction in Direction}:
+            settings = replace(settings, direction=Direction(saved))
+
+        return SyncPair(
+            kind=kind,
+            label=label,
+            backend=backend,
             root=root,
             state=state,
             state_file=state_file,
             rules=ExcludeRules(),
-            remote_label=url,
-            protected_paths=frozenset(files),
-            project_path=project_file.name,
+            settings=settings,
+            remote_label=remote_label,
         )
+
+    @staticmethod
+    def _save_sync_direction(kind: PairKind, direction: Direction):
+        """Keep the direction chosen by the user for a kind of pair.
+
+        :param kind: The kind of pair.
+        :param direction: The direction.
+        """
+        QgsSettings().setValue(Settings.key(f"{Settings.SyncDirection}/{kind.value}"), direction.value)
 
     def _after_synchronisation(self, project_downloaded: bool):
         """Warn the user if the open project has been replaced by the synchronisation.

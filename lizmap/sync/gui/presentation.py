@@ -8,7 +8,7 @@ from qgis.core import QgsApplication, QgsFileUtils
 from qgis.PyQt.QtCore import QDateTime, QLocale, Qt
 from qgis.PyQt.QtGui import QColor, QIcon, QPainter, QPixmap
 
-from lizmap.sync.model import FileStatus, SyncAction
+from lizmap.sync.model import Direction, FileStatus, SyncAction
 from lizmap.toolbelt.i18n import tr
 
 GREEN = "#2e7d32"
@@ -126,6 +126,20 @@ def action_label(action: SyncAction) -> str:
         SyncAction.DeleteLocal: tr("Delete locally"),
     }
     return labels[action]
+
+
+def direction_label(direction: Direction) -> str:
+    """Label of a direction.
+
+    :param direction: The direction.
+    :return: The translated label.
+    """
+    labels = {
+        Direction.TwoWay: tr("Two-way"),
+        Direction.PullOnly: tr("Download only"),
+        Direction.PushOnly: tr("Upload only"),
+    }
+    return labels[direction]
 
 
 def status_color(status: FileStatus) -> QColor:

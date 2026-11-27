@@ -49,7 +49,7 @@ if TYPE_CHECKING:
 TRASH_DIRECTORY = INTERNAL_PREFIX + "trash"
 
 # Weight of an operation in the progress, in addition to its size, so small files count too
-_OPERATION_WEIGHT = 64 * 1024
+OPERATION_WEIGHT = 64 * 1024
 
 
 class LocalConflict(Exception):
@@ -103,6 +103,28 @@ def purge_trash(root: Path, keep_days: int = 30, now: float | None = None):
             shutil.rmtree(session, ignore_errors=True)
 
 
+def child_feedback(parent: QgsFeedback | None, start: float, width: float) -> QgsFeedback | None:
+    """Build a feedback for a part of a task, linked to the global feedback.
+
+    The caller must disconnect ``parent.canceled`` from ``child.cancel`` once the part is done.
+
+    :param parent: The global feedback.
+    :param start: Global progress at the beginning of the part, in percent.
+    :param width: Size of the part in the global progress, in percent.
+    :return: The feedback of the part, None if there isn't any global feedback.
+    """
+    if parent is None:
+        return None
+
+    child = QgsFeedback()
+    child.progressChanged.connect(lambda progress: parent.setProgress(start + progress * width / 100))
+    # Direct connection, the cancellation must be immediate even if the parent is in another thread
+    parent.canceled.connect(child.cancel, type=Qt.ConnectionType.DirectConnection)
+    if parent.isCanceled():
+        child.cancel()
+    return child
+
+
 class SyncExecutor:
     """Run the operations of a synchronisation plan.
 
@@ -142,7 +164,7 @@ class SyncExecutor:
         :return: The result.
         """
         result = SyncResult()
-        weights = [op.size + _OPERATION_WEIGHT for op in plan]
+        weights = [op.size + OPERATION_WEIGHT for op in plan]
         total = sum(weights) or 1
         done_weight = 0
 
@@ -152,7 +174,7 @@ class SyncExecutor:
                 break
 
             # A feedback for the operation, reporting its progress as a part of the global progress
-            child = self._child_feedback(feedback, 100.0 * done_weight / total, 100.0 * weight / total)
+            child = child_feedback(feedback, 100.0 * done_weight / total, 100.0 * weight / total)
             try:
                 self._run_operation(operation, child)
                 result.done.append(operation)
@@ -184,26 +206,6 @@ class SyncExecutor:
         if self._trash_used:
             result.trash = self.trash
         return result
-
-    @staticmethod
-    def _child_feedback(parent: QgsFeedback | None, start: float, width: float) -> QgsFeedback | None:
-        """Build a feedback for an operation, linked to the global feedback.
-
-        :param parent: The global feedback.
-        :param start: Global progress at the beginning of the operation, in percent.
-        :param width: Part of the global progress for this operation, in percent.
-        :return: The feedback of the operation, None if there isn't any global feedback.
-        """
-        if parent is None:
-            return None
-
-        child = QgsFeedback()
-        child.progressChanged.connect(lambda progress: parent.setProgress(start + progress * width / 100))
-        # Direct connection, the cancellation must be immediate even if the parent is in another thread
-        parent.canceled.connect(child.cancel, type=Qt.ConnectionType.DirectConnection)
-        if parent.isCanceled():
-            child.cancel()
-        return child
 
     def _run_operation(self, operation: SyncOperation, feedback: QgsFeedback | None):
         """Run a single operation.
@@ -334,7 +336,8 @@ class SyncExecutor:
         """
         path = operation.path
         if operation.kind == OperationKind.MakeRemoteDirectory:
-            return None if path in manifest.dirs else "Directory not created on the server"
+            # The root directory itself is not listed, the manifest exists if it has been created
+            return None if path == "" or path in manifest.dirs else "Directory not created on the server"
 
         if operation.kind == OperationKind.DeleteRemote:
             if path in manifest.files:

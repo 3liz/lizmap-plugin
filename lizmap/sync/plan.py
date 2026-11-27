@@ -59,7 +59,9 @@ class SyncOperation:
         return self.diff.transfer_size if self.diff else 0
 
 
-def build_plan(comparison: Comparison, remote_dirs: Iterable[str]) -> list[SyncOperation]:
+def build_plan(
+    comparison: Comparison, remote_dirs: Iterable[str], create_root: bool = False
+) -> list[SyncOperation]:
     """Build the ordered list of operations from the chosen actions.
 
     Missing remote directories are created first, parents before children, then files are
@@ -68,9 +70,13 @@ def build_plan(comparison: Comparison, remote_dirs: Iterable[str]) -> list[SyncO
 
     :param comparison: The comparison, with the action chosen for each file.
     :param remote_dirs: Directories already existing on the server.
+    :param create_root: The root directory doesn't exist on the server, create it before the first upload.
     :return: The operations, in the order they must be run.
     """
     existing = set(remote_dirs)
+    if not create_root:
+        # The root directory, the empty path, exists
+        existing.add("")
     operations = []
 
     for diff in comparison.to_run():
@@ -79,7 +85,7 @@ def build_plan(comparison: Comparison, remote_dirs: Iterable[str]) -> list[SyncO
 
         # Parent directories needed on the server for an upload
         if kind == OperationKind.Upload:
-            for directory in parent_directories(diff.path):
+            for directory in ("", *parent_directories(diff.path)):
                 if directory not in existing:
                     existing.add(directory)
                     operations.append(SyncOperation(OperationKind.MakeRemoteDirectory, directory))
