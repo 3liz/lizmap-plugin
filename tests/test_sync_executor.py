@@ -31,6 +31,8 @@ class FakeBackend:
         self.counter = 0
         # Content stored instead of the sent one, to simulate a corrupted upload
         self.corrupt: bytes | None = None
+        # Simulate a server reporting a success without doing anything, like Sabre before the fix
+        self.silent_failures = False
 
     def put(self, path: str, content: bytes):
         """Store a file directly, as if another user sent it.
@@ -62,7 +64,8 @@ class FakeBackend:
         :param feedback: Not used.
         """
         self.calls.append(("mkdir", path))
-        self.dirs.add(path)
+        if not self.silent_failures:
+            self.dirs.add(path)
 
     def upload(
         self, local_file: Path, path: str, etag: str | None, feedback: QgsFeedback | None = None
@@ -108,8 +111,21 @@ class FakeBackend:
         self.calls.append(("delete", path))
         if etag and self.etags.get(path) not in (None, etag):
             raise BackendError("Precondition failed", 412)
-        self.files.pop(path, None)
-        self.etags.pop(path, None)
+        if not self.silent_failures:
+            self.files.pop(path, None)
+            self.etags.pop(path, None)
+
+    def delete_empty_directory(self, path: str, feedback: QgsFeedback | None = None):
+        """Delete a directory, only if it's empty.
+
+        :param path: Relative path.
+        :param feedback: Not used.
+        """
+        self.calls.append(("rmdir", path))
+        prefix = path + "/"
+        if any(p.startswith(prefix) for p in self.files) or any(d.startswith(prefix) for d in self.dirs):
+            raise BackendError("The directory is not empty.", 409)
+        self.dirs.discard(path)
 
 
 def write(path: Path, content: bytes):
@@ -341,3 +357,91 @@ def test_purge_trash(tmp_path: Path):
 
     assert not old.exists()
     assert recent.exists()
+
+
+def test_remove_emptied_directories(tmp_path: Path):
+    """Test the removal of the directories emptied by the deletions, on both sides."""
+    backend = FakeBackend()
+    backend.put("a/b/c.txt", b"c")
+    backend.put("a/kept.txt", b"k")
+    backend.put("x/y/z.txt", b"z")
+    backend.dirs.add("empty_before")
+    state = SyncState("s", "r", str(tmp_path))
+    sync_now(backend, tmp_path, state, compare_now(backend, tmp_path, state))
+    (tmp_path / "empty_local_before").mkdir()
+
+    # Deleted locally, the deletion is propagated to the server
+    (tmp_path / "a" / "b" / "c.txt").unlink()
+    # Deleted on the server, the deletion is propagated locally
+    backend.delete("x/y/z.txt", None)
+    result = compare_now(backend, tmp_path, state)
+    for diff in result.comparison.diffs:
+        if diff.status == FileStatus.DeletedLocal:
+            diff.choose(SyncAction.DeleteRemote)
+        elif diff.status == FileStatus.DeletedRemote:
+            diff.choose(SyncAction.DeleteLocal)
+    sync = sync_now(backend, tmp_path, state, result)
+
+    assert sync.success, sync.errors
+    # "a" still contains a file, empty directories existing before are kept
+    assert sync.removed_remote_directories == ["a/b"]
+    assert backend.dirs == {"a", "x", "x/y", "empty_before"}
+    assert sync.removed_local_directories == ["x/y", "x"]
+    assert not (tmp_path / "x").exists()
+    assert (tmp_path / "a" / "b").is_dir()
+    assert (tmp_path / "empty_local_before").is_dir()
+
+
+def test_directory_not_empty_anymore(tmp_path: Path):
+    """Test a directory not removed because the server refuses, a file has been added meanwhile."""
+    backend = FakeBackend()
+    backend.put("a/c.txt", b"c")
+    state = SyncState("s", "r", str(tmp_path))
+    sync_now(backend, tmp_path, state, compare_now(backend, tmp_path, state))
+
+    (tmp_path / "a" / "c.txt").unlink()
+    result = compare_now(backend, tmp_path, state)
+    result.comparison.diffs[0].choose(SyncAction.DeleteRemote)
+
+    # A file added by someone else, between the final manifest and the removal of the directory
+    original = backend.delete_empty_directory
+
+    def add_then_delete(path: str, feedback: QgsFeedback | None = None):
+        """Add a file in the directory, then try to delete it.
+
+        :param path: Relative path.
+        :param feedback: Not used.
+        """
+        backend.put("a/new.txt", b"n")
+        original(path, feedback)
+
+    backend.delete_empty_directory = add_then_delete
+    sync = sync_now(backend, tmp_path, state, result)
+
+    assert sync.success
+    assert sync.removed_remote_directories == []
+    assert "a/new.txt" in backend.files
+
+
+def test_silent_failures_detected(tmp_path: Path):
+    """Test a server reporting a success for a deletion or a directory not done."""
+    backend = FakeBackend()
+    backend.put("old.txt", b"o")
+    state = SyncState("s", "r", str(tmp_path))
+    sync_now(backend, tmp_path, state, compare_now(backend, tmp_path, state))
+
+    (tmp_path / "old.txt").unlink()
+    write(tmp_path / "new" / "file.txt", b"n")
+    result = compare_now(backend, tmp_path, state)
+    next(d for d in result.comparison.diffs if d.path == "old.txt").choose(SyncAction.DeleteRemote)
+    backend.silent_failures = True
+    sync = sync_now(backend, tmp_path, state, result)
+
+    assert sync.errors == {
+        "new": "Directory not created on the server",
+        "new/file.txt": "Missing parent",
+        "old.txt": "Still on the server after the deletion",
+    }
+    # The deleted file is still known, the next comparison is right
+    assert "old.txt" in state.entries
+    assert [op.path for op in sync.done] == []

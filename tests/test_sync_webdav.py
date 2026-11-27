@@ -42,7 +42,7 @@ METADATA = {
         "url": "https://demo.lizmap.com/dav.php",
         "cog_path": "",
         "projects_path": "qgis-projects/",
-        "features": ["manifest", "sha256", "atomic-put"],
+        "features": ["manifest", "sha256", "atomic-put", "fs-errors", "delete-empty-only"],
         "manifest_version": "1.0",
         "checksum_max_size": 1000,
     }
@@ -168,6 +168,16 @@ def test_backend_scenario(backend: WebDavBackend, tmp_path: Path):
     backend.delete("données/été.txt", new_etag)
     backend.delete("données/été.txt", None)
     assert backend.fetch_manifest().files == {}
+
+    # Directory removed only if empty
+    backend.make_directory("données/sub")
+    with pytest.raises(BackendError) as error:
+        backend.delete_empty_directory("données")
+    assert error.value.http_status == 409
+    backend.delete_empty_directory("données/sub")
+    backend.delete_empty_directory("données")
+    backend.delete_empty_directory("données")
+    assert backend.fetch_manifest().dirs == frozenset()
 
 
 def test_backend_errors(backend: WebDavBackend, tmp_path: Path):

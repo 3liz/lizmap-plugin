@@ -10,8 +10,10 @@ Safety rules:
   ``.~lizmap-trash/<date>/`` in the local directory, never synchronised,
 * deletions are run at the end, after all transfers.
 
-Once the operations are run, the manifest is fetched again, to verify the transfers with the
-checksums and to record the new state of the synchronised files.
+Once the operations are run, the manifest is fetched again, to verify the operations on the server
+(transfers with the checksums, deletions, created directories) and to record the new state of the
+synchronised files. Directories are never deleted, except those emptied by the deletions of the
+synchronisation itself: an empty directory existing before is kept.
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ from qgis.PyQt.QtCore import Qt
 from lizmap.sync.backends.base import BackendCanceled, BackendError
 from lizmap.sync.filters import INTERNAL_PREFIX
 from lizmap.sync.model import FileStatus
+from lizmap.sync.paths import parent_directories
 from lizmap.sync.plan import OperationKind
 from lizmap.sync.scanner import stat_local
 
@@ -38,6 +41,7 @@ if TYPE_CHECKING:
 
     from lizmap.sync.backends.base import RemoteBackend
     from lizmap.sync.diff import Comparison
+    from lizmap.sync.manifest import RemoteManifest
     from lizmap.sync.model import FileDiff, LocalEntry
     from lizmap.sync.plan import SyncOperation
     from lizmap.sync.state import SyncState
@@ -46,9 +50,6 @@ TRASH_DIRECTORY = INTERNAL_PREFIX + "trash"
 
 # Weight of an operation in the progress, in addition to its size, so small files count too
 _OPERATION_WEIGHT = 64 * 1024
-
-_TRANSFERS = (OperationKind.Upload, OperationKind.Download)
-_DELETIONS = (OperationKind.DeleteRemote, OperationKind.DeleteLocal)
 
 
 class LocalConflict(Exception):
@@ -64,6 +65,8 @@ class SyncResult:
     :param errors: Files in error, with the message.
     :param canceled: True if the user canceled before the end.
     :param trash: Directory where replaced or deleted local files have been kept, if any.
+    :param removed_local_directories: Local directories emptied by the synchronisation, then removed.
+    :param removed_remote_directories: Directories on the server emptied by the synchronisation, then removed.
     """
 
     done: list[SyncOperation] = field(default_factory=list)
@@ -71,6 +74,8 @@ class SyncResult:
     errors: dict[str, str] = field(default_factory=dict)
     canceled: bool = False
     trash: Path | None = None
+    removed_local_directories: list[str] = field(default_factory=list)
+    removed_remote_directories: list[str] = field(default_factory=list)
 
     @property
     def success(self) -> bool:
@@ -175,7 +180,7 @@ class SyncExecutor:
             if feedback:
                 feedback.setProgress(100.0 * done_weight / total)
 
-        self._update_state(comparison, result)
+        self._finish(comparison, result)
         if self._trash_used:
             result.trash = self.trash
         return result
@@ -275,11 +280,11 @@ class SyncExecutor:
         except OSError:
             shutil.copy2(source, target)
 
-    def _update_state(self, comparison: Comparison, result: SyncResult):
-        """Record the new state of the synchronised files.
+    def _finish(self, comparison: Comparison, result: SyncResult):
+        """Verify the operations, record the new state and remove the emptied directories.
 
         :param comparison: The comparison used to build the plan.
-        :param result: The result, completed with errors found while verifying the transfers.
+        :param result: The result, completed with the errors found while verifying the operations.
         """
         # Files deleted on both sides
         self.state.prune(comparison.stale_paths)
@@ -289,32 +294,116 @@ class SyncExecutor:
             if diff.status == FileStatus.Identical and diff.local and diff.remote:
                 self.state.record(diff.local, diff.remote)
 
-        for operation in result.done:
-            if operation.kind in _DELETIONS:
-                self.state.forget(operation.path)
+        # Local deletions, done on the disk
+        deleted_local = [op.path for op in result.done if op.kind == OperationKind.DeleteLocal]
+        for path in deleted_local:
+            self.state.forget(path)
+        self._remove_local_directories(deleted_local, result)
 
-        transfers = [op for op in result.done if op.kind in _TRANSFERS]
-        if not transfers:
+        remote_operations = [op for op in result.done if op.kind != OperationKind.DeleteLocal]
+        if not remote_operations:
             return
 
-        # The manifest gives the new ETag and checksum of the transferred files
+        # The manifest tells what really happened on the server
         try:
             manifest = self.backend.fetch_manifest()
         except BackendError as e:
-            self.log(f"The state can't be updated : {e}")
+            self.log(f"The operations on the server can't be verified : {e}")
+            for operation in remote_operations:
+                if operation.kind == OperationKind.DeleteRemote:
+                    self.state.forget(operation.path)
             return
 
-        for operation in transfers:
-            remote = manifest.files.get(operation.path)
-            previous: LocalEntry | None = operation.diff.local if operation.diff else None
-            local = stat_local(self.root, operation.path, self.checksum_max_size, previous)
-            if remote is None or local is None:
-                result.errors[operation.path] = "Missing after the transfer"
-                continue
+        failed = []
+        for operation in remote_operations:
+            error = self._verify(operation, manifest)
+            if error:
+                result.errors[operation.path] = error
+                failed.append(operation)
+        result.done = [op for op in result.done if op not in failed]
 
-            # Verify the content when both checksums are known
-            if local.checksum and remote.checksum and local.checksum != remote.checksum:
-                result.errors[operation.path] = "Different content after the transfer"
-                continue
+        deleted_remote = [op.path for op in result.done if op.kind == OperationKind.DeleteRemote]
+        self._remove_remote_directories(deleted_remote, manifest, result)
 
-            self.state.record(local, remote)
+    def _verify(self, operation: SyncOperation, manifest: RemoteManifest) -> str | None:
+        """Verify an operation on the server with the final manifest, and record the new state.
+
+        :param operation: An operation done on the server.
+        :param manifest: The manifest fetched after all operations.
+        :return: An error message, None if the operation is verified.
+        """
+        path = operation.path
+        if operation.kind == OperationKind.MakeRemoteDirectory:
+            return None if path in manifest.dirs else "Directory not created on the server"
+
+        if operation.kind == OperationKind.DeleteRemote:
+            if path in manifest.files:
+                return "Still on the server after the deletion"
+            self.state.forget(path)
+            return None
+
+        # Transfers
+        remote = manifest.files.get(path)
+        previous: LocalEntry | None = operation.diff.local if operation.diff else None
+        local = stat_local(self.root, path, self.checksum_max_size, previous)
+        if remote is None or local is None:
+            return "Missing after the transfer"
+
+        # Verify the content when both checksums are known
+        if local.checksum and remote.checksum and local.checksum != remote.checksum:
+            return "Different content after the transfer"
+
+        self.state.record(local, remote)
+        return None
+
+    @staticmethod
+    def _emptied_candidates(deleted: list[str]) -> list[str]:
+        """List the parent directories of deleted files, the deepest first.
+
+        :param deleted: Relative paths of the deleted files.
+        :return: The directories which may have been emptied.
+        """
+        directories = {directory for path in deleted for directory in parent_directories(path)}
+        return sorted(directories, key=lambda directory: (-directory.count("/"), directory))
+
+    def _remove_local_directories(self, deleted: list[str], result: SyncResult):
+        """Remove the local directories emptied by the deletions of the synchronisation.
+
+        :param deleted: Relative paths of the deleted local files.
+        :param result: The result, completed with the removed directories.
+        """
+        for directory in self._emptied_candidates(deleted):
+            try:
+                # Fails if the directory is not empty, nothing else to check
+                self.root.joinpath(directory).rmdir()
+            except OSError:
+                continue
+            result.removed_local_directories.append(directory)
+            self.log(f"Local directory removed : {directory}")
+
+    def _remove_remote_directories(self, deleted: list[str], manifest: RemoteManifest, result: SyncResult):
+        """Remove the directories on the server emptied by the deletions of the synchronisation.
+
+        The server refuses to delete a directory which is not empty anymore, for instance if someone
+        added a file in the meantime.
+
+        :param deleted: Relative paths of the files deleted on the server.
+        :param manifest: The manifest fetched after all operations.
+        :param result: The result, completed with the removed directories.
+        """
+        files = set(manifest.files)
+        directories = set(manifest.dirs)
+        for directory in self._emptied_candidates(deleted):
+            prefix = directory + "/"
+            if directory not in directories:
+                continue
+            if any(f.startswith(prefix) for f in files) or any(d.startswith(prefix) for d in directories):
+                continue
+            try:
+                self.backend.delete_empty_directory(directory)
+            except BackendError as e:
+                self.log(f"Directory {directory} kept on the server : {e}")
+                continue
+            directories.discard(directory)
+            result.removed_remote_directories.append(directory)
+            self.log(f"Directory removed on the server : {directory}")

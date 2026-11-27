@@ -31,7 +31,10 @@ if TYPE_CHECKING:
     from lizmap.sync.manifest import RemoteManifest
 
 # Features of the WebDAV module needed by the synchronisation
-REQUIRED_FEATURES = ("manifest", "sha256", "atomic-put")
+REQUIRED_FEATURES = ("manifest", "sha256", "atomic-put", "fs-errors", "delete-empty-only")
+
+# Header asking the server to delete a directory only if it's empty
+EMPTY_ONLY_HEADER = {"X-Lizmap-Delete": "empty-only"}
 
 # Prefix of local temporary files during a download, always excluded from the synchronisation
 DOWNLOAD_PREFIX = INTERNAL_PREFIX + "download-"
@@ -360,3 +363,15 @@ class WebDavBackend:
         headers = {"If-Match": etag} if etag else {}
         response = self._send("DELETE", self.url(path), headers=headers, feedback=feedback)
         self._check(response, (200, 204, HTTP_NOT_FOUND), f"Delete '{path}'")
+
+    def delete_empty_directory(self, path: str, feedback: QgsFeedback | None = None):
+        """Delete a directory, only if it's empty. A directory already deleted is not an error.
+
+        :param path: Relative path of the directory.
+        :param feedback: To cancel the request.
+        :raises BackendError: If the directory is not empty (409) or can't be deleted.
+        """
+        response = self._send(
+            "DELETE", self.url(path, directory=True), headers=EMPTY_ONLY_HEADER, feedback=feedback
+        )
+        self._check(response, (200, 204, HTTP_NOT_FOUND), f"Delete the directory '{path}'")

@@ -103,3 +103,12 @@ class RemoteBackend(Protocol):
         :raises BackendError: If the deletion failed, ``is_conflict`` if the file changed in the meantime.
         """
         ...
+
+    def delete_empty_directory(self, path: str, feedback: QgsFeedback | None = None):
+        """Delete a directory, only if it's empty. A directory already deleted is not an error.
+
+        :param path: Relative path of the directory.
+        :param feedback: To cancel the request.
+        :raises BackendError: If the directory is not empty or can't be deleted.
+        """
+        ...
