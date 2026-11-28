@@ -23,6 +23,7 @@ from qgis.PyQt.QtWidgets import (
     QLabel,
     QMenu,
     QMessageBox,
+    QSizePolicy,
     QWidget,
 )
 
@@ -45,6 +46,37 @@ if TYPE_CHECKING:
     from lizmap.sync.tasks import CompareResult
 
 FORM_CLASS = load_ui("ui_sync_panel.ui")
+
+
+def mirror_combo(source: QComboBox, target: QComboBox, changed: Callable[[], None]):
+    """Share the model of a combobox, and keep both current items in sync.
+
+    :param source: The combobox of the dialog.
+    :param target: The combobox of the panel, showing the same items.
+    :param changed: Called when the current item changes, from any of both comboboxes.
+    """
+    target.setModel(source.model())
+    target.setCurrentIndex(source.currentIndex())
+
+    def from_source(index: int):
+        """Follow the combobox of the dialog.
+
+        :param index: The new index.
+        """
+        if target.currentIndex() != index:
+            target.setCurrentIndex(index)
+        changed()
+
+    def to_source(index: int):
+        """Update the combobox of the dialog.
+
+        :param index: The new index.
+        """
+        if source.currentIndex() != index:
+            source.setCurrentIndex(index)
+
+    source.currentIndexChanged.connect(from_source)
+    target.currentIndexChanged.connect(to_source)
 
 
 class SyncUnavailable(Exception):
@@ -91,6 +123,8 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
     :param repository_combo: Combobox of the repositories in the dialog, mirrored at the top of the panel.
     :param new_repository: Called when the user wants to create a new repository.
     :param open_options: Called when the user wants to edit the options, returns True if they changed.
+    :param server_combo: Combobox of the servers in the dialog, mirrored at the top of the panel.
+    :param refresh_server: Called when the user wants to refresh the information of the selected server.
     """
 
     # Emitted after a synchronisation, with True if the open project has been downloaded
@@ -105,11 +139,17 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
         repository_combo: QComboBox | None = None,
         new_repository: Callable[[], None] | None = None,
         open_options: Callable[[], bool] | None = None,
+        server_combo: QComboBox | None = None,
+        refresh_server: Callable[[], None] | None = None,
     ):
         super().__init__(parent)
         self._provider = context_provider
         self._open_options = open_options
         self._source_combo = repository_combo
+        self._server_combo = server_combo
+        self._refresh_server = refresh_server
+        # False when the server can't synchronise: only the server and the repository are displayed
+        self._sync_available = True
         self._context: SyncContext | None = None
         self._results: list[CompareResult] = []
         self._task: CompareTask | SyncTask | None = None
@@ -134,6 +174,17 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
         if new_repository:
             self.new_repository_button.clicked.connect(new_repository)
         self._mirror_repository_combo()
+
+        # Server, mirroring the combobox of the dialog
+        self.refresh_server_button.setIcon(QgsApplication.getThemeIcon("/mActionRefresh.svg"))
+        self.refresh_server_button.setVisible(self._refresh_server is not None)
+        if self._refresh_server:
+            self.refresh_server_button.clicked.connect(self._refresh_server)
+        if self._server_combo is None:
+            self.server.setVisible(False)
+            self.label_lizmap_server.setVisible(False)
+        else:
+            mirror_combo(self._server_combo, self.server, self.invalidate)
 
         # Widgets of each pair of directories, in the grid
         self.pair_widgets: dict[PairKind, tuple[QLabel, QLabel, QLabel, QComboBox]] = {
@@ -216,34 +267,27 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
         self._set_directories(None)
 
     def _mirror_repository_combo(self):
-        """Share the model of the combobox of the dialog, and keep both current items in sync."""
+        """Share the model of the combobox of the repositories of the dialog."""
         if self._source_combo is None:
             self.repository.setVisible(False)
             self.label_repository_title.setVisible(False)
             return
+        mirror_combo(self._source_combo, self.repository, self.invalidate)
 
-        self.repository.setModel(self._source_combo.model())
-        self.repository.setCurrentIndex(self._source_combo.currentIndex())
+    def set_sync_available(self, available: bool):
+        """Show the synchronisation, or only the server and the repository.
 
-        def from_dialog(index: int):
-            """Follow the dialog.
+        Without the WebDAV module 1.3 on the server, the previous upload widgets are displayed
+        under the server and the repository.
 
-            :param index: The new index.
-            """
-            if self.repository.currentIndex() != index:
-                self.repository.setCurrentIndex(index)
-            self.invalidate()
-
-        def to_dialog(index: int):
-            """Update the dialog.
-
-            :param index: The new index.
-            """
-            if self._source_combo and self._source_combo.currentIndex() != index:
-                self._source_combo.setCurrentIndex(index)
-
-        self._source_combo.currentIndexChanged.connect(from_dialog)
-        self.repository.currentIndexChanged.connect(to_dialog)
+        :param available: True if the server can synchronise.
+        """
+        self._sync_available = available
+        self.sync_content.setVisible(available)
+        # Only the height of the server and the repository when the previous widgets are under
+        vertical = QSizePolicy.Policy.Expanding if available else QSizePolicy.Policy.Maximum
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, vertical)
+        self._set_directories(self._context if available else None)
 
     def _set_directories(self, context: SyncContext | None):
         """Display the WebDAV server, then the local and remote directories and the direction of each pair.
@@ -251,12 +295,13 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
         :param context: The context, None if not known yet.
         """
         self.label_help.setVisible(context is None)
-        self.label_server_title.setVisible(context is not None)
+        visible = context is not None and self._sync_available
+        self.label_server_title.setVisible(visible)
         self.label_server.setText(context.server_label if context else "")
-        self.label_server.setVisible(context is not None)
+        self.label_server.setVisible(visible)
 
         for kind, (title, local, remote, combo) in self.pair_widgets.items():
-            pair = context.pair(kind) if context else None
+            pair = context.pair(kind) if context and self._sync_available else None
             for widget in (title, local, remote, combo):
                 widget.setVisible(pair is not None)
             if pair is None:
@@ -316,6 +361,8 @@ class SyncPanel(QWidget, FORM_CLASS):  # type: ignore[misc,valid-type]
         self.compare_button.setEnabled(not busy)
         self.options_button.setEnabled(not busy)
         self.repository.setEnabled(not busy)
+        self.server.setEnabled(not busy)
+        self.refresh_server_button.setEnabled(not busy)
         self.new_repository_button.setEnabled(not busy)
         self.sync_button.setEnabled(not busy and has_actions)
         for button in self.bulk_buttons:

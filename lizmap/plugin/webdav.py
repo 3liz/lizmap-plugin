@@ -88,6 +88,8 @@ class LizmapProtocol(Protocol):
 
     def refresh_single_layer(self, row: int): ...
 
+    def refresh_current_server(self): ...
+
 
 class WebDavManager(LizmapProtocol):
     _webdav: WebDav
@@ -131,6 +133,8 @@ class WebDavManager(LizmapProtocol):
             self.dlg.repository_combo,
             self.new_repository,
             self.open_sync_options,
+            server_combo=self.dlg.server_combo,
+            refresh_server=self.refresh_current_server,
         )
         self.sync_panel.synchronised.connect(self._after_synchronisation)
         self.sync_panel.directionChanged.connect(self._save_sync_direction)
@@ -400,7 +404,9 @@ class WebDavManager(LizmapProtocol):
             # The previous widgets are kept for the servers without the WebDAV module 1.3: Lizmap Web Client
             # 3.8, or a newer version with an older module. To remove when these servers are not supported.
             sync = self._sync_server() is not None
-            self.sync_panel.setVisible(sync)
+            # The server and the repository are chosen at the top, for both interfaces
+            self.sync_panel.setVisible(True)
+            self.sync_panel.set_sync_available(sync)
             self.dlg.scrollArea_16.setVisible(not sync)
         else:
             self.sync_panel.setVisible(False)
@@ -506,7 +512,7 @@ class WebDavManager(LizmapProtocol):
             return
         # Selected once the list of the repositories is refreshed from the server
         QgsExpressionContextUtils.setProjectVariable(self.project, "lizmap_repository", dialog.created_key)
-        self.dlg.refresh_versions_button.click()
+        self.refresh_current_server()
 
         if dialog.rights_errors:
             # The repository exists, but maybe nobody can see it yet
@@ -537,7 +543,7 @@ class WebDavManager(LizmapProtocol):
             url=self._webdav.server_url(),
         )
         dialog.exec()
-        self.dlg.refresh_versions_button.click()
+        self.refresh_current_server()
 
     def send_webdav(self) -> tuple[bool, str, str]:
         """Sync the QGS and CFG file over the webdav."""

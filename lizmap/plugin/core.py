@@ -275,12 +275,13 @@ class Lizmap(
         self.dlg.button_refresh_all.clicked.connect(self.check_all_dates_dav)
 
         self.dlg.button_check_capabilities.setToolTip(
-            "If the server selected in this dropdown menu has not the correct version "
-            "displayed under, or if some server capabilities is missing."
+            tr("Refresh the information of the selected server: version, repositories, capabilities…")
         )
         self.dlg.button_check_capabilities.setText("")
         self.dlg.button_check_capabilities.setIcon(QIcon(QgsApplication.iconPath("mActionRefresh.svg")))
-        self.dlg.button_check_capabilities.clicked.connect(self.check_server_capabilities)
+        self.dlg.button_check_capabilities.clicked.connect(self.refresh_current_server)
+        # Once the repositories are known, the capabilities of the server can be checked
+        self.dlg.repositories_refreshed.connect(self.check_server_capabilities)
         # self.dlg.button_open_project.clicked.connect(self.open_web_browser_project)
 
         self.initialize_webdav()
@@ -1476,6 +1477,15 @@ class Lizmap(
             level=Qgis.MessageLevel.Warning,
             duration=DURATION_SUCCESS_BAR,
         )
+
+    def refresh_current_server(self):
+        """Fetch again the metadata of the selected server only, not all servers of the table.
+
+        When the answer arrives, the repositories are refreshed, then the capabilities are checked.
+        """
+        url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        if not (url and self.server_manager.refresh_server(url)):
+            self.check_server_capabilities()
 
     def check_server_capabilities(self):
         """If we are stuck on the dialog, let's try manually ..."""

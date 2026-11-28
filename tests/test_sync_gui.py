@@ -463,6 +463,61 @@ def test_panel_repository_mirror():
     assert source.currentText() == "one"
 
 
+def test_panel_server_mirror(sample: Sample, tmp_path: Path):
+    """Test the combobox of the servers mirrored from the dialog, and its refresh button."""
+    backend, root, state = sample
+    servers = QComboBox()
+    servers.addItems(["demo", "local"])
+    refreshed = []
+    panel = SyncPanel(
+        None,
+        panel_for(backend, root, state, tmp_path)._provider,
+        server_combo=servers,
+        refresh_server=lambda: refreshed.append(True),
+    )
+    assert panel.server.isVisibleTo(panel)
+    assert panel.refresh_server_button.isVisibleTo(panel)
+
+    panel.server.setCurrentIndex(1)
+    assert servers.currentText() == "local"
+    panel.refresh_server_button.click()
+    assert refreshed == [True]
+
+    # Another server in the dialog forgets the comparison
+    panel.compare()
+    wait_for(lambda: not panel.busy)
+    assert panel.model.sections
+    servers.setCurrentIndex(0)
+    assert panel.server.currentText() == "demo"
+    assert not panel.model.sections
+
+
+def test_panel_sync_not_available(sample: Sample, tmp_path: Path):
+    """Test a server without the synchronisation: only the server and the repository are displayed."""
+    backend, root, state = sample
+    servers = QComboBox()
+    servers.addItem("old server")
+    repositories = QComboBox()
+    repositories.addItem("tests")
+    panel = SyncPanel(
+        None, panel_for(backend, root, state, tmp_path)._provider, repositories, server_combo=servers
+    )
+    panel.compare()
+    wait_for(lambda: not panel.busy)
+    assert panel.direction_repository.isVisibleTo(panel)
+
+    panel.set_sync_available(False)
+    assert panel.server.isVisibleTo(panel)
+    assert panel.repository.isVisibleTo(panel)
+    assert not panel.sync_content.isVisibleTo(panel)
+    assert not panel.direction_repository.isVisibleTo(panel)
+    assert not panel.label_server.isVisibleTo(panel)
+
+    panel.set_sync_available(True)
+    assert panel.sync_content.isVisibleTo(panel)
+    assert panel.direction_repository.isVisibleTo(panel)
+
+
 def test_project_checks(tmp_path: Path):
     """Test the files used by the project, pending edits and the GeoPackage checkpoint."""
     data = Path(__file__).parent / "data"
