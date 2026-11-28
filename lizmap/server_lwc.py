@@ -509,6 +509,19 @@ class ServerManager:
             self.table.setCurrentCell(row + 2, column)
         self.table.removeRow(row)
 
+    def refresh_server(self, url: str) -> bool:
+        """Fetch again the metadata of a single server, without the other servers of the table.
+
+        :param url: URL of the server.
+        :return: True if the server has been found in the table and the request has been sent.
+        """
+        for row in range(self.table.rowCount()):
+            row_url, auth_id, _ = self._fetch_cells(row)
+            if row_url == url:
+                self.fetch(url, auth_id, row)
+                return True
+        return False
+
     def refresh_table(self):
         """Refresh all rows with the server status."""
         self.clean_cache(True)

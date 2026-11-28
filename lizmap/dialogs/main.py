@@ -14,7 +14,7 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import QgsFeaturePickerWidget
-from qgis.PyQt.QtCore import QSize, Qt, QUrl
+from qgis.PyQt.QtCore import QSize, Qt, QUrl, pyqtSignal
 from qgis.PyQt.QtGui import (
     QDesktopServices,
     QGuiApplication,
@@ -104,6 +104,10 @@ LOGGER = logging.getLogger("Lizmap")
 
 
 class LizmapDialog(QDialog, FORM_CLASS):
+
+    # Emitted when the list of the repositories has been filled from the metadata of the server
+    repositories_refreshed = pyqtSignal()
+
     def __init__(
         self,
         parent: QWidget | None = None,
@@ -887,10 +891,8 @@ class LizmapDialog(QDialog, FORM_CLASS):
                 Qt.ItemDataRole.ToolTipRole)
             self.repository_combo.setItemData(index, repository_data['path'], RepositoryComboData.Path.value)
 
-        # Dirty hack to trigger webdav check in plugin.py
-        # Because all folders have been set in the combobox and the webdav is checking for repositories...
-        # Be careful of recursion call
-        self.button_check_capabilities.click()
+        # The plugin checks the capabilities of the server, such as the WebDAV, with the new repositories
+        self.repositories_refreshed.emit()
 
         self.default_lizmap_folder()
 

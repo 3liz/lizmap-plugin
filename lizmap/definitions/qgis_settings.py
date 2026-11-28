@@ -34,3 +34,6 @@ class Settings:
 
     # Last Lizmap repository
     LizmapRepository = "lizmap_repository"
+
+    # Direction of the synchronisation, by kind of pair of directories
+    SyncDirection = "sync/direction"

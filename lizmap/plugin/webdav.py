@@ -3,11 +3,14 @@ from typing import (
     TYPE_CHECKING,
     Protocol,
 )
+from urllib.parse import quote, unquote
 
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsExpressionContextUtils,
     QgsProject,
+    QgsSettings,
 )
 
 if TYPE_CHECKING:
@@ -35,8 +38,29 @@ from lizmap.definitions.definitions import (
 
 from ..definitions.definitions import LwcVersions
 from ..definitions.online_help import Panels
+from ..definitions.qgis_settings import Settings
 from ..dialogs.server_wizard import CreateFolderWizard
 from ..server_dav import WebDav
+from ..sync.backends.admin_api import (
+    HTTP_FORBIDDEN,
+    HTTP_NOT_FOUND,
+    HTTP_UNAUTHORIZED,
+    LizmapAdminApi,
+)
+from ..sync.backends.base import BackendError
+from ..sync.backends.webdav import WebDavBackend, WebDavServer
+from ..sync.gui.new_repository_dialog import NewRepositoryDialog
+from ..sync.gui.options_dialog import SyncOptionsDialog, load_options, save_options
+from ..sync.gui.project_checks import (
+    checkpoint_sqlite,
+    layers_with_pending_edits,
+    project_files,
+)
+from ..sync.gui.sync_panel import SyncContext, SyncPanel, SyncUnavailable
+from ..sync.model import Direction
+from ..sync.options import SyncOptions, read_rules, read_rules_text, write_rules
+from ..sync.pair import PairKind, SyncPair
+from ..sync.state import StateError, SyncState, state_file_name
 from ..toolbelt.i18n import tr
 from ..toolbelt.resources import (
     load_icon,
@@ -48,6 +72,9 @@ if TYPE_CHECKING:
     from ..dialogs.main import LizmapDialog
 
 from .. import logger
+
+# Identifier of the shared media in the state of the synchronisation, instead of a repository
+SHARED_MEDIA_STATE = "__shared_media__"
 
 
 class LizmapProtocol(Protocol):
@@ -61,9 +88,12 @@ class LizmapProtocol(Protocol):
 
     def refresh_single_layer(self, row: int): ...
 
+    def refresh_current_server(self): ...
+
 
 class WebDavManager(LizmapProtocol):
     _webdav: WebDav
+    sync_panel: SyncPanel
 
     # Called on __init__()
     def initialize_webdav(self):
@@ -95,6 +125,244 @@ class WebDavManager(LizmapProtocol):
         self.dlg.button_upload_media.clicked.connect(self.upload_media)
         self.dlg.button_create_media_remote.clicked.connect(self.create_media_dir_remote)
         self.dlg.button_create_media_local.clicked.connect(self.create_media_dir_local)
+
+        # Synchronisation, replacing the previous widgets when the WebDAV module supports it
+        self.sync_panel = SyncPanel(
+            self.dlg.page_upload,
+            self.sync_context,
+            self.dlg.repository_combo,
+            self.new_repository,
+            self.open_sync_options,
+            server_combo=self.dlg.server_combo,
+            refresh_server=self.refresh_current_server,
+        )
+        self.sync_panel.synchronised.connect(self._after_synchronisation)
+        self.sync_panel.directionChanged.connect(self._save_sync_direction)
+        self.sync_panel.setVisible(False)
+        layout = self.dlg.page_upload.layout()
+        layout.insertWidget(0, self.sync_panel)
+        # The automatic upload when saving stays visible with both interfaces
+        layout.addWidget(self.dlg.send_webdav)
+
+    def _sync_server(self) -> WebDavServer | None:
+        """WebDAV capabilities of the current server, if it supports the synchronisation.
+
+        :return: The capabilities, None if the WebDAV module is missing or too old.
+        """
+        metadata = self.dlg.server_combo.currentData(ServerComboData.JsonMetadata.value)
+        server = WebDavServer.from_metadata(metadata)
+        return server if server and server.supports_sync else None
+
+    def sync_context(self) -> SyncContext:
+        """Build the context of the synchronisation, after checking the project.
+
+        Called by the synchronisation panel when the user clicks on "Compare".
+
+        :return: The context.
+        :raises SyncUnavailable: With a message for the user if the synchronisation is not possible.
+        """
+        server = self._sync_server()
+        if server is None:
+            raise SyncUnavailable(tr("The WebDAV module of the server must be upgraded to synchronise."))
+
+        # Repository on the server
+        repository_id = self.dlg.current_repository(RepositoryComboData.Id)
+        repository_path = self.dlg.current_repository(RepositoryComboData.Path)
+        if not repository_id:
+            raise SyncUnavailable(tr("Choose a Lizmap repository."))
+        try:
+            url = server.repository_url(repository_path)
+        except ValueError:
+            raise SyncUnavailable(
+                tr(
+                    "The directory of the repository <b>{}</b> is outside of the root directory of the "
+                    "repositories on the server, it can't be synchronised."
+                ).format(repository_id)
+            ) from None
+
+        # The project must be saved, as a QGS file
+        if not self.project.fileName():
+            raise SyncUnavailable(tr("Save the project first."))
+        project_file = Path(self.project.fileName())
+        if project_file.suffix.lower() != ".qgs":
+            raise SyncUnavailable(tr("Lizmap Web Client needs a QGS project, not a QGZ one."))
+        pending = layers_with_pending_edits(self.project)
+        if pending:
+            raise SyncUnavailable(tr("Save the edits of these layers first: {}").format(", ".join(pending)))
+        if self.project.isDirty():
+            answer = QMessageBox.question(
+                self.dlg,
+                tr("Unsaved project"),
+                tr("The project has unsaved changes. Do you want to save it before the comparison?"),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            )
+            if answer != QMessageBox.StandardButton.Yes:
+                raise SyncUnavailable(tr("Save the project before the comparison."))
+            # Saved by QGIS Desktop: QgsProject.write() would make QGIS warn later that
+            # the project file has been modified externally
+            self.iface.actionSaveProject().trigger()
+            if self.project.isDirty():
+                raise SyncUnavailable(tr("Save the project before the comparison."))
+
+        # Files used by the layers, GeoPackage edits written in the main files
+        root = project_file.parent.resolve()
+        files = project_files(self.project, root)
+        for path, error in checkpoint_sqlite(list(files.values())).items():
+            logger.warning(f"Synchronisation, checkpoint of {path} : {error}")
+
+        server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        auth_id = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
+        repository_label = self.dlg.repository_combo.currentText() or repository_id
+
+        # The repository, and the "media" directory shared by all repositories, "../media" locally
+        options = load_options()
+        pairs = [
+            self._sync_pair(
+                PairKind.Repository,
+                tr('Repository "{}"').format(repository_label),
+                WebDavBackend(url, auth_id),
+                unquote(url[len(server.url) :]),
+                root,
+                server_url,
+                repository_id,
+                options,
+            ),
+            self._sync_pair(
+                PairKind.SharedMedia,
+                tr("Shared media"),
+                WebDavBackend(server.shared_media_url(), auth_id),
+                unquote(server.shared_media_url()[len(server.url) :]),
+                root.parent.joinpath("media"),
+                server_url,
+                SHARED_MEDIA_STATE,
+                options,
+            ),
+        ]
+        map_url = (
+            f"{server_url.rstrip('/')}/index.php/view/map?"
+            f"repository={quote(repository_id)}&project={quote(project_file.stem)}"
+        )
+        return SyncContext(
+            pairs=pairs,
+            server_label=server.url,
+            protected_paths=frozenset(files),
+            project_path=project_file.name,
+            repository_label=repository_label,
+            map_url=map_url,
+        )
+
+    @staticmethod
+    def _sync_pair(
+        kind: PairKind,
+        label: str,
+        backend: WebDavBackend,
+        remote_label: str,
+        root: Path,
+        server_url: str,
+        state_key: str,
+        options: SyncOptions,
+    ) -> SyncPair:
+        """Build a pair of directories, with its state and its settings.
+
+        :param kind: Kind of pair.
+        :param label: Name displayed in the tree.
+        :param backend: The directory on the server.
+        :param remote_label: Path of the directory on the WebDAV server.
+        :param root: The local directory.
+        :param server_url: URL of the Lizmap server.
+        :param state_key: Identifier of the remote directory in the state, such as the repository.
+        :param options: The options of the synchronisation.
+        :return: The pair.
+        """
+        # State of the last synchronisation, in the QGIS profile
+        state_file = Path(QgsApplication.qgisSettingsDirPath()).joinpath(
+            "lizmap", "sync", state_file_name(server_url, state_key, str(root))
+        )
+        try:
+            state = SyncState.load(state_file, server_url, state_key, str(root))
+        except StateError as e:
+            logger.warning(f"Synchronisation state ignored : {e}")
+            state = SyncState(server_url, state_key, str(root))
+
+        # Direction chosen by the user, then the options
+        saved = QgsSettings().value(Settings.key(f"{Settings.SyncDirection}/{kind.value}"), "", str)
+        direction = Direction(saved) if saved in {d.value for d in Direction} else None
+        settings = options.pair_settings(kind, direction)
+
+        # Excluded files, from the rules file of the directory
+        patterns, invalid = read_rules(root)
+        if invalid:
+            logger.warning(f"Synchronisation, unsupported rules in {root} : {', '.join(invalid)}")
+
+        return SyncPair(
+            kind=kind,
+            label=label,
+            backend=backend,
+            root=root,
+            state=state,
+            state_file=state_file,
+            rules=options.exclude_rules(patterns),
+            settings=settings,
+            remote_label=remote_label,
+        )
+
+    def open_sync_options(self) -> bool:
+        """Edit the options of the synchronisation.
+
+        The excluded files are written in the rules file of each directory, the other options
+        are personal settings.
+
+        :return: True if the user changed the options.
+        """
+        if not self.project.fileName():
+            self.dlg.display_message_bar(
+                "Lizmap", tr("Save the project first."), level=Qgis.MessageLevel.Warning
+            )
+            return False
+
+        root = Path(self.project.fileName()).parent.resolve()
+        roots = {PairKind.Repository: root, PairKind.SharedMedia: root.parent.joinpath("media")}
+        labels = {PairKind.Repository: tr("Repository"), PairKind.SharedMedia: tr("Shared media")}
+        rules = {kind: (labels[kind], read_rules_text(path)) for kind, path in roots.items()}
+
+        dialog = SyncOptionsDialog(self.dlg, load_options(), rules)
+        if not dialog.exec():
+            return False
+
+        save_options(dialog.options())
+        for kind, text in dialog.changed_rules().items():
+            write_rules(roots[kind], text)
+        return True
+
+    @staticmethod
+    def _save_sync_direction(kind: PairKind, direction: Direction):
+        """Keep the direction chosen by the user for a kind of pair.
+
+        :param kind: The kind of pair.
+        :param direction: The direction.
+        """
+        QgsSettings().setValue(Settings.key(f"{Settings.SyncDirection}/{kind.value}"), direction.value)
+
+    def _after_synchronisation(self, project_downloaded: bool):
+        """Keep the repository of the project, and warn if the project has been replaced.
+
+        :param project_downloaded: True if the project file has been downloaded.
+        """
+        # The repository used is restored the next time the dialog is opened, like when saving
+        # the Lizmap configuration
+        repository = self.dlg.current_repository()
+        variables = self.project.customVariables()
+        if repository and variables.get("lizmap_repository") != repository:
+            variables["lizmap_repository"] = repository
+            self.project.setCustomVariables(variables)
+
+        if project_downloaded:
+            self.dlg.display_message_bar(
+                "Lizmap",
+                tr("The project file has been replaced by the version of the server, reopen the project."),
+                level=Qgis.MessageLevel.Warning,
+                duration=DURATION_WARNING_BAR,
+            )
 
     def check_webdav(self):
         """Check if we can enable or the webdav, according to the current selected server."""
@@ -131,7 +399,18 @@ class WebDavManager(LizmapProtocol):
             self.dlg.button_upload_media.setVisible(True)
             self.dlg.button_create_media_remote.setVisible(True)
             self.dlg.mOptionsListWidget.item(Panels.Upload).setHidden(False)
+
+            # The synchronisation replaces the previous widgets if the WebDAV module supports it.
+            # The previous widgets are kept for the servers without the WebDAV module 1.3: Lizmap Web Client
+            # 3.8, or a newer version with an older module. To remove when these servers are not supported.
+            sync = self._sync_server() is not None
+            # The server and the repository are chosen at the top, for both interfaces
+            self.sync_panel.setVisible(True)
+            self.sync_panel.set_sync_available(sync)
+            self.dlg.scrollArea_16.setVisible(not sync)
         else:
+            self.sync_panel.setVisible(False)
+            self.dlg.scrollArea_16.setVisible(True)
             # self.dlg.group_upload.setVisible(False)
             # self.dlg.send_webdav.setChecked(False)
             # self.dlg.send_webdav.setEnabled(False)
@@ -197,6 +476,64 @@ class WebDavManager(LizmapProtocol):
                 else:
                     self.dlg.table_files.file_status(row, tr("Error"), error)
 
+    def new_repository(self):
+        """Create a repository from the synchronisation panel.
+
+        With Lizmap Web Client 3.10 or newer, the repository is created with the administration API,
+        in a new directory or in an existing one not used yet. Otherwise, the previous wizard is used.
+        """
+        server_url = self.dlg.server_combo.currentData(ServerComboData.ServerUrl.value)
+        auth_id = self.dlg.server_combo.currentData(ServerComboData.AuthId.value)
+        if not server_url:
+            return
+
+        api = LizmapAdminApi(server_url, auth_id)
+        try:
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
+                paths = api.paths()
+                groups = api.groups()
+                existing = api.repository_keys()
+        except BackendError as e:
+            if e.http_status == HTTP_NOT_FOUND:
+                # The API doesn't exist before Lizmap Web Client 3.10
+                self.create_new_repository()
+                return
+            if e.http_status in (HTTP_UNAUTHORIZED, HTTP_FORBIDDEN):
+                message = tr("You must be an administrator of the server to create a repository.")
+            else:
+                message = str(e)
+            self.dlg.display_message_bar(
+                "Lizmap", message, level=Qgis.MessageLevel.Warning, duration=DURATION_WARNING_BAR
+            )
+            return
+
+        dialog = NewRepositoryDialog(self.dlg, api, paths, existing, groups)
+        if not dialog.exec() or not dialog.created_key:
+            return
+        # Selected once the list of the repositories is refreshed from the server
+        QgsExpressionContextUtils.setProjectVariable(self.project, "lizmap_repository", dialog.created_key)
+        self.refresh_current_server()
+
+        if dialog.rights_errors:
+            # The repository exists, but maybe nobody can see it yet
+            self.dlg.display_message_bar(
+                "Lizmap",
+                tr("The repository <b>{}</b> has been created, but some rights couldn't be given.").format(
+                    dialog.created_key
+                ),
+                level=Qgis.MessageLevel.Warning,
+                duration=DURATION_WARNING_BAR,
+                more_details="\n".join(dialog.rights_errors),
+            )
+            return
+
+        self.dlg.display_message_bar(
+            "Lizmap",
+            tr("The repository <b>{}</b> has been created.").format(dialog.created_key),
+            level=Qgis.MessageLevel.Success,
+            duration=DURATION_WARNING_BAR,
+        )
+
     def create_new_repository(self):
         """Open wizard to create a new remote repository."""
         dialog = CreateFolderWizard(
@@ -206,7 +543,7 @@ class WebDavManager(LizmapProtocol):
             url=self._webdav.server_url(),
         )
         dialog.exec()
-        self.dlg.refresh_versions_button.click()
+        self.refresh_current_server()
 
     def send_webdav(self) -> tuple[bool, str, str]:
         """Sync the QGS and CFG file over the webdav."""
